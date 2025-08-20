@@ -1,0 +1,42 @@
+Decimal Number : Every number in the world is represented using  the digits from 0 to 9
+
+Binary Number : Every number in the world is represented using  the digits from 0 and 1
+
+
+ASCII value : Every character in keyboard (and certain invisible characters) have got a numerical representation
+In the initial days, the computer is supporting English. ascii value from .. to .. . English alphabets included.
+
+Number stored as character and number stored as integer are different. to store number as character, it takes ascii value and converts that to binary and store. number stored as number will have its direct conversion to binary 
+
+When to use for and when to use while loop : when the number of times to run the loop is known, make use of for loop and the same detail can be given as lower and upper range
+when we do not know how many times, the loop is going to run, make use of for. hence till the condition is true, the loop runs
+
+In python , no do while loop. use the same while loop by giving a condition appropriately to make it to work like do.. while
+
+return value in function : a function can return only 1 value. in python for example, when we write return 3, true : it create a tuple/record and return the address of it.
+
+Pointer variable : variable that stores the address of another variable. Internally, the python uses pointer concept to implement above
+
+Array : continuous memory allocation.  if its size has to be changed that is to add extra elements,  memory gets newly allocated in a new area with bigger size and shifts all older detail to new.  This is the  concept of Arraylist/dynamic sized array in java. In Python, list is used and this is dynamic sizing array
+
+Absolute number : value of a number, irrespective of the sign or positive/negative
+
+bitwise operator : Bitwise operator is more efficient as the operation happen only on the bits of data and not the entire data. Hence it gives faster result
+
+One of the use is left shift operator to n position for the power of 2
+
+Function Definition : defines what a function does. not syntax but mostly components of below
+ <returnDataType> <FunctionName>(0 to n Parameters)
+   Function statements...
+
+Function Call : Defined function can be called with various inputs of data
+
+Declaration : memory allocation for variables or object during the execution of the program
+
+Stack Data Structure : LIFO (Last In First Out). Examples : Function call managed as a stack say Stack memory of java
+
+
+
+
+
+
