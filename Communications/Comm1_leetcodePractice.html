@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Exchange & Coding Practice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 50%, #ff9a9e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .pamphlet {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .glossy-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(125deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #4a6cf7, #6a82fb, #fc5c7d);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 60%);
+            transform: rotate(30deg);
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .left-column {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 30px;
+            border-right: 2px dashed #e6e6e6;
+        }
+        
+        .right-column {
+            flex: 1;
+            min-width: 300px;
+            padding-left: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section h2 {
+            color: #4a6cf7;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h2 i {
+            margin-right: 10px;
+            background: linear-gradient(to right, #4a6cf7, #6a82fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section p {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4a6cf7;
+        }
+        
+        .whatsapp-link {
+            display: block;
+            text-align: center;
+            background: #25D366;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-link:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+        
+        .exchange-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .item {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4.5rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .item:hover {
+            transform: scale(1.05);
+        }
+        
+        .apple {
+            background: linear-gradient(135deg, #ff4e50, #f9d423);
+            color: #ff4e50;
+        }
+        
+        .orange {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: #c9380e;
+        }
+        
+        .idea {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            font-size: 3.5rem;
+        }
+        
+        .exchange-arrow {
+            font-size: 2.5rem;
+            color: #ff7e5f;
+            animation: pulse 2s infinite;
+        }
+        
+        .text-panel {
+            background: linear-gradient(to right, #fdfcfb, #f5f7fa);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            border-left: 5px solid #ff7e5f;
+        }
+        
+        .text-panel p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #333;
+            text-align: center;
+        }
+        
+        .conclusion {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .conclusion h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .conclusion p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .left-column, .right-column {
+                padding: 0;
+                border-right: none;
+                border-bottom: 2px dashed #e6e6e6;
+                padding-bottom: 30px;
+            }
+            
+            .right-column {
+                padding-top: 30px;
+                padding-left: 0;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .item {
+                width: 120px;
+                height: 120px;
+                font-size: 3.5rem;
+            }
+            
+            .exchange-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pamphlet">
+        <div class="glossy-overlay"></div>
+        
+        <div class="header">
+            <h1>Knowledge Exchange & Coding Practice</h1>
+            <p>Grow together by sharing knowledge and ideas</p>
+        </div>
+        
+        <div class="content">
+            <div class="left-column">
+                <div class="section">
+                    <h2><i class="fas fa-code"></i> Practice Recommendations</h2>
+                    <p>If you are good at the basics, kindly start practicing LeetCode parallelly.</p>
+                </div>
+                
+                <div class="section">
+                    <h2><i class="fas fa-share-alt"></i> Sharing Knowledge</h2>
+                    <p>If you are completing the program, kindly share in group with at least 1 line of core logic that you want to share with your friends.</p>
+                    <div class="highlight">
+                        This helps in faster pick up of the programs.
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2><i class="fas fa-clipboard-check"></i> Mock Tests</h2>
+                    <p>Take a mock test after a month from the programs that you have completed to know your gaps and fix the gaps before proceeding with further programs.</p>
+                </div>
+                
+                <div class="section">
+                    <h2><i class="fas fa-eye"></i> Join as Observer</h2>
+                    <p>Whoever is interested in being an observer for few days can also join. Come back to me for clarifications during the sessions.</p>
+                </div>
+                
+                <a href="https://chat.whatsapp.com/HRISKZ7OopcIfZVENwt521" class="whatsapp-link">
+                    <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+                </a>
+            </div>
+            
+            <div class="right-column">
+                <h2 style="text-align: center; color: #ff7e5f; margin-bottom: 30px;">The Power of Idea Exchange</h2>
+                
+                <div class="exchange-container">
+                    <div class="item apple">🍎</div>
+                    <div class="exchange-arrow">⇄</div>
+                    <div class="item orange">🍊</div>
+                </div>
+                
+                <div class="text-panel">
+                    <p>You have an apple, I have an orange. We exchange — now we both have an apple and an orange.</p>
+                </div>
+                
+                <div class="exchange-container">
+                    <div class="item idea">💡</div>
+                    <div class="exchange-arrow">⇄</div>
+                    <div class="item idea">💡</div>
+                </div>
+                
+                <div class="text-panel">
+                    <p>You have an idea, I have an idea. We exchange — now we both have two ideas!</p>
+                </div>
+                
+                <div class="highlight">
+                    <p>Unlike physical objects that diminish when shared, ideas multiply and evolve through exchange, creating new possibilities for everyone involved.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conclusion">
+            <h2>Join with Your Other Stream Friends </h2>
+            <p>Combine the power of knowledge sharing with structured practice to accelerate your learning journey.</p>
+        </div>
+        
+        <div class="footer">
+            <p>You grow together by sharing knowledge and practice • Join today!</p>
+        </div>
+    </div>
+</body>
+</html>
