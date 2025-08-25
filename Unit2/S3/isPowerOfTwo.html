@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Power of Two (LeetCode 231) Explanation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #f0f0f0;
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+            text-shadow: 1px 1px 4px #000;
+        }
+        h2 {
+            color: #ffa500;
+            border-bottom: 2px solid #ffa500;
+            padding-bottom: 0.3rem;
+            margin-top: 2rem;
+        }
+        p, li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        code {
+            background-color: #222;
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: #7fffd4;
+            font-family: Consolas, monospace;
+        }
+        pre {
+            background-color: #222;
+            color: #7fffd4;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            box-shadow: inset 0 0 15px #0ff;
+            font-size: 1rem;
+        }
+        blockquote {
+            border-left: 4px solid #ffa500;
+            margin: 1rem 0;
+            padding-left: 1rem;
+            font-style: italic;
+            background: rgba(255, 165, 0, 0.1);
+            border-radius: 4px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+        .highlight {
+            color: #00ffea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Power of Two (LeetCode 231)</h1>
+
+    <p>Check if a number is a power of two using <span class="highlight">bit manipulation</span>. This relates to exponentials of base 2.</p>
+
+    <h2>Key Insight</h2>
+    <p>A number <code>n</code> that is a power of two has <strong>exactly one bit set to 1</strong> in its binary representation.</p>
+    <ul>
+        <li>Examples:</li>
+        <li><code>1 = 2⁰ = 0001₂</code></li>
+        <li><code>2 = 2¹ = 0010₂</code></li>
+        <li><code>4 = 2² = 0100₂</code></li>
+        <li><code>8 = 2³ = 1000₂</code></li>
+    </ul>
+
+    <h2>Bit Manipulation Check</h2>
+    <p>If <code>n &gt; 0</code> and <code>n &amp; (n - 1) == 0</code>, then <code>n</code> is a power of two.</p>
+
+    <blockquote>
+        <p><strong>Explanation:</strong> <code>n &amp; (n - 1)</code> clears the rightmost set bit of <code>n</code>. If <code>n</code> has only one set bit, this operation results in zero.</p>
+    </blockquote>
+
+    <h2>Example</h2>
+    <p>For <code>n = 4</code>:</p>
+    <ul>
+        <li><code>4 = 0100₂</code></li>
+        <li><code>3 = 0011₂</code></li>
+        <li><code>4 &amp; 3 = 0000₂</code></li>
+    </ul>
+
+    <h2>Python Code</h2>
+    <pre><code>def isPowerOfTwo(n: int) -&gt; bool:
+    return n &gt; 0 and (n &amp; (n - 1)) == 0
+</code></pre>
+
+    <p>This runs in constant time <code>O(1)</code> and is very efficient.</p>
+</body>
+</html>

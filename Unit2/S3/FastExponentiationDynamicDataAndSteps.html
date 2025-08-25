@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Exponentiation Visual Guide</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fdbb2d;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: bold;
+            color: #fdbb2d;
+        }
+        
+        input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            width: 120px;
+            text-align: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: #fdbb2d;
+            color: #1a2a6c;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #ffcc44;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #777;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .step-display {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #fdbb2d;
+            font-weight: bold;
+        }
+        
+        .visualization {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #fdbb2d;
+            font-size: 1.3rem;
+        }
+        
+        .variables {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .variable {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            min-width: 120px;
+        }
+        
+        .variable-name {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #ffcc44;
+        }
+        
+        .variable-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .binary-representation {
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        
+        .explanation {
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+            min-height: 120px;
+        }
+        
+        .highlight {
+            color: #fdbb2d;
+            font-weight: bold;
+        }
+        
+        .bit-highlight {
+            color: #ff5252;
+            font-weight: bold;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result-value {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 2.2rem;
+        }
+        
+        .algorithm {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .algorithm-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #fdbb2d;
+            font-size: 1.4rem;
+        }
+        
+        .algorithm-step {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .current-step {
+            background: rgba(253, 187, 45, 0.2);
+            border-left: 5px solid #fdbb2d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fast Exponentiation (Binary Method)</h1>
+        
+        <p class="description">
+            This algorithm efficiently computes large exponentials by breaking down the exponent into its binary representation.
+            Each step corresponds to a bit in the binary representation of the exponent.
+        </p>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="base">Base (a):</label>
+                <input type="number" id="base" min="2" max="20" value="3">
+            </div>
+            
+            <div class="input-group">
+                <label for="exponent">Exponent (b):</label>
+                <input type="number" id="exponent" min="2" max="100" value="13">
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="prev-btn" disabled>Previous Step</button>
+            <button id="next-btn">Next Step</button>
+            <button id="reset-btn">Reset</button>
+            <button id="run-all-btn">Run All Steps</button>
+        </div>
+        
+        <div class="step-display">Step 0: Initialize</div>
+        
+        <div class="visualization">
+            <div class="card">
+                <h3 class="card-title">Variables</h3>
+                <div class="variables">
+                    <div class="variable">
+                        <div class="variable-name">Result</div>
+                        <div class="variable-value" id="result-value">1</div>
+                    </div>
+                    <div class="variable">
+                        <div class="variable-name">Base</div>
+                        <div class="variable-value" id="base-value">3</div>
+                    </div>
+                    <div class="variable">
+                        <div class="variable-name">Exponent</div>
+                        <div class="variable-value" id="exponent-value">13</div>
+                    </div>
+                </div>
+                
+                <div class="binary-representation" id="binary-rep">
+                    1101
+                </div>
+                
+                <div class="explanation" id="explanation">
+                    Initializing: result = 1, base = 3, exponent = 13 (binary: 1101)
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Algorithm Steps</h3>
+                <div class="algorithm">
+                    <div class="algorithm-step current-step" id="step0">
+                        <span class="highlight">Step 0:</span> Initialize result = 1, base = a, exponent = b
+                    </div>
+                    <div class="algorithm-step" id="step1">
+                        <span class="highlight">Step 1:</span> While exponent > 0
+                    </div>
+                    <div class="algorithm-step" id="step2">
+                        <span class="highlight">Step 2:</span> If exponent is odd, multiply result by base
+                    </div>
+                    <div class="algorithm-step" id="step3">
+                        <span class="highlight">Step 3:</span> Square the base
+                    </div>
+                    <div class="algorithm-step" id="step4">
+                        <span class="highlight">Step 4:</span> Divide exponent by 2 (integer division)
+                    </div>
+                    <div class="algorithm-step" id="step5">
+                        <span class="highlight">Step 5:</span> Repeat until exponent becomes 0
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result" id="final-result">
+            Final Result: <span class="result-value" id="result-final">1594323</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const baseInput = document.getElementById('base');
+            const exponentInput = document.getElementById('exponent');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const runAllBtn = document.getElementById('run-all-btn');
+            const stepDisplay = document.querySelector('.step-display');
+            const resultValue = document.getElementById('result-value');
+            const baseValue = document.getElementById('base-value');
+            const exponentValue = document.getElementById('exponent-value');
+            const binaryRep = document.getElementById('binary-rep');
+            const explanation = document.getElementById('explanation');
+            const finalResult = document.getElementById('final-result');
+            const resultFinal = document.getElementById('result-final');
+            const algorithmSteps = document.querySelectorAll('.algorithm-step');
+            
+            // Algorithm state
+            let currentStep = 0;
+            let result = 1;
+            let base = 3;
+            let exponent = 13;
+            let binaryExp = exponent.toString(2);
+            let stepHistory = [];
+            let runAllInterval = null;
+            
+            // Initialize the visualization
+            function initialize() {
+                // Clear any running intervals
+                if (runAllInterval) {
+                    clearInterval(runAllInterval);
+                    runAllInterval = null;
+                }
+                
+                base = parseInt(baseInput.value);
+                exponent = parseInt(exponentInput.value);
+                binaryExp = exponent.toString(2);
+                result = 1;
+                currentStep = 0;
+                stepHistory = [];
+                
+                updateDisplay();
+                updateAlgorithmSteps();
+                saveStepHistory();
+            }
+            
+            // Save current step to history
+            function saveStepHistory() {
+                stepHistory.push({
+                    step: currentStep,
+                    result: result,
+                    base: base,
+                    exponent: exponent,
+                    binaryExp: binaryExp
+                });
+            }
+            
+            // Update the display with current values
+            function updateDisplay() {
+                resultValue.textContent = result;
+                baseValue.textContent = base;
+                exponentValue.textContent = exponent;
+                
+                // Highlight the current bit being processed
+                if (currentStep > 0) {
+                    const bitPos = binaryExp.length - Math.floor((currentStep + 1) / 3);
+                    if (bitPos >= 0 && bitPos < binaryExp.length) {
+                        let binaryHTML = '';
+                        for (let i = 0; i < binaryExp.length; i++) {
+                            if (i === bitPos) {
+                                binaryHTML += `<span class="bit-highlight">${binaryExp[i]}</span>`;
+                            } else {
+                                binaryHTML += binaryExp[i];
+                            }
+                        }
+                        binaryRep.innerHTML = binaryHTML;
+                    } else {
+                        binaryRep.textContent = binaryExp;
+                    }
+                } else {
+                    binaryRep.textContent = binaryExp;
+                }
+                
+                updateExplanation();
+                updateStepDisplay();
+                
+                // Enable/disable buttons based on current step
+                prevBtn.disabled = currentStep === 0;
+                
+                // Show final result if done
+                if (exponent === 0 && currentStep > 0) {
+                    finalResult.style.display = 'block';
+                    resultFinal.textContent = result;
+                    nextBtn.disabled = true;
+                } else {
+                    finalResult.style.display = 'none';
+                    nextBtn.disabled = false;
+                }
+            }
+            
+            // Update the explanation text based on current step
+            function updateExplanation() {
+                let explanationText = "";
+                const iteration = Math.floor((currentStep) / 3);
+                
+                switch(currentStep) {
+                    case 0:
+                        explanationText = `Initializing: result = 1, base = ${base}, exponent = ${exponent} (binary: ${binaryExp})`;
+                        break;
+                    case 1:
+                        explanationText = `Exponent is ${exponent} (binary: ${binaryExp}). Starting the loop.`;
+                        break;
+                    case 2:
+                        explanationText = `Checking if exponent (${exponent}) is odd. ${exponent % 2 === 1 ? "It is odd, so we multiply result by base." : "It is even, so we skip multiplication."}`;
+                        break;
+                    case 3:
+                        explanationText = `Squaring the base: ${base} × ${base} = ${base * base}`;
+                        break;
+                    case 4:
+                        explanationText = `Dividing exponent by 2 (integer division): ${exponent} ÷ 2 = ${Math.floor(exponent / 2)}`;
+                        break;
+                    default:
+                        if (currentStep % 3 === 2) {
+                            explanationText = `Checking if exponent (${exponent}) is odd. ${exponent % 2 === 1 ? "It is odd, so we multiply result by base." : "It is even, so we skip multiplication."}`;
+                        } else if (currentStep % 3 === 0 && currentStep > 0) {
+                            explanationText = `Squaring the base: ${base} × ${base} = ${base * base}`;
+                        } else if (currentStep % 3 === 1) {
+                            explanationText = `Dividing exponent by 2 (integer division): ${exponent} ÷ 2 = ${Math.floor(exponent / 2)}`;
+                        }
+                        break;
+                }
+                
+                explanation.textContent = explanationText;
+            }
+            
+            // Update the step display text
+            function updateStepDisplay() {
+                let stepText = "";
+                const iteration = Math.floor((currentStep) / 3) + 1;
+                
+                switch(currentStep) {
+                    case 0:
+                        stepText = "Step 0: Initialize";
+                        break;
+                    case 1:
+                        stepText = "Step 1: Start loop";
+                        break;
+                    case 2:
+                        stepText = "Step 2: Check if exponent is odd";
+                        break;
+                    case 3:
+                        stepText = "Step 3: Square the base";
+                        break;
+                    case 4:
+                        stepText = "Step 4: Divide exponent by 2";
+                        break;
+                    default:
+                        const subStep = currentStep % 3;
+                        
+                        if (subStep === 2) {
+                            stepText = `Step ${currentStep}: Iteration ${iteration} - Check if exponent is odd`;
+                        } else if (subStep === 0) {
+                            stepText = `Step ${currentStep}: Iteration ${iteration} - Square the base`;
+                        } else if (subStep === 1) {
+                            stepText = `Step ${currentStep}: Iteration ${iteration} - Divide exponent by 2`;
+                        }
+                        break;
+                }
+                
+                stepDisplay.textContent = stepText;
+            }
+            
+            // Update algorithm steps highlighting
+            function updateAlgorithmSteps() {
+                algorithmSteps.forEach((step, index) => {
+                    step.classList.remove('current-step');
+                    if (index === currentStep) {
+                        step.classList.add('current-step');
+                    }
+                });
+            }
+            
+            // Move to the next step
+            function nextStep() {
+                if (exponent === 0 && currentStep > 0) return;
+                
+                currentStep++;
+                
+                // Perform the operation based on the step
+                if (currentStep === 1) {
+                    // Start loop - no operation
+                } else if (currentStep % 3 === 2) {
+                    // Check if exponent is odd
+                    if (exponent % 2 === 1) {
+                        result *= base;
+                    }
+                } else if (currentStep % 3 === 0 && currentStep > 0) {
+                    // Square the base
+                    base *= base;
+                } else if (currentStep % 3 === 1) {
+                    // Divide exponent by 2
+                    exponent = Math.floor(exponent / 2);
+                    binaryExp = exponent.toString(2);
+                }
+                
+                saveStepHistory();
+                updateDisplay();
+                updateAlgorithmSteps();
+            }
+            
+            // Move to the previous step
+            function prevStep() {
+                if (currentStep === 0) return;
+                
+                if (stepHistory.length > 1) {
+                    stepHistory.pop(); // Remove current step
+                    const prevState = stepHistory[stepHistory.length - 1];
+                    
+                    currentStep = prevState.step;
+                    result = prevState.result;
+                    base = prevState.base;
+                    exponent = prevState.exponent;
+                    binaryExp = prevState.binaryExp;
+                    
+                    updateDisplay();
+                    updateAlgorithmSteps();
+                }
+            }
+            
+            // Run all steps automatically
+            function runAllSteps() {
+                if (exponent === 0 && currentStep > 0) return;
+                
+                // Clear any existing interval
+                if (runAllInterval) {
+                    clearInterval(runAllInterval);
+                }
+                
+                runAllInterval = setInterval(() => {
+                    if (exponent > 0 || currentStep < 5) {
+                        nextStep();
+                    } else {
+                        clearInterval(runAllInterval);
+                        runAllInterval = null;
+                    }
+                }, 1000);
+            }
+            
+            // Event listeners
+            nextBtn.addEventListener('click', nextStep);
+            prevBtn.addEventListener('click', prevStep);
+            resetBtn.addEventListener('click', initialize);
+            runAllBtn.addEventListener('click', runAllSteps);
+            baseInput.addEventListener('change', initialize);
+            exponentInput.addEventListener('change', initialize);
+            
+            // Initialize the visualization
+            initialize();
+        });
+    </script>
+</body>
+</html>

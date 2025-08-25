@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Concepts Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gray: #64748b;
+            --gradient-start: #6366f1;
+            --gradient-end: #8b5cf6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary-dark);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 1.2rem 0 0.8rem;
+            color: var(--primary);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+        }
+        
+        .code {
+            font-family: 'Roboto Mono', monospace;
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, var(--secondary), #0891b2);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(to right, var(--accent), #f97316);
+        }
+        
+        .visualization {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+        
+        .input-group {
+            margin: 1rem 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Roboto Mono', monospace;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .output {
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            min-height: 100px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .canvas-container {
+            position: relative;
+            margin: 1.5rem 0;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            height: 300px;
+            background: white;
+            touch-action: none;
+        }
+        
+        #scribbleCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+        
+        .quiz-container {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .quiz-options {
+            display: grid;
+            grid-gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .quiz-option input {
+            margin-right: 1rem;
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .quiz-option.incorrect {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .seal {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .quiz-option.selected .seal {
+            opacity: 1;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+        
+        .summary-title {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .key-points {
+            list-style-type: none;
+        }
+        
+        .key-points li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .key-points li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .tab-container {
+            margin: 1.5rem 0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .iteration-counter {
+            background: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .code {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Python Concepts Explorer</h1>
+            <p class="subtitle">Interactive Learning with Visualizations & Practice</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Scribble Area</h2>
+                <button id="clearCanvas" class="btn btn-accent">Clear</button>
+            </div>
+            <p>Use this area to scribble, draw diagrams, or take notes as you learn:</p>
+            <div class="canvas-container">
+                <canvas id="scribbleCanvas"></canvas>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Python Programming Concepts</h2>
+            <p>Explore these fundamental Python programming concepts with interactive examples:</p>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="divisors">Divisors</div>
+                    <div class="tab" data-tab="pattern">Number Pattern</div>
+                    <div class="tab" data-tab="gcd">GCD Euclidean</div>
+                    <div class="tab" data-tab="lcm">LCM using GCD</div>
+                    <div class="tab" data-tab="prime">Prime Check</div>
+                    <div class="tab" data-tab="sieve">Sieve of Eratosthenes</div>
+                </div>
+                
+                <div class="tab-content active" id="divisors">
+                    <h3>Display all divisors of a given number</h3>
+                    <p>This program finds all numbers that divide a given number evenly.</p>
+                    
+                    <div class="code">
+# Python program to find all divisors of a number
+def find_divisors(n):
+    divisors = []
+    for i in range(1, n + 1):
+        if n % i == 0:
+            divisors.append(i)
+    return divisors
+
+number = 36
+print(f"Divisors of {number}: {find_divisors(number)}")
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="divisorInput">Enter a number to find its divisors:</label>
+                        <input type="number" id="divisorInput" min="1" value="36">
+                    </div>
+                    
+                    <button class="btn" onclick="calculateDivisors()">Calculate Divisors</button>
+                    
+                    <div class="output" id="divisorOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="pattern">
+                    <h3>Display number pattern</h3>
+                    <p>This program displays a specific pattern based on the input number.</p>
+                    
+                    <div class="code">
+# Python program to display number pattern
+def print_pattern(n):
+    for i in range(n + 1):
+        for j in range(i + 1):
+            print(f"{i} {j}")
+            
+print_pattern(3)
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="patternInput">Enter a number (n):</label>
+                        <input type="number" id="patternInput" min="0" value="3">
+                    </div>
+                    
+                    <button class="btn" onclick="generatePattern()">Generate Pattern</button>
+                    
+                    <div class="output" id="patternOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="gcd">
+                    <h3>Find GCD using Euclidean Algorithm</h3>
+                    <p>The Euclidean algorithm is an efficient method for computing the greatest common divisor (GCD) of two numbers.</p>
+                    
+                    <div class="code">
+# Python program to find GCD using Euclidean algorithm
+def gcd_euclidean(a, b):
+    iterations = 0
+    while b:
+        iterations += 1
+        a, b = b, a % b
+    return a, iterations
+
+num1, num2 = 56, 98
+result, iters = gcd_euclidean(num1, num2)
+print(f"GCD of {num1} and {num2} is {result}")
+print(f"Iterations required: {iters}")
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="gcdInput1">Enter first number:</label>
+                        <input type="number" id="gcdInput1" min="1" value="56">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="gcdInput2">Enter second number:</label>
+                        <input type="number" id="gcdInput2" min="1" value="98">
+                    </div>
+                    
+                    <button class="btn" onclick="calculateGCD()">Calculate GCD</button>
+                    
+                    <div class="output" id="gcdOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="lcm">
+                    <h3>Find LCM using GCD</h3>
+                    <p>This program calculates the Least Common Multiple (LCM) of two numbers using their GCD.</p>
+                    
+                    <div class="code">
+# Python program to find LCM using GCD
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def lcm_using_gcd(a, b):
+    return (a * b) // gcd(a, b)
+
+num1, num2 = 12, 18
+result = lcm_using_gcd(num1, num2)
+print(f"LCM of {num1} and {num2} is {result}")
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="lcmInput1">Enter first number:</label>
+                        <input type="number" id="lcmInput1" min="1" value="12">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="lcmInput2">Enter second number:</label>
+                        <input type="number" id="lcmInput2" min="1" value="18">
+                    </div>
+                    
+                    <button class="btn" onclick="calculateLCM()">Calculate LCM</button>
+                    
+                    <div class="output" id="lcmOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="prime">
+                    <h3>Check if a number is prime (optimized)</h3>
+                    <p>This program checks if a number is prime with reduced iterations.</p>
+                    
+                    <div class="code">
+# Python program to check for prime number (optimized)
+def is_prime_optimized(n):
+    if n <= 1:
+        return False, 0
+    if n == 2:
+        return True, 0
+    if n % 2 == 0:
+        return False, 1
+        
+    iterations = 0
+    for i in range(3, int(n**0.5) + 1, 2):
+        iterations += 1
+        if n % i == 0:
+            return False, iterations
+    return True, iterations
+
+number = 1001
+result, iters = is_prime_optimized(number)
+print(f"{number} is prime: {result}")
+print(f"Iterations required: {iters}")
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="primeInput">Enter a number to check if it's prime:</label>
+                        <input type="number" id="primeInput" min="1" value="1001">
+                    </div>
+                    
+                    <button class="btn" onclick="checkPrime()">Check Prime</button>
+                    
+                    <div class="output" id="primeOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="sieve">
+                    <h3>Sieve of Eratosthenes</h3>
+                    <p>This algorithm finds all prime numbers up to a given limit efficiently.</p>
+                    
+                    <div class="code">
+# Python program for Sieve of Eratosthenes
+def sieve_of_eratosthenes(n):
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    iterations = 0
+    
+    for i in range(2, int(n**0.5) + 1):
+        if is_prime[i]:
+            for j in range(i*i, n + 1, i):
+                iterations += 1
+                is_prime[j] = False
+                
+    primes = [i for i, prime in enumerate(is_prime) if prime]
+    return primes, iterations
+
+limit = 1000
+primes, iters = sieve_of_eratosthenes(limit)
+print(f"Prime numbers up to {limit}: {primes}")
+print(f"Iterations required: {iters}")
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="sieveInput">Enter the upper limit:</label>
+                        <input type="number" id="sieveInput" min="2" max="10000" value="1000">
+                    </div>
+                    
+                    <button class="btn" onclick="runSieve()">Find Primes</button>
+                    
+                    <div class="output" id="sieveOutput">
+                        Results will appear here...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h2 class="summary-title">Key Points to Remember</h2>
+            <ul class="key-points">
+                <li>Divisors of a number are all integers that divide it evenly without a remainder</li>
+                <li>The Euclidean algorithm is efficient for finding GCD with time complexity O(log(min(a,b)))</li>
+                <li>LCM can be calculated using the formula: LCM(a, b) = (a × b) / GCD(a, b)</li>
+                <li>Prime checking can be optimized by checking divisors only up to √n</li>
+                <li>Sieve of Eratosthenes is an efficient algorithm for finding all primes up to a large limit</li>
+                <li>Algorithm efficiency is measured by the number of iterations required</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Quick Quiz</h2>
+            <p>Test your understanding with this interactive quiz:</p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>Question 1: What is the GCD of 48 and 18?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="a"> 3
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="b"> 6
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="c"> 9
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="d"> 12
+                            <span class="seal">My Answer</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 2: Which algorithm is most efficient for finding primes up to N?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="a"> Trial Division
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="b"> Sieve of Eratosthenes
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="c"> Fermat's Primality Test
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="d"> Miller-Rabin Test
+                            <span class="seal">My Answer</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 3: How many iterations does the Euclidean algorithm typically require?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="a"> O(n)
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="b"> O(log n)
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="c"> O(n log n)
+                            <span class="seal">My Answer</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="d"> O(1)
+                            <span class="seal">My Answer</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="checkQuiz()">Check Answers</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Further Practice Problems</h2>
+            <p>Try solving these LeetCode-style problems to strengthen your understanding:</p>
+            
+            <div class="code">
+# Problem 1: Fibonacci Sequence
+# Write a function to return the nth Fibonacci number
+def fibonacci(n):
+    # Your code here
+    pass
+
+# Test cases
+print(fibonacci(5))  # Expected output: 5
+print(fibonacci(7))  # Expected output: 13
+            </div>
+            
+            <div class="code">
+# Problem 2: Reverse Integer
+# Given a signed 32-bit integer x, return x with its digits reversed
+def reverse_integer(x):
+    # Your code here
+    pass
+
+# Test cases
+print(reverse_integer(123))   # Expected output: 321
+print(reverse_integer(-123))  # Expected output: -321
+            </div>
+            
+            <div class="code">
+# Problem 极速3: Palindrome Number
+# Determine whether an integer is a palindrome
+def is_palindrome(x):
+    # Your code here
+    pass
+
+# Test cases
+print(is_palindrome(121))   # Expected output: True
+print(is_palindrome(-121))  # Expected output: False
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set up the scribble canvas
+        const canvas = document.getElementById('scribbleCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#6366f1';
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, 
+                       e.clientY - canvas.getBoundingClientRect().top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, 
+                       e.clientY - canvas.getBoundingClientRect().top);
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        document.getElementById('clearCanvas').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Quiz functionality
+        document.querySelectorAll('.quiz-option input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                // Remove selected class from all options in this question
+                const questionDiv = e.target.closest('.quiz-question');
+                questionDiv.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to the chosen option
+                e.target.closest('.quiz-option').classList.add('selected');
+            });
+        });
+        
+        function checkQuiz() {
+            // Question 1 - Correct answer is b (6)
+            const q1Answer = document.querySelector('input[name="q1"]:checked');
+            const q1Option = q1Answer ? q1Answer.closest('.quiz-option') : null;
+            
+            if (q1Option) {
+                if (q1Answer.value === 'b') {
+                    q1Option.classList.add('correct');
+                } else {
+                    q1Option.classList.add('incorrect');
+                    // Show correct answer
+                    document.querySelector('input[name="q1"][value="b"]')
+                        .closest('.quiz-option').classList.add('correct');
+                }
+            }
+            
+            // Question 2 - Correct answer is b (Sieve of Eratosthenes)
+            const q2Answer = document.querySelector('input[name="q2"]:checked');
+            const q2Option = q2Answer ? q2Answer.closest('.quiz-option') : null;
+            
+            if (q2Option) {
+                if (q2Answer.value === 'b') {
+                    q2Option.classList.add('correct');
+                } else {
+                    q2Option.classList.add('incorrect');
+                    // Show correct answer
+                    document.querySelector('input[name="q2"][value="b"]')
+                        .closest('.quiz-option').classList.add('correct');
+                }
+            }
+            
+            // Question 3 - Correct answer is b (O(log n))
+            const q3Answer = document.querySelector('input[name="q3"]:checked');
+            const q3Option = q3Answer ? q3Answer.closest('.quiz-option') : null;
+            
+            if (q3Option) {
+                if (q3Answer.value === 'b') {
+                    q3Option.classList.add('correct');
+                } else {
+                    q3Option.classList.add('incorrect');
+                    // Show correct answer
+                    document.querySelector('input[name="q3"][value="b"]')
+                        .closest('.quiz-option').classList.add('correct');
+                }
+            }
+        }
+        
+        // Python program implementations
+        function calculateDivisors() {
+            const input = document.getElementById('divisorInput').value;
+            const n = parseInt(input);
+            
+            if (isNaN(n) || n < 1) {
+                document.getElementById('divisorOutput').textContent = 'Please enter a valid number greater than 0';
+                return;
+            }
+            
+            const divisors = [];
+            for (let i = 1; i <= n; i++) {
+                if (n % i === 0) {
+                    divisors.push(i);
+                }
+            }
+            
+            document.getElementById('divisorOutput').textContent = 
+                `Divisors of ${n}: [${divisors.join(', ')}]\nTotal divisors: ${divisors.length}`;
+        }
+        
+        function generatePattern() {
+            const input = document.getElementById('patternInput').value;
+            const n = parseInt(input);
+            
+            if (isNaN(n) || n < 0) {
+                document.getElementById('patternOutput').textContent = 'Please enter a valid non-negative number';
+                return;
+            }
+            
+            let pattern = '';
+            for (let i = 0; i <= n; i++) {
+                for (let j = 0; j <= i; j++) {
+                    pattern += `${i} ${j}\n`;
+                }
+            }
+            
+            document.getElementById('patternOutput').textContent = pattern;
+        }
+        
+        function calculateGCD() {
+            const input1 = document.getElementById('gcdInput1').value;
+            const input2 = document.getElementById('gcdInput2').value;
+            let a = parseInt(input1);
+            let b = parseInt(input2);
+            
+            if (isNaN(a) || isNaN(b) || a < 1 || b < 1) {
+                document.getElementById('gcdOutput').textContent = 'Please enter valid numbers greater than 0';
+                return;
+            }
+            
+            let iterations = 0;
+            const originalA = a;
+            const originalB = b;
+            
+            while (b !== 0) {
+                iterations++;
+                const temp = b;
+                b = a % b;
+                a = temp;
+            }
+            
+            document.getElementById('gcdOutput').textContent = 
+                `GCD of ${originalA} and ${originalB} is ${a}\nIterations required: ${iterations}`;
+        }
+        
+        function calculateLCM() {
+            const input1 = document.getElementById('lcmInput1').value;
+            const input2 = document.getElementById('lcmInput2').value;
+            const a = parseInt(input1);
+            const b = parseInt(input2);
+            
+            if (isNaN(a) || isNaN(b) || a < 1 || b < 1) {
+                document.getElementById('lcmOutput').textContent = 'Please enter valid numbers greater than 0';
+                return;
+            }
+            
+            // Calculate GCD first
+            let x = a;
+            let y = b;
+            while (y !== 0) {
+                const temp = y;
+                y = x % y;
+                x = temp;
+            }
+            const gcd = x;
+            
+            // Then calculate LCM
+            const lcm = (a * b) / gcd;
+            
+            document.getElementById('lcmOutput').textContent = 
+                `LCM of ${a} and ${b} is ${lcm}\n(using GCD ${gcd})`;
+        }
+        
+        function checkPrime() {
+            const input = document.getElementById('primeInput').value;
+            const n = parseInt(input);
+            
+            if (isNaN(n) || n < 1) {
+                document.getElementById('primeOutput').textContent = 'Please enter a valid number greater than 0';
+                return;
+            }
+            
+            if (n <= 1) {
+                document.getElementById('primeOutput').textContent = 
+                    `${n} is not a prime number\nIterations required: 0`;
+                return;
+            }
+            
+            if (n === 2) {
+                document.getElementById('primeOutput').textContent = 
+                    `${n} is a prime number\nIterations required: 0`;
+                return;
+            }
+            
+            if (n % 2 === 0) {
+                document.getElementById('primeOutput').textContent = 
+                    `${n} is not a prime number (divisible by 2)\nIterations required: 1`;
+                return;
+            }
+            
+            let iterations = 0;
+            let isPrime = true;
+            
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                iterations++;
+                if (n % i === 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+            
+            document.getElementById('primeOutput').textContent = 
+                `${n} is ${isPrime ? '' : 'not '}a prime number\nIterations required: ${iterations}`;
+        }
+        
+        function runSieve() {
+            const input = document.getElementById('sieveInput').value;
+            const n = parseInt(input);
+            
+            if (isNaN(n) || n < 2) {
+                document.getElementById('sieveOutput').textContent = 'Please enter a valid number greater than 1';
+                return;
+            }
+            
+            // Create array to track primes
+            const isPrime = new Array(n + 1).fill(true);
+            isPrime[0] = false;
+            isPrime[1] = false;
+            
+            let iterations = 0;
+            
+            // Apply Sieve of Eratosthenes
+            for (let i = 2; i <= Math.sqrt(n); i++) {
+                if (isPrime[i]) {
+                    for (let j = i * i; j <= n; j += i) {
+                        iterations++;
+                        isPrime[j] = false;
+                    }
+                }
+            }
+            
+            // Collect primes
+            const primes = [];
+            for (let i = 2; i <= n; i++) {
+                if (isPrime[i]) {
+                    primes.push(i);
+                }
+            }
+            
+            document.getElementById('sieveOutput').textContent = 
+                `Prime numbers up to ${n}: [${primes.join(', ')}]\nTotal primes: ${primes.length}\nIterations required: ${iterations}`;
+        }
+        
+        // Initialize the page
+        window.addEventListener('load', () => {
+            initCanvas();
+            calculateDivisors(); // Run first example automatically
+        });
+        
+        window.addEventListener('resize', initCanvas);
+    </script>
+</body>
+</html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power of Two: Bit Shifting Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --secondary: #8B5CF6;
+            --accent: #EC4899;
+            --light: #F3F4F6;
+            --dark: #1F2937;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --code-bg: #2D2D2D;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .interactive-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .interactive-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        input {
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .visualization {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .binary-rep {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .bit {
+            background: var(--light);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .bit-1 {
+            background: var(--success);
+            color: white;
+        }
+        
+        .bit-highlight {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .result {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        
+        .power-result {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: bold;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .yes {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        
+        .no {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .key-point {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .quiz-container {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .option:hover {
+            background: #e5e7eb;
+        }
+        
+        .check-answers {
+            background: var(--success);
+            margin-top: 1rem;
+        }
+        
+        .check-answers:hover {
+            background: #0da271;
+        }
+        
+        .quiz-result {
+            font-weight: bold;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .powers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .powers-table th, .powers-table td {
+            padding: 0.8rem;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .powers-table th {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .powers-table tr:nth-child(even) {
+            background: var(--light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Power of Two: Bit Shifting</h1>
+            <p class="subtitle">Understanding how bit manipulation helps determine if a number is a power of two.</p>
+        </header>
+        
+        <div class="card">
+            <h2>What is a Power of Two?</h2>
+            <p>A power of two is a number of the form 2<sup>n</sup> where n is an integer. These numbers have a special property in their binary representation.</p>
+            
+            <div class="code-block">
+                # Powers of Two:<br>
+                2^0 = 1 → binary: 0001<br>
+                2^1 = 2 → binary: 0010<br>
+                2^2 = 4 → binary: 0100<br>
+                2^3 = 8 → binary: 1000<br>
+                2^4 = 16 → binary: 10000
+            </div>
+            
+            <h3>Binary Pattern of Powers of Two</h3>
+            <p>In binary representation, powers of two have exactly one '1' bit followed by zeros:</p>
+            
+            <table class="powers-table">
+                <tr>
+                    <th>Decimal</th>
+                    <th>Binary</th>
+                    <th>Power</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0001</td>
+                    <td>2<sup>0</sup></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0010</td>
+                    <td>2<sup>1</sup></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>0100</td>
+                    <td>2<sup>2</sup></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>1000</td>
+                    <td>2<sup>3</sup></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>10000</td>
+                    <td>2<sup>4</sup></td>
+                </tr>
+                <tr>
+                    <td>32</td>
+                    <td>100000</td>
+                    <td>2<sup>5</sup></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>Bit Manipulation Approach</h2>
+            <p>We can use bitwise operations to efficiently check if a number is a power of two.</p>
+            
+            <h3>Method 1: Using n & (n-1)</h3>
+            <p>For any number n that is a power of two, n & (n-1) equals 0.</p>
+            
+            <div class="code-block">
+                # Python solution using n & (n-1)<br>
+                def is_power_of_two(n):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return n > 0 and (n & (n - 1)) == 0
+            </div>
+            
+            <h3>Why This Works</h3>
+            <p>If n is a power of two, it has exactly one '1' bit in its binary representation. Subtracting 1 flips all bits after that '1' bit, including the '1' bit itself. When we AND n with n-1, we get 0.</p>
+            
+            <div class="step-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Example: n = 8 (1000 in binary)</h3>
+                        <p>n - 1 = 7 (0111 in binary)</p>
+                        <p>n & (n-1) = 1000 & 0111 = 0000 = 0</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Example: n = 6 (0110 in binary)</h3>
+                        <p>n - 1 = 5 (0101 in binary)</p>
+                        <p>n & (n-1) = 0110 & 0101 = 0100 ≠ 0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Method 2: Using Bit Shifting</h3>
+            <p>We can also use bit shifting to check if a number is a power of two by counting the number of '1' bits.</p>
+            
+            <div class="code-block">
+                # Python solution using bit shifting<br>
+                def is_power_of_two(n):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if n <= 0:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return False<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;count = 0<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;while n:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count += n & 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n >>= 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return count == 1
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Interactive Visualization</h2>
+            <p>Enter a number to check if it's a power of two and see the bit manipulation in action.</p>
+            
+            <div class="interactive-section">
+                <div class="input-section">
+                    <input type="number" id="numberInput" value="8" min="1" max="1024">
+                    <button onclick="checkPowerOfTwo()">Check if Power of Two</button>
+                    <div class="power-result yes" id="resultElement">8 is a power of two</div>
+                </div>
+                
+                <div class="visualization" id="visualization">
+                    <h3>Binary Representation</h3>
+                    <div class="binary-rep" id="binaryRep">
+                        <div class="bit bit-1">1</div>
+                        <div class="bit">0</div>
+                        <div class="bit">0</div>
+                        <div class="bit">0</div>
+                    </div>
+                    <div class="result">8 in binary: 1000</div>
+                </div>
+            </div>
+            
+            <h3>Step-by-Step Explanation</h3>
+            <div class="step-container" id="stepContainer">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Check if n > 0</h3>
+                        <p>Powers of two are always positive numbers.</p>
+                        <p class="result">8 > 0 → True</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Calculate n - 1</h3>
+                        <p>Subtract 1 from the number: 8 - 1 = 7</p>
+                        <p class="result">7 in binary: 0111</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Compute n & (n-1)</h3>
+                        <p>Perform bitwise AND operation: 1000 & 0111 = 0000</p>
+                        <p class="result">Result is 0 → Power of two</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Key Points to Remember</h2>
+            <div class="key-points">
+                <div class="key-point">
+                    <h3>Binary Pattern</h3>
+                    <p>Powers of two have exactly one '1' bit in their binary representation.</p>
+                </div>
+                <div class="key-point">
+                    <h3>n & (n-1) Trick</h3>
+                    <p>If n is a power of two, n & (n-1) equals 0.</p>
+                </div>
+                <div class="key-point">
+                    <h3>Positive Numbers Only</h3>
+                    <p>Powers of two are always positive (n > 0).</p>
+                </div>
+                <div class="key-point">
+                    <h3>Efficiency</h3>
+                    <p>Bit manipulation approach is O(1) time complexity.</p>
+                </div>
+                <div class="key-point">
+                    <h3>Bit Counting</h3>
+                    <p>Alternative approach: count the number of '1' bits (should be exactly 1).</p>
+                </div>
+                <div class="key-point">
+                    <h3>Edge Cases</h3>
+                    <p>0 is not a power of two, and negative numbers are not powers of two.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Quick Quiz</h2>
+            <p>Test your understanding of powers of two and bit manipulation.</p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>Question 1: Which of these is NOT a power of two?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q1" value="a" id="q1a">
+                            <label for="q1a">16</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="b" id="q1b">
+                            <label for="q1b">32</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="c" id="q1c">
+                            <label for="q1c">48</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="d" id="q1d">
+                            <label for="q1d">64</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 2: What is the result of 16 & 15?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q2" value="a" id="q2a">
+                            <label for="q2a">0</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="b" id="q2b">
+                            <label for="q2b">1</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="c" id="q2c">
+                            <label for="q2c">16</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="d" id="q2d">
+                            <label for="q2d">15</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 3: How many '1' bits are in the binary representation of a power of two?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q3" value="a" id="q3a">
+                            <label for="q3a">0</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="b" id="q3b">
+                            <label for="q3b">1</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="c" id="q3c">
+                            <label for="q3c">2</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="d" id="q3d">
+                            <label for="q3d">Depends on the number</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="check-answers" onclick="checkQuiz()">Check Answers</button>
+                
+                <div class="quiz-result" id="quizResult"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Practice Problems</h2>
+            <p>Try these exercises to test your understanding:</p>
+            
+            <div class="code-block">
+                # Problem 1: Which of these are powers of two?<br>
+                # [3, 8, 16, 20, 32, 50, 64, 100]<br>
+                # Answer: 8, 16, 32, 64<br><br>
+                
+                # Problem 2: Write a function to find the next power of two greater than or equal to n<br>
+                def next_power_of_two(n):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if n <= 0:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n -= 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n |= n >> 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n |= n >> 2<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n |= n >> 4<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n |= n >> 8<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n |= n >> 16<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return n + 1<br><br>
+                
+                # Problem 3: Count the number of powers of two in a range [a, b]<br>
+                def count_powers_of_two(a, b):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;count = 0<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;n = 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;while n <= b:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if n >= a:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count += 1<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n <<= 1  # Multiply by 2 using left shift<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return count
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created with ❤️ to help students understand powers of two and bit manipulation</p>
+    </footer>
+
+    <script>
+        function checkPowerOfTwo() {
+            const input = document.getElementById('numberInput');
+            const n = parseInt(input.value);
+            
+            if (isNaN(n) || n < 1) {
+                alert('Please enter a positive integer');
+                return;
+            }
+            
+            const isPower = n > 0 && (n & (n - 1)) === 0;
+            const resultElement = document.getElementById('resultElement');
+            
+            if (isPower) {
+                resultElement.textContent = `${n} is a power of two`;
+                resultElement.className = 'power-result yes';
+            } else {
+                resultElement.textContent = `${n} is NOT a power of two`;
+                resultElement.className = 'power-result no';
+            }
+            
+            // Update binary representation
+            updateBinaryRepresentation(n);
+            
+            // Update step-by-step explanation
+            updateStepByStep(n);
+        }
+        
+        function updateBinaryRepresentation(n) {
+            const binaryRep = document.getElementById('binaryRep');
+            const binaryStr = n.toString(2);
+            
+            binaryRep.innerHTML = '';
+            for (let i = 0; i < binaryStr.length; i++) {
+                const bit = binaryStr[i];
+                const bitElement = document.createElement('div');
+                bitElement.className = `bit ${bit === '1' ? 'bit-1' : ''}`;
+                bitElement.textContent = bit;
+                binaryRep.appendChild(bitElement);
+            }
+            
+            document.querySelector('#visualization .result').textContent = `${n} in binary: ${binaryStr}`;
+        }
+        
+        function updateStepByStep(n) {
+            const stepContainer = document.getElementById('stepContainer');
+            
+            stepContainer.innerHTML = `
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Check if n > 0</h3>
+                        <p>Powers of two are always positive numbers.</p>
+                        <p class="result">${n} > 0 → ${n > 0 ? 'True' : 'False'}</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Calculate n - 1</h3>
+                        <p>Subtract 1 from the number: ${n} - 1 = ${n-1}</p>
+                        <p class="result">${n-1} in binary: ${(n-1).toString(2)}</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Compute n & (n-1)</h3>
+                        <p>Perform bitwise AND operation: ${n.toString(2)} & ${(n-1).toString(2)} = ${(n & (n-1)).toString(2)}</p>
+                        <p class="result">Result is ${n & (n-1)} → ${(n & (n-1)) === 0 ? 'Power of two' : 'Not a power of two'}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function checkQuiz() {
+            const answers = {
+                q1: 'c', // 48
+                q2: 'a', // 0
+                q3: 'b'  // 1
+            };
+            
+            let score = 0;
+            let resultHTML = '';
+            
+            // Check question 1
+            const q1Answer = document.querySelector('input[name="q1"]:checked');
+            if (q1Answer && q1Answer.value === answers.q1) {
+                score++;
+                resultHTML += '<p class="correct">Question 1: Correct! ✓ (48 is not a power of two)</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 1: Incorrect. The correct answer is 48, which is not a power of two.</p>';
+            }
+            
+            // Check question 2
+            const q2Answer = document.querySelector('input[name="q2"]:checked');
+            if (q2Answer && q2Answer.value === answers.q2) {
+                score++;
+                resultHTML += '<p class="correct">Question 2: Correct! ✓ (16 & 15 = 0)</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 2: Incorrect. The correct answer is 0 (16 & 15 = 0).</p>';
+            }
+            
+            // Check question 3
+            const q3Answer = document.querySelector('input[name="q3"]:checked');
+            if (q3Answer && q3Answer.value === answers.q3) {
+                score++;
+                resultHTML += '<p class="correct">Question 3: Correct! ✓ (Powers of two have exactly one \'1\' bit)</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 3: Incorrect. Powers of two have exactly one \'1\' bit in their binary representation.</p>';
+            }
+            
+            // Display result
+            resultHTML = `<h3>Score: ${score}/3</h3>` + resultHTML;
+            document.getElementById('quizResult').innerHTML = resultHTML;
+        }
+        
+        // Initialize with default example
+        window.onload = checkPowerOfTwo;
+    </script>
+</body>
+</html>

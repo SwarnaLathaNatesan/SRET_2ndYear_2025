@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fast Exponentiation (Binary Exponentiation) Visualization</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Roboto+Mono&display=swap');
+    body {
+        background: linear-gradient(135deg, #1d2671, #c33764);
+        font-family: 'Poppins', sans-serif;
+        color: #f0f0f0;
+        margin: 0; padding: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+    .container {
+        background: linear-gradient(145deg, #2e2e7f, #6e2a47);
+        border-radius: 1rem;
+        padding: 2rem 3rem;
+        max-width: 900px;
+        box-shadow: 0 0 30px #7b2f4b;
+        line-height: 1.6;
+    }
+    h1 {
+        color: #ffd54f;
+        font-weight: 700;
+        text-align: center;
+        text-shadow: 1px 1px 5px #000;
+        margin-bottom: 1rem;
+    }
+    h2 {
+        color: #ffa726;
+        border-bottom: 2px solid #ffa726;
+        padding-bottom: 0.4rem;
+        margin-top: 2rem;
+    }
+    p, li {
+        font-size: 1.1rem;
+        margin-bottom: 0.9rem;
+    }
+    strong {
+        color: #ffffa5;
+        font-weight: 700;
+    }
+    ul {
+        margin-left: 2rem;
+        list-style-type: square;
+    }
+    code {
+        font-family: 'Roboto Mono', monospace;
+        background-color: #3b2e5a;
+        color: #f9df3b;
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+        font-size: 1.05rem;
+    }
+    pre {
+        background: #281d41;
+        padding: 1rem;
+        border-radius: 0.8rem;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 1rem;
+        line-height: 1.4;
+        overflow-x: auto;
+        box-shadow: 0 0 10px #ff9e3f;
+        margin-top: 1rem;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        box-shadow: 0 0 15px #ffa726aa;
+        background: #3b2e5a;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 0.75rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid #552a4b;
+        font-family: 'Roboto Mono', monospace;
+        color: #ffeaa7;
+    }
+    th {
+        background: #6e2a47;
+        font-weight: 700;
+    }
+    tr:last-child td {
+        border-bottom: none;
+    }
+    .final-result {
+        background: #512b58;
+        border-radius: 1rem;
+        margin: 1rem 0 0;
+        padding: 1rem 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #ffbc42;
+        text-align: center;
+        box-shadow: 0 0 20px #ffbc4270;
+    }
+    .highlight-yellow {
+        color: #ffd54f;
+        font-weight: 700;
+    }
+    .section-separator {
+        border: none;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #ff9e3f, transparent);
+        margin: 2rem 0;
+    }
+    .visual-aid {
+        background: #1f1647;
+        padding: 1rem;
+        border-radius: 1rem;
+        font-family: 'Roboto Mono', monospace;
+        box-shadow: 0 0 25px #ff9e3f;
+        overflow-x: auto;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Fast Exponentiation: <span class="highlight-yellow">Binary Exponentiation Visualization</span></h1>
+
+    <p>Here's a <strong>visualization</strong> of the <code>my_pow</code> function (fast exponentiation) to help students understand how it efficiently computes <em>\( x^n \)</em>:</p>
+    
+    <hr class="section-separator" />
+
+    <h2>Key Concepts: <span class="highlight-yellow">Binary Exponentiation</span></h2>
+    <ul>
+        <li><strong>Idea</strong>: Break down <em>\( x^n \)</em> into smaller squares (e.g., <code>\( x^{13} = x^{8} × x^{4} × x^{1} \)</code>).</li>
+        <li><strong>Efficiency</strong>: <code>O(log n)</code> time (vs. <code>O(n)</code> for naïve multiplication).</li>
+        <li><strong>Trick</strong>: Use binary representation of <code>n</code> to decide which powers to multiply.</li>
+    </ul>
+
+    <hr class="section-separator" />
+
+    <h2>Step-by-Step Visualization (Example: <em>\( 2^{13} \)</em>)</h2>
+    <h3>Initial Setup</h3>
+    <p>- \( x = 2 \), \( n = 13 \) (binary: <code>1101</code>)</p>
+    <p>- Negative exponent? No → proceed.</p>
+    <p>- <code>res = 1</code> (initial result)</p>
+
+    <h3>Loop Execution</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Iteration</th>
+                <th>n (Binary)</th>
+                <th>n % 2</th>
+                <th>Action</th>
+                <th>x (Updated)</th>
+                <th>res (Updated)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>13 (<code>1101</code>)</td>
+                <td>1</td>
+                <td><code>res *= x</code> (×2)</td>
+                <td>\( 2^2 = 4 \)</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>6 (<code>110</code>)</td>
+                <td>0</td>
+                <td>Skip (bit is 0)</td>
+                <td>\( 4^2 = 16 \)</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>3 (<code>11</code>)</td>
+                <td>1</td>
+                <td><code>res *= x</code> (×16)</td>
+                <td>\( 16^2 = 256 \)</td>
+                <td>32</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>1 (<code>1</code>)</td>
+                <td>1</td>
+                <td><code>res *= x</code> (×256)</td>
+                <td>-</td>
+                <td>8192</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="final-result">Final Result: <code>2<sup>13</sup> = 8192</code></div>
+
+    <hr class="section-separator" />
+
+    <h2>How It Works</h2>
+    <ol>
+        <li><strong>Process <code>n</code> in Binary</strong>:  
+            For each bit in <code>n</code> (LSB to MSB):  
+            - If bit is <code>1</code>: Multiply <code>res</code> by current <code>x</code>.  
+            - Square <code>x</code> (e.g., \( 2 → 4 → 16 → 256 \)).  
+            - Right-shift <code>n</code> (equivalent to <code>n //= 2</code>).</li>
+        <li><strong>Example Breakdown</strong>:  
+            \( 13 = 8 + 4 + 1 \) (binary <code>1101</code>):  
+            \( 2^{13} = 2^{8} \times 2^{4} \times 2^{1} = 256 \times 16 \times 2 = 8192 \).</li>
+    </ol>
+
+    <hr class="section-separator" />
+
+    <h2>Edge Cases</h2>
+    <ul>
+        <li><strong>Negative Exponents</strong>:  
+            \( x^{-n} = \frac{1}{x^n} \) → Flip <code>x</code> and make <code>n</code> positive.  
+            Example: \( 2^{-3} = \frac{1}{8} \).</li>
+        <li><strong>n = 0</strong>: Returns <code>1</code> (any number to power 0 is 1).</li>
+    </ul>
+
+    <hr class="section-separator" />
+
+    <h2>Python Execution Flow</h2>
+    <pre><code>def my_pow(x, n):
+    if n &lt; 0:
+        x = 1 / x  # Handle negative exponents
+        n = -n
+    res = 1
+    while n &gt; 0:
+        if n % 2 == 1:  # Check LSB for efficient approach
+            res *= x     # Multiply if bit is 1
+        x *= x           # Square the base
+        n //= 2          # Right-shift n for efficient approach
+    return res
+</code></pre>
+
+    <hr class="section-separator" />
+
+    <h2>Python Execution Flow using Bitwise Operator</h2>
+    <pre><code>def my_pow(x, n):
+    if n &lt; 0:
+        x = 1 / x  # Handle negative exponents
+        n = -n
+    res = 1
+    while n &gt; 0:
+ 	if (n & 1) == 1:  # Check LSB
+    		res *= x 
+	x *= x
+	n >>= 1  # Right-shift n by one bit
+
+    return res
+</code></pre>
+
+
+
+
+    <hr class="section-separator" />
+
+    <h2>Visual Aid</h2>
+    <div class="visual-aid">
+        <pre>
+Compute 2^13:
+n    | Binary  | res (cumulative) | x (current power)
+-----|---------|------------------|-----------------
+13   | 1101    | 1                | 2
+     |         | 1×2 = 2          | 2² = 4
+6    | 110     | 2                | 4² = 16
+3    | 11      | 2×16 = 32        | 16² = 256
+1    | 1       | 32×256 = 8192    | -
+        </pre>
+    </div>
+    <p><strong>Result</strong>: <code>8192</code> ✅</p>
+
+    <hr class="section-separator" />
+
+    <h2>Why This Matters</h2>
+    <p><strong>Efficiency</strong>: Computes \( 2^{100} \) in just 7 steps (vs. 100 multiplications naïvely).</p>
+    <p><strong>Real-world Use</strong>: Cryptography, algorithm optimizations.</p>
+    <p>Try it with <code>3^5</code> or <code>5^{-2}</code> to practice! 🚀</p>
+</div>
+</body>
+</html>

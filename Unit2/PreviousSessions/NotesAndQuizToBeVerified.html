@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Science Concepts Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --info: #4895ef;
+            --gradient-start: #4361ee;
+            --gradient-end: #3a0ca3;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --glow: 0 0 15px rgba(67, 97, 238, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--light);
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            font-size: 1.1rem;
+        }
+
+        .visualization {
+            background: linear-gradient(135deg, #4cc9f0, #4895ef);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visualization::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,218.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .vis-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .binary-example, .ascii-example {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .bit {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark);
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .bit:hover {
+            transform: scale(1.1);
+            background: var(--accent);
+        }
+
+        .interactive-area {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .sketchpad {
+            width: 100%;
+            height: 200px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+            animation: slideUp 0.7s ease;
+        }
+
+        .quiz-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .option:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .custom-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option input:checked + .custom-radio::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .option input:checked ~ .option-text {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .seal {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .seal-text {
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            animation: popIn 0.5s ease;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, var(--info), var(--primary));
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            animation: slideUp 0.9s ease;
+        }
+
+        .summary-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points {
+            list-style-type: none;
+        }
+
+        .key-points li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .key-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: white;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .code {
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: white;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Computer Science Concepts Quiz</h1>
+            <p class="subtitle">Interactive learning experience with visualizations and practice</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-list-ol"></i> Decimal & Binary Numbers</h2>
+                    <div class="card-content">
+                        <p><strong>Decimal numbers</strong> use digits 0-9 (base-10 system), while <strong>binary numbers</strong> use only 0 and 1 (base-2 system).</p>
+                        
+                        <div class="visualization">
+                            <h3>Decimal to Binary Conversion</h3>
+                            <div class="vis-content">
+                                <p>Let's convert decimal 10 to binary:</p>
+                                <div class="binary-example">
+                                    <div class="bit">1</div>
+                                    <div class="bit">0</div>
+                                    <div class="bit">1</div>
+                                    <div class="bit">0</div>
+                                </div>
+                                <p>10 in decimal = 1010 in binary (8 + 0 + 2 + 0)</p>
+                            </div>
+                        </div>
+
+                        <div class="interactive-area">
+                            <h3>Try it yourself!</h3>
+                            <p>Convert a decimal number to binary:</p>
+                            <input type="number" id="decimalInput" placeholder="Enter decimal number" min="0" max="255" style="padding: 10px; border-radius: 50px; border: 2px solid #4361ee; width: 200px; text-align: center;">
+                            <button onclick="convertToBinary()">Convert</button>
+                            <p id="binaryResult"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-keyboard"></i> ASCII Values</h2>
+                    <div class="card-content">
+                        <p><strong>ASCII</strong> (American Standard Code for Information Interchange) assigns numerical values to characters.</p>
+                        
+                        <div class="visualization">
+                            <h3>ASCII Examples</h3>
+                            <div class="vis-content">
+                                <div class="ascii-example">
+                                    <div class="bit">A = 65</div>
+                                    <div class="bit">a = 97</div>
+                                    <div class="bit">0 = 48</div>
+                                    <div class="bit">$ = 36</div>
+                                </div>
+                                <p>Each character is stored as its ASCII value in binary form.</p>
+                            </div>
+                        </div>
+
+                        <div class="interactive-area">
+                            <h3>Find ASCII values</h3>
+                            <input type="text" id="charInput" placeholder="Enter a character" maxlength="1" style="padding: 10px; border-radius: 50px; border: 2px solid #4361ee; width: 200px; text-align: center;">
+                            <button onclick="findAscii()">Get ASCII</button>
+                            <p id="asciiResult"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-redo"></i> Loops: For vs While</h2>
+                    <div class="card-content">
+                        <p>Use a <strong>for loop</strong> when you know how many times to iterate. Use a <strong>while loop</strong> when you need to loop until a condition is met.</p>
+                        
+                        <div class="visualization">
+                            <h3>Loop Visualization</h3>
+                            <div class="vis-content">
+                                <p><strong>For loop</strong> (known iterations):</p>
+                                <p class="code">for i in range(5):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i)</p>
+                                
+                                <p><strong>While loop</strong> (unknown iterations):</p>
+                                <p class="code">while temperature < 100:<br>&nbsp;&nbsp;&nbsp;&nbsp;heat()</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-code"></i> Functions & Return Values</h2>
+                    <div class="card-content">
+                        <p>A function can return only one value, but that value can be a tuple containing multiple values.</p>
+                        
+                        <div class="visualization">
+                            <h3>Function Return Example</h3>
+                            <div class="vis-content">
+                                <p class="code">def calculate():<br>&nbsp;&nbsp;&nbsp;&nbsp;return 3, True</p>
+                                <p>This returns a tuple: (3, True)</p>
+                            </div>
+                        </div>
+
+                        <div class="interactive-area">
+                            <h3>Try a function</h3>
+                            <button onclick="demoFunction()">Run Function Demo</button>
+                            <p id="functionResult"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-memory"></i> Pointers & Arrays</h2>
+                    <div class="card-content">
+                        <p><strong>Pointers</strong> store memory addresses. <strong>Arrays</strong> are contiguous blocks of memory.</p>
+                        
+                        <div class="visualization">
+                            <h3>Array Memory Allocation</h3>
+                            <div class="vis-content">
+                                <p>When an array needs to grow, it's reallocated to a larger memory space.</p>
+                                <div style="display: flex; gap: 5px; margin: 15px 0;">
+                                    <div class="bit">1</div>
+                                    <div class="bit">2</div>
+                                    <div class="bit">3</div>
+                                    <div style="display: flex; align-items: center;">→</div>
+                                    <div class="bit">1</div>
+                                    <div class="bit">2</div>
+                                    <div class="bit">3</div>
+                                    <div class="bit">4</div>
+                                    <div class="bit">5</div>
+                                </div>
+                                <p>Python lists are dynamic arrays that handle resizing automatically.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-project-diagram"></i> Stack Data Structure</h2>
+                    <div class="card-content">
+                        <p>A <strong>stack</strong> follows Last-In-First-Out (LIFO) principle.</p>
+                        
+                        <div class="visualization">
+                            <h3>Stack Operations</h3>
+                            <div class="vis-content">
+                                <div style="display: flex; justify-content: center; gap: 30px;">
+                                    <div>
+                                        <p>Push</p>
+                                        <div class="bit">3</div>
+                                        <div class="bit">2</div>
+                                        <div class="bit">1</div>
+                                    </div>
+                                    <div>
+                                        <p>Pop</p>
+                                        <div class="bit">2</div>
+                                        <div class="bit">1</div>
+                                    </div>
+                                </div>
+                                <p>Last element added (3) is the first one removed.</p>
+                            </div>
+                        </div>
+
+                        <div class="interactive-area">
+                            <h3>Try the stack</h3>
+                            <div style="display: flex; justify-content: center; gap: 10px;">
+                                <button onclick="pushToStack()">Push</button>
+                                <button onclick="popFromStack()">Pop</button>
+                            </div>
+                            <p id="stackResult">Stack: []</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-pen"></i> Sketchpad</h2>
+                    <div class="card-content">
+                        <p>Use this area to sketch ideas or notes. Works with touch screens!</p>
+                        <canvas id="sketchpad" class="sketchpad" width="500" height="200"></canvas>
+                        <button onclick="clearSketchpad()">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <h2 class="summary-title"><i class="fas fa-star"></i> Key Points to Remember</h2>
+            <ul class="key-points">
+                <li>Decimal uses digits 0-9, binary uses only 0 and 1</li>
+                <li>ASCII provides numerical representation for characters</li>
+                <li>Use for loops for known iterations, while loops for condition-based looping</li>
+                <li>Functions return one value, which can be a tuple containing multiple values</li>
+                <li>Arrays use contiguous memory and may need reallocation when resizing</li>
+                <li>Stacks follow LIFO (Last-In-First-Out) principle</li>
+                <li>Bitwise operations work directly on bits for efficiency</li>
+            </ul>
+        </div>
+
+        <div class="quiz-container">
+            <h2 class="quiz-title">Quick Quiz</h2>
+            
+            <div class="quiz-question">
+                <p><strong>1. What digits are used in the binary number system?</strong></p>
+                <div class="options-container">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">0 and 1</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">0 to 7</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">0 to 9</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">1 and 2</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p><strong>2. What does ASCII represent?</strong></p>
+                <div class="options-container">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Numerical values for characters</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Binary calculation rules</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Assembly language commands</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Computer hardware specifications</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p><strong>3. When should you use a while loop instead of a for loop?</strong></p>
+                <div class="options-container">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">When you know how many times to iterate</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">When you need to loop until a condition is met</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">When you're working with arrays</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">When performance is critical</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p><strong>4. What principle does a stack data structure follow?</strong></p>
+                <div class="options-container">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">FIFO (First-In-First-Out)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">LIFO (Last-In-First-Out)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Random access</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d">
+                        <span class="custom-radio"></span>
+                        <span class="option-text">Priority-based</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button onclick="checkAnswers()" style="padding: 15px 40px; font-size: 1.2rem;">Submit Answers</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Created with lots of love for excellent learning experiences ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // Decimal to Binary Conversion
+        function convertToBinary() {
+            const decimalInput = document.getElementById('decimalInput');
+            const binaryResult = document.getElementById('binaryResult');
+            
+            if (decimalInput.value === '' || decimalInput.value < 0 || decimalInput.value > 255) {
+                binaryResult.innerHTML = '<span style="color: var(--danger)">Please enter a number between 0 and 255</span>';
+                return;
+            }
+            
+            const decimal = parseInt(decimalInput.value);
+            const binary = decimal.toString(2).padStart(8, '0');
+            binaryResult.innerHTML = `Decimal ${decimal} = Binary ${binary}`;
+        }
+        
+        // ASCII Value Finder
+        function findAscii() {
+            const charInput = document.getElementById('charInput');
+            const asciiResult = document.getElementById('asciiResult');
+            
+            if (charInput.value === '') {
+                asciiResult.innerHTML = '<span style="color: var(--danger)">Please enter a character</span>';
+                return;
+            }
+            
+            const char = charInput.value[0];
+            const ascii = char.charCodeAt(0);
+            asciiResult.innerHTML = `Character '${char}' = ASCII ${ascii}`;
+        }
+        
+        // Function Demo
+        function demoFunction() {
+            const functionResult = document.getElementById('functionResult');
+            
+            // Simulate a function that returns multiple values
+            function multiReturn() {
+                return [3, true];
+            }
+            
+            const [number, boolean] = multiReturn();
+            functionResult.innerHTML = `Function returns: ${number} and ${boolean} (as a tuple in Python)`;
+        }
+        
+        // Stack Demo
+        let stack = [];
+        function pushToStack() {
+            const stackResult = document.getElementById('stackResult');
+            stack.push(stack.length + 1);
+            stackResult.textContent = `Stack: [${stack.join(', ')}]`;
+        }
+        
+        function popFromStack() {
+            const stackResult = document.getElementById('stackResult');
+            if (stack.length === 0) {
+                stackResult.innerHTML = '<span style="color: var(--danger)">Stack is empty!</span>';
+                return;
+            }
+            
+            const popped = stack.pop();
+            stackResult.textContent = `Popped: ${popped}. Stack: [${stack.join(', ')}]`;
+        }
+        
+        // Sketchpad
+        const sketchpad = document.getElementById('sketchpad');
+        const ctx = sketchpad.getContext('2d');
+        let isDrawing = false;
+        
+        // Set background to white
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, sketchpad.width, sketchpad.height);
+        
+        sketchpad.addEventListener('mousedown', startDrawing);
+        sketchpad.addEventListener('mousemove', draw);
+        sketchpad.addEventListener('mouseup', stopDrawing);
+        sketchpad.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        sketchpad.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            sketchpad.dispatchEvent(mouseEvent);
+        });
+        
+        sketchpad.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            sketchpad.dispatchEvent(mouseEvent);
+        });
+        
+        sketchpad.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            sketchpad.dispatchEvent(mouseEvent);
+        });
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = sketchpad.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = sketchpad.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.strokeStyle = '#4361ee';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function clearSketchpad() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, sketchpad.width, sketchpad.height);
+        }
+        
+        // Quiz Functions
+        function checkAnswers() {
+            const answers = {
+                q1: 'a',
+                q2: 'a',
+                q3: 'b',
+                q4: 'b'
+            };
+            
+            let score = 0;
+            
+            for (const question in answers) {
+                const selectedOption = document.querySelector(`input[name=${question}]:checked`);
+                
+                if (selectedOption) {
+                    if (selectedOption.value === answers[question]) {
+                        score++;
+                        // Add seal to correct answer
+                        const optionText = selectedOption.parentNode.querySelector('.option-text');
+                        if (!optionText.querySelector('.seal')) {
+                            const seal = document.createElement('span');
+                            seal.className = 'seal';
+                            seal.innerHTML = '<span class="seal-text">Correct!</span>';
+                            optionText.appendChild(seal);
+                        }
+                    }
+                }
+            }
+            
+            // Show score
+            alert(`You scored ${score} out of 4!`);
+        }
+        
+        // Add event listeners to radio buttons to add "My Answer" seal
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove any existing seals in this question
+                const question = this.name;
+                const seals = document.querySelectorAll(`input[name=${question}]`);
+                seals.forEach(sealInput => {
+                    const sealElement = sealInput.parentNode.querySelector('.seal');
+                    if (sealElement) {
+                        sealElement.remove();
+                    }
+                });
+                
+                // Add seal to selected option
+                if (this.checked) {
+                    const optionText = this.parentNode.querySelector('.option-text');
+                    const seal = document.createElement('span');
+                    seal.className = 'seal';
+                    seal.innerHTML = '<span class="seal-text">My Answer</span>';
+                    optionText.appendChild(seal);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

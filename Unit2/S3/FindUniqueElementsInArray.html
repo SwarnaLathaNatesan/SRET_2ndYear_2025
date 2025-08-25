@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Unique Element - XOR Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --success: #10b981;
+            --code-bg: #2d2d2d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .interactive-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .interactive-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        input {
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .visualization {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .binary-rep {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .bit {
+            background: var(--light);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .bit-1 {
+            background: var(--success);
+            color: white;
+        }
+        
+        .xor-result {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        
+        .unique-element {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: bold;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, rgba(37, 99, 235, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .key-point {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .quiz-container {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .option:hover {
+            background: #e5e7eb;
+        }
+        
+        .check-answers {
+            background: var(--success);
+            margin-top: 1rem;
+        }
+        
+        .check-answers:hover {
+            background: #0da271;
+        }
+        
+        .result {
+            font-weight: bold;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Find the Unique Element</h1>
+            <p class="subtitle">Visualizing how XOR operation helps find the number that appears only once in an array where all other numbers appear twice.</p>
+        </header>
+        
+        <div class="card">
+            <h2>Problem Statement</h2>
+            <p>Given an array of integers where every element appears <span class="highlight">exactly twice</span> except for one element which appears <span class="highlight">only once</span>, find the unique element.</p>
+            
+            <div class="code-block">
+                # Example:<br>
+                arr = [4, 2, 5, 2, 4, 7, 5]<br>
+                # The unique element is 7
+            </div>
+            
+            <h3>Why XOR Works</h3>
+            <p>The XOR (exclusive OR) operation has these properties:</p>
+            <ul>
+                <li><span class="highlight">a XOR a = 0</span> - Any number XOR itself equals 0</li>
+                <li><span class="highlight">a XOR 0 = a</span> - Any number XOR 0 equals itself</li>
+                <li><span class="highlight">XOR is commutative and associative</span> - Order doesn't matter</li>
+            </ul>
+            <p>So when we XOR all numbers together, pairs cancel each other out (become 0), and we're left with the unique element.</p>
+            
+            <div class="code-block">
+                # Python solution<br>
+                def find_unique(arr):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;result = 0<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;for num in arr:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result ^= num<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return result
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Interactive Visualization</h2>
+            <p>Enter your own array of numbers or use the default example. See how XOR works step by step.</p>
+            
+            <div class="interactive-section">
+                <div class="input-section">
+                    <input type="text" id="arrayInput" value="4, 2, 5, 2, 4, 7, 5" placeholder="Enter numbers separated by commas">
+                    <button onclick="processArray()">Find Unique Element</button>
+                    <div class="unique-element" id="resultElement">Unique element will appear here</div>
+                </div>
+                
+                <div class="visualization" id="visualization">
+                    <p>Enter an array and click the button to see the visualization</p>
+                </div>
+            </div>
+            
+            <h3>Step-by-Step Explanation</h3>
+            <div class="step-container" id="stepContainer">
+                <!-- Steps will be generated here -->
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Why This Approach is Efficient</h2>
+            <p>The XOR solution has several advantages:</p>
+            
+            <div class="step-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Time Complexity: O(n)</h3>
+                        <p>We only need to iterate through the array once, performing a constant-time operation (XOR) on each element.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Space Complexity: O(1)</h3>
+                        <p>We only use a single variable to store the result, regardless of the input size.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>No Additional Data Structures</h3>
+                        <p>We don't need to use hash tables or other data structures that require extra memory.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Key Points to Remember</h2>
+            <div class="key-points">
+                <div class="key-point">
+                    <h3>XOR of a number with itself is 0</h3>
+                    <p>A ⊕ A = 0</p>
+                </div>
+                <div class="key-point">
+                    <h3>XOR of a number with 0 is the number itself</h3>
+                    <p>A ⊕ 0 = A</p>
+                </div>
+                <div class="key-point">
+                    <h3>XOR is commutative and associative</h3>
+                    <p>Order of operations doesn't matter</p>
+                </div>
+                <div class="key-point">
+                    <h3>Pairs cancel out, leaving the unique element</h3>
+                    <p>All duplicates cancel each other</p>
+                </div>
+                <div class="key-point">
+                    <h3>Time complexity: O(n)</h3>
+                    <p>Only one pass through the array</p>
+                </div>
+                <div class="key-point">
+                    <h3>Space complexity: O(1)</h3>
+                    <p>Uses only a single variable</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Quick Quiz</h2>
+            <p>Test your understanding of the XOR technique for finding the unique element.</p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>Question 1: What is the result of XORing all elements in the array [5, 3, 2, 3, 5]?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q1" value="a" id="q1a">
+                            <label for="q1a">2</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="b" id="q1b">
+                            <label for="q1b">3</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="c" id="q1c">
+                            <label for="q1c">5</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="d" id="q1d">
+                            <label for="q1d">0</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 2: Which property of XOR makes this technique work?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q2" value="a" id="q2a">
+                            <label for="q2a">Distributive property</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="b" id="q2b">
+                            <label for="q2b">Self-inverse property (A ⊕ A = 0)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="c" id="q2c">
+                            <label for="q2c">De Morgan's law</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="d" id="q2d">
+                            <label for="q2d">Identity property only</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 3: What is the time complexity of the XOR approach?</h3>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q3" value="a" id="q3a">
+                            <label for="q3a">O(n²)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="b" id="q3b">
+                            <label for="q3b">O(n log n)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="c" id="q3c">
+                            <label for="q3c">O(n)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="d" id="q3d">
+                            <label for="q3d">O(1)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="check-answers" onclick="checkQuiz()">Check Answers</button>
+                
+                <div class="result" id="quizResult"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Practice Problems</h2>
+            <p>Try these similar problems to test your understanding:</p>
+            
+            <div class="code-block">
+                # Problem 1: Find the unique element in [3, 7, 3, 5, 5]<br>
+                # Answer: 7<br><br>
+                
+                # Problem 2: Find the unique element in [10, 12, 10, 14, 15, 14, 15]<br>
+                # Answer: 12<br><br>
+                
+                # Problem 3: Find the unique element in [1, 1, 2, 2, 3, 3, 4, 5, 5]<br>
+                # Answer: 4
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created with ❤️ to help students understand XOR operations</p>
+    </footer>
+
+    <script>
+        function processArray() {
+            const input = document.getElementById('arrayInput').value;
+            const arr = input.split(',').map(num => parseInt(num.trim()));
+            
+            if (arr.some(isNaN)) {
+                alert('Please enter valid numbers separated by commas');
+                return;
+            }
+            
+            let result = 0;
+            const steps = [];
+            
+            // Calculate result and record steps
+            for (let i = 0; i < arr.length; i++) {
+                const prevResult = result;
+                result ^= arr[i];
+                
+                steps.push({
+                    number: arr[i],
+                    previous: prevResult,
+                    current: result,
+                    binaryPrev: prevResult.toString(2).padStart(4, '0'),
+                    binaryNum: arr[i].toString(2).padStart(4, '0'),
+                    binaryCurrent: result.toString(2).padStart(4, '0')
+                });
+            }
+            
+            // Display result
+            document.getElementById('resultElement').textContent = `Unique Element: ${result}`;
+            
+            // Generate visualization
+            generateVisualization(steps);
+            
+            // Generate step-by-step explanation
+            generateSteps(steps);
+        }
+        
+        function generateVisualization(steps) {
+            const visualization = document.getElementById('visualization');
+            visualization.innerHTML = '<h3>XOR Operation Steps</h3>';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'xorChart';
+            canvas.height = 300;
+            visualization.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            const labels = steps.map((step, i) => `Step ${i+1}`);
+            const data = steps.map(step => step.current);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'XOR Result',
+                        data: data,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: '#8b5cf6',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'XOR Result'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Step'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function generateSteps(steps) {
+            const stepContainer = document.getElementById('stepContainer');
+            stepContainer.innerHTML = '';
+            
+            steps.forEach((step, index) => {
+                const stepEl = document.createElement('div');
+                stepEl.className = 'step';
+                
+                stepEl.innerHTML = `
+                    <div class="step-number">${index + 1}</div>
+                    <div class="step-content">
+                        <h3>XOR with ${step.number}</h3>
+                        <p>Previous result: ${step.previous}</p>
+                        <p>Current number: ${step.number}</p>
+                        <p>XOR operation: ${step.previous} ^ ${step.number} = ${step.current}</p>
+                        
+                        <div class="binary-rep">
+                            <div>Binary:</div>
+                            ${renderBinaryBits(step.binaryPrev)}
+                            <div>XOR</div>
+                            ${renderBinaryBits(step.binaryNum)}
+                            <div>=</div>
+                            ${renderBinaryBits(step.binaryCurrent)}
+                        </div>
+                        
+                        <div class="xor-result">New result: ${step.current}</div>
+                    </div>
+                `;
+                
+                stepContainer.appendChild(stepEl);
+            });
+        }
+        
+        function renderBinaryBits(binaryStr) {
+            return binaryStr.split('').map(bit => 
+                `<div class="bit ${bit === '1' ? 'bit-1' : ''}">${bit}</div>`
+            ).join('');
+        }
+        
+        function checkQuiz() {
+            const answers = {
+                q1: 'a', // 2
+                q2: 'b', // Self-inverse property
+                q3: 'c'  // O(n)
+            };
+            
+            let score = 0;
+            let resultHTML = '';
+            
+            // Check question 1
+            const q1Answer = document.querySelector('input[name="q1"]:checked');
+            if (q1Answer && q1Answer.value === answers.q1) {
+                score++;
+                resultHTML += '<p class="correct">Question 1: Correct! ✓</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 1: Incorrect. The correct answer is 2.</p>';
+            }
+            
+            // Check question 2
+            const q2Answer = document.querySelector('input[name="q2"]:checked');
+            if (q2Answer && q2Answer.value === answers.q2) {
+                score++;
+                resultHTML += '<p class="correct">Question 2: Correct! ✓</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 2: Incorrect. The correct answer is Self-inverse property (A ⊕ A = 0).</p>';
+            }
+            
+            // Check question 3
+            const q3Answer = document.querySelector('input[name="q3"]:checked');
+            if (q3Answer && q3Answer.value === answers.q3) {
+                score++;
+                resultHTML += '<p class="correct">Question 3: Correct! ✓</p>';
+            } else {
+                resultHTML += '<p class="incorrect">Question 3: Incorrect. The correct answer is O(n).</p>';
+            }
+            
+            // Display result
+            resultHTML = `<h3>Score: ${score}/3</h3>` + resultHTML;
+            document.getElementById('quizResult').innerHTML = resultHTML;
+        }
+        
+        // Initialize with default example
+        window.onload = processArray;
+    </script>
+</body>
+</html>

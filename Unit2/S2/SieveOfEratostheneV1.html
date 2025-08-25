@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sieve of Eratosthenes | Interactive Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f9c74f;
+            --info: #4895ef;
+            --danger: #e63946;
+            --radius: 12px;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 0 0 var(--radius) var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--secondary);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin: 1.2rem 0 0.8rem;
+            color: var(--primary);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .intro {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .algorithm-box {
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Roboto Mono', monospace;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .keyword {
+            color: #f92672;
+        }
+        
+        .function {
+            color: #66d9ef;
+        }
+        
+        .number {
+            color: #ae81ff;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .number-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prime {
+            background: var(--success);
+            color: white;
+        }
+        
+        .composite {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .untested {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .current {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .quiz-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+        }
+        
+        .selected {
+            background: var(--info);
+            color: white;
+        }
+        
+        .correct {
+            background: var(--success);
+            color: white;
+        }
+        
+        .incorrect {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #e0f7fa 0%, #bbdefb 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .key-points {
+            list-style-type: none;
+        }
+        
+        .key-points li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .key-points li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .performance {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+        
+        .performance-box {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: var(--shadow);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sieve of Eratosthenes</h1>
+            <p class="intro">An ancient algorithm for finding all prime numbers up to any given limit</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is the Sieve of Eratosthenes?</h2>
+            <p>The Sieve of Eratosthenes is an ancient algorithm for finding all prime numbers up to any given limit. It does so by iteratively marking as composite (i.e., not prime) the multiples of each prime, starting with the first prime number, 2.</p>
+            
+            <div class="algorithm-box">
+                <strong>Algorithm Overview:</strong><br>
+                1. Create a list of consecutive integers from 2 through sqrt(n)<br>
+                2. Initially, let p equal 2, the smallest prime number<br>
+                3. Enumerate the multiples of p by counting in increments of p from p² to n, and mark them<br>
+                4. Find the smallest number in the list greater than p that is not marked. If not found, stop<br>
+                5. Otherwise, let p now equal this new number (which is the next prime), and repeat from step 3<br>
+                6. When the algorithm terminates, the unmarked numbers are prime
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Pseudocode</h2>
+                <div class="code-block">
+                    <span class="keyword">function</span> <span class="function">sieveOfEratosthenes</span>(n):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;isPrime = [<span class="keyword">True</span>] * (n+1)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;isPrime[0] = isPrime[1] = <span class="keyword">False</span>  <span style="color: #75715e"># 0 and 1 are not primes</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> i <span class="keyword">from</span> <span class="number">2</span> <span class="keyword">to</span> sqrt(n):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> isPrime[i] <span class="keyword">is</span> <span class="keyword">True</span>:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> j <span class="keyword">from</span> i*i <span class="keyword">to</span> n <span class="keyword">step</span> i:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isPrime[j] = <span class="keyword">False</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> all i <span class="keyword">such that</span> isPrime[i] <span class="keyword">is</span> <span class="keyword">True</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Python Implementation</h2>
+                <div class="code-block">
+                    <span class="keyword">def</span> <span class="function">sieve_of_eratosthenes</span>(n):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Return a list of prime numbers up to n."""</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;is_prime = [<span class="keyword">True</span>] * (n + <span class="number">1</span>)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;is_prime[<span class="number">0</span>] = is_prime[<span class="number">1</span>] = <span class="keyword">False</span>  <span style="color: #75715e"># 0 and 1 are not primes</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> current_num <span class="keyword">in</span> <span class="function">range</span>(<span class="number">2</span>, <span class="function">int</span>(n**<span class="number">0.5</span>) + <span class="number">1</span>):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> is_prime[current_num]:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Mark multiples of current_num as composite</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> multiple <span class="keyword">in</span> <span class="function">range</span>(current_num * current_num, n + <span class="number">1</span>, current_num):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_prime[multiple] = <span class="keyword">False</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Collect prime numbers</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;primes = [num <span class="keyword">for</span> num, prime <span class="keyword">in</span> <span class="function">enumerate</span>(is_prime) <span class="keyword">if</span> prime]<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> primes
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Step-by-Step Visualization</h2>
+            <p>Enter a number to see how the Sieve of Eratosthenes works step by step:</p>
+            
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <input type="number" id="limitInput" min="2" max="50" value="20" style="padding: 0.8rem; border-radius: var(--radius); border: 2px solid #ddd; width: 100px;">
+                <button onclick="initVisualization()">Visualize</button>
+            </div>
+            
+            <div class="visualization" id="visualization">
+                <!-- Numbers will be generated here by JavaScript -->
+            </div>
+            
+            <div class="controls">
+                <button onclick="previousStep()" id="prevBtn">Previous</button>
+                <button onclick="nextStep()" id="nextBtn">Next</button>
+                <button onclick="resetVisualization()">Reset</button>
+            </div>
+            
+            <div id="stepExplanation" style="text-align: center; font-style: italic; margin: 1rem 0;">
+                Click "Visualize" to start the step-by-step demonstration.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Key Points to Remember</h2>
+            <div class="summary-box">
+                <ul class="key-points">
+                    <li>The Sieve of Eratosthenes is an efficient algorithm for finding all primes up to a specified integer</li>
+                    <li>It works by iteratively marking the multiples of each prime number starting from 2</li>
+                    <li>The algorithm terminates when the square of the current prime number is greater than n</li>
+                    <li>Time complexity is O(n log log n), which makes it one of the most efficient ways to find primes</li>
+                    <li>Space complexity is O(n) as it requires an array of size n+1</li>
+                    <li>Only works well for finding primes up to about 10 million due to memory constraints</li>
+                    <li>The algorithm is named after the ancient Greek mathematician Eratosthenes of Cyrene</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Performance Analysis</h2>
+            <p>The Sieve of Eratosthenes has a time complexity of O(n log log n), which is almost linear. This makes it significantly more efficient than trial division, which has a time complexity of O(n√n).</p>
+            
+            <div class="performance">
+                <div class="performance-box">
+                    <h3>Time Complexity</h3>
+                    <p>O(n log log n)</p>
+                </div>
+                <div class="performance-box">
+                    <h3>Space Complexity</h3>
+                    <p>O(n)</p>
+                </div>
+            </div>
+            
+            <canvas id="complexityChart" style="margin-top: 2rem; max-height: 300px;"></canvas>
+        </div>
+
+        <div class="quiz-container">
+            <h2>Test Your Understanding</h2>
+            
+            <div class="question">
+                <h3>Question 1: What is the time complexity of the Sieve of Eratosthenes?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 1, 0)">O(n)</div>
+                    <div class="option" onclick="selectOption(this, 1, 1)">O(n log n)</div>
+                    <div class="option" onclick="selectOption(this, 1, 2)">O(n log log n)</div>
+                    <div class="option" onclick="selectOption(this, 1, 3)">O(n²)</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Question 2: Why do we start marking multiples from i²?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 2, 0)">It's arbitrary</div>
+                    <div class="option" onclick="selectOption(this, 2, 1)">Smaller multiples would have already been marked by smaller primes</div>
+                    <div class="option" onclick="selectOption(this, 2, 2)">To optimize the algorithm</div>
+                    <div class="option" onclick="selectOption(this, 2, 3)">Because i² is always prime</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Question 3: Up to what number can the Sieve efficiently find primes?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 3, 0)">1,000</div>
+                    <div class="option" onclick="selectOption(this, 3, 1)">100,000</div>
+                    <div class="option" onclick="selectOption(this, 3, 2)">10,000,000</div>
+                    <div class="option" onclick="selectOption(this, 3, 3)">1,000,000,000</div>
+                </div>
+            </div>
+            
+            <button onclick="checkAnswers()" style="display: block; margin: 1.5rem auto;">Check Answers</button>
+            
+            <div id="quizResult" style="text-align: center; margin-top: 1rem; font-weight: bold;"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Created with ❤️ for students learning algorithms</p>
+        </div>
+    </footer>
+
+    <script>
+        // Visualization variables
+        let currentStep = 0;
+        let steps = [];
+        let numbers = [];
+        let limit = 20;
+        let isPrime = [];
+        
+        // Initialize the visualization
+        function initVisualization() {
+            limit = parseInt(document.getElementById('limitInput').value) || 20;
+            if (limit < 2) limit = 2;
+            if (limit > 50) limit = 50;
+            
+            // Initialize the numbers array and isPrime array
+            numbers = Array.from({length: limit - 1}, (_, i) => i + 2);
+            isPrime = new Array(limit + 1).fill(true);
+            isPrime[0] = isPrime[1] = false;
+            
+            // Generate steps for visualization
+            generateSteps();
+            
+            // Reset to the first step
+            currentStep = 0;
+            renderStep();
+            
+            // Enable buttons
+            document.getElementById('prevBtn').disabled = false;
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        // Generate all steps of the algorithm
+        function generateSteps() {
+            steps = [];
+            
+            // Initial state
+            steps.push({
+                numbers: [...numbers],
+                primes: [],
+                composites: [],
+                current: null,
+                description: "Initial state: All numbers from 2 to " + limit + " are considered potential primes."
+            });
+            
+            // Apply the sieve algorithm
+            for (let i = 2; i <= Math.sqrt(limit); i++) {
+                if (isPrime[i]) {
+                    // Mark current number as being processed
+                    steps.push({
+                        numbers: [...numbers],
+                        primes: numbers.filter(n => n < i && isPrime[n]),
+                        composites: numbers.filter(n => n <= limit && !isPrime[n]),
+                        current: i,
+                        description: "Checking if " + i + " is prime. Since it's unmarked, it is prime."
+                    });
+                    
+                    // Mark multiples of i
+                    for (let j = i * i; j <= limit; j += i) {
+                        if (isPrime[j]) {
+                            isPrime[j] = false;
+                            steps.push({
+                                numbers: [...numbers],
+                                primes: numbers.filter(n => n < j && isPrime[n]),
+                                composites: numbers.filter(n => n <= limit && !isPrime[n]),
+                                current: i,
+                                description: "Marking " + j + " as composite because it's a multiple of " + i + "."
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Final state
+            steps.push({
+                numbers: [...numbers],
+                primes: numbers.filter(n => n <= limit && isPrime[n]),
+                composites: numbers.filter(n => n <= limit && !isPrime[n]),
+                current: null,
+                description: "Algorithm complete! All unmarked numbers are primes."
+            });
+        }
+        
+        // Render the current step
+        function renderStep() {
+            const visualization = document.getElementById('visualization');
+            const stepExplanation = document.getElementById('stepExplanation');
+            
+            if (currentStep >= steps.length) {
+                currentStep = steps.length - 1;
+            }
+            
+            const step = steps[currentStep];
+            
+            // Update visualization
+            visualization.innerHTML = '';
+            step.numbers.forEach(num => {
+                const numberBox = document.createElement('div');
+                numberBox.className = 'number-box ';
+                
+                if (step.current === num) {
+                    numberBox.className += 'current';
+                } else if (step.primes.includes(num)) {
+                    numberBox.className += 'prime';
+                } else if (step.composites.includes(num)) {
+                    numberBox.className += 'composite';
+                } else {
+                    numberBox.className += 'untested';
+                }
+                
+                numberBox.textContent = num;
+                visualization.appendChild(numberBox);
+            });
+            
+            // Update explanation
+            stepExplanation.textContent = step.description;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentStep === 0;
+            document.getElementById('nextBtn').disabled = currentStep === steps.length - 1;
+        }
+        
+        // Go to the next step
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                renderStep();
+            }
+        }
+        
+        // Go to the previous step
+        function previousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+            }
+        }
+        
+        // Reset the visualization
+        function resetVisualization() {
+            currentStep = 0;
+            renderStep();
+        }
+        
+        // Quiz functionality
+        function selectOption(optionElement, questionNumber, optionIndex) {
+            // Remove any existing selections in this question
+            const options = optionElement.parentElement.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark this option as selected
+            optionElement.classList.add('selected');
+            
+            // Store the selection
+            if (!optionElement.parentElement.dataset.selected) {
+                optionElement.parentElement.dataset.selected = optionIndex;
+            } else {
+                optionElement.parentElement.dataset.selected = optionIndex;
+            }
+        }
+        
+        // Check quiz answers
+        function checkAnswers() {
+            const correctAnswers = [2, 1, 2]; // Indices of correct options for each question
+            let score = 0;
+            
+            // Check each question
+            for (let i = 1; i <= 3; i++) {
+                const options = document.querySelectorAll(`.question:nth-child(${i}) .option`);
+                const selectedIndex = parseInt(document.querySelector(`.question:nth-child(${i}) .options`).dataset.selected);
+                
+                if (selectedIndex === correctAnswers[i-1]) {
+                    options[selectedIndex].classList.add('correct');
+                    score++;
+                } else {
+                    if (!isNaN(selectedIndex)) {
+                        options[selectedIndex].classList.add('incorrect');
+                    }
+                    options[correctAnswers[i-1]].classList.add('correct');
+                }
+            }
+            
+            // Display result
+            const resultElement = document.getElementById('quizResult');
+            resultElement.textContent = `You scored ${score} out of 3!`;
+            
+            if (score === 3) {
+                resultElement.style.color = 'var(--success)';
+            } else {
+                resultElement.style.color = 'var(--danger)';
+            }
+        }
+        
+        // Initialize complexity chart
+        function initChart() {
+            const ctx = document.getElementById('complexityChart').getContext('2d');
+            
+            // Sample data for time complexity comparison
+            const nValues = [10, 100, 1000, 10000, 100000];
+            const sieveComplexity = nValues.map(n => n * Math.log(Math.log(n)));
+            const trialDivisionComplexity = nValues.map(n => n * Math.sqrt(n));
+            
+            // Normalize values for better visualization
+            const maxSieve = Math.max(...sieveComplexity);
+            const maxTrial = Math.max(...trialDivisionComplexity);
+            const normalizedSieve = sieveComplexity.map(val => val / maxSieve * 100);
+            const normalizedTrial = trialDivisionComplexity.map(val => val / maxTrial * 100);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: nValues.map(n => n.toLocaleString()),
+                    datasets: [
+                        {
+                            label: 'Sieve of Eratosthenes',
+                            data: normalizedSieve,
+                            borderColor: 'var(--success)',
+                            backgroundColor: 'rgba(76, 201, 240, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Trial Division',
+                            data: normalizedTrial,
+                            borderColor: 'var(--danger)',
+                            backgroundColor: 'rgba(230, 57, 70, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Time Complexity Comparison (Normalized)'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += Math.round(context.raw) + '% of worst case';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'n (upper limit)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Normalized Time Complexity'
+                            },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            initVisualization();
+            initChart();
+        };
+    </script>
+</body>
+</html>

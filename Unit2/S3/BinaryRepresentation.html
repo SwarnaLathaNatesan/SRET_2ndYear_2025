@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correct Binary Representation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        h2 {
+            margin: 25px 0 15px;
+            color: #ff7e5f;
+            border-bottom: 2px solid #ff7e5f;
+            padding-bottom: 8px;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .correction {
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff5252;
+        }
+        
+        .correct {
+            background: rgba(0, 255, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .binary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .binary-table th {
+            background: rgba(255, 126, 95, 0.7);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .binary-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .binary-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .binary-rep {
+            font-family: monospace;
+            font-size: 1.3rem;
+            letter-spacing: 5px;
+        }
+        
+        .bit {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 0 2px;
+            border-radius: 5px;
+            background: #2c3e50;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .bit.active {
+            background: #ff7e5f;
+            box-shadow: 0 0 15px rgba(255, 126, 95, 0.8);
+            transform: scale(1.1);
+            transition: all 0.3s ease;
+        }
+        
+        .explanation {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .power-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .power-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .power-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 126, 95, 0.3);
+        }
+        
+        .exponent {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff7e5f;
+        }
+        
+        .result {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .power-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .binary-rep {
+                font-size: 1rem;
+                letter-spacing: 3px;
+            }
+            
+            .bit {
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Binary Representation</h1>
+    <p class="description">Understanding the binary representation of powers of 2</p>
+    
+    <div class="container">
+  
+        
+       
+        <h2>Binary Representation of Powers of 2</h2>
+        
+        <table class="binary-table">
+            <thead>
+                <tr>
+                    <th>Power of 2</th>
+                    <th>Decimal Value</th>
+                    <th>4-bit Binary</th>
+                    <th>8-bit Binary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2<sup>0</sup></td>
+                    <td>1</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span></td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>1</sup></td>
+                    <td>2</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span></td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>2</sup></td>
+                    <td>4</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span></td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>3</sup></td>
+                    <td>8</td>
+                    <td class="binary-rep"><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>4</sup></td>
+                    <td>16</td>
+                    <td class="binary-rep">N/A*</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>5</sup></td>
+                    <td>32</td>
+                    <td class="binary-rep">N/A*</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>6</sup></td>
+                    <td>64</td>
+                    <td class="binary-rep">N/A*</td>
+                    <td class="binary-rep"><span class="bit">0</span><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+                <tr>
+                    <td>2<sup>7</sup></td>
+                    <td>128</td>
+                    <td class="binary-rep">N/A*</td>
+                    <td class="binary-rep"><span class="bit active">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p><small>* 4-bit binary can only represent numbers up to 15 (1111)</small></p>
+        
+        <div class="explanation">
+            <h2>Why This Matters</h2>
+            <p>Understanding binary representation is fundamental to computer science. Each bit position represents a power of 2, with the rightmost bit representing 2<sup>0</sup> (1), the next 2<sup>1</sup> (2), then 2<sup>2</sup> (4), and so on.</p>
+            <p>This is why powers of 2 are so important in computing - they directly correspond to the bit positions in binary numbers.</p>
+        </div>
+        
+        <h2>Powers of 2 Reference</h2>
+        
+        <div class="power-grid">
+            <div class="power-item">
+                <div class="exponent">2<sup>0</sup></div>
+                <div class="result">1</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>1</sup></div>
+                <div class="result">2</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>2</sup></div>
+                <div class="result">4</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>3</sup></div>
+                <div class="result">8</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>4</sup></div>
+                <div class="result">16</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>5</sup></div>
+                <div class="result">32</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>6</sup></div>
+                <div class="result">64</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>7</sup></div>
+                <div class="result">128</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>8</sup></div>
+                <div class="result">256</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>9</sup></div>
+                <div class="result">512</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>10</sup></div>
+                <div class="result">1024</div>
+            </div>
+            <div class="power-item">
+                <div class="exponent">2<sup>16</sup></div>
+                <div class="result">65,536</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation for the active bits
+        const bits = document.querySelectorAll('.bit.active');
+        let currentBit = 0;
+        
+        function animateBits() {
+            bits.forEach(bit => bit.style.boxShadow = '0 0 10px rgba(255, 126, 95, 0.5)');
+            
+            if (bits.length > 0) {
+                bits[currentBit].style.boxShadow = '0 0 15px rgba(255, 126, 95, 0.8)';
+                bits[currentBit].style.transform = 'scale(1.15)';
+                
+                setTimeout(() => {
+                    bits[currentBit].style.transform = 'scale(1.1)';
+                }, 500);
+                
+                currentBit = (currentBit + 1) % bits.length;
+            }
+        }
+        
+        // Animate the bits every second
+        setInterval(animateBits, 1000);
+        
+        // Initial animation
+        animateBits();
+    </script>
+</body>
+</html>

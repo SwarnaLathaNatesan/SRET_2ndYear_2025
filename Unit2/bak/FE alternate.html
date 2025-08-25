@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Exponentiation Visual Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ff9a00;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: bold;
+            color: #ff9a00;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            width: 140px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 14px 25px;
+            background: #ff9a00;
+            color: #1a2980;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #ffaa33;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #777;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .step-display {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #ff9a00;
+            font-weight: bold;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .visualization {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .visualization {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #1a2980, #ff9a00);
+        }
+        
+        .card-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff9a00;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .variables {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .variable {
+            text-align: center;
+            padding: 18px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            min-width: 140px;
+            flex: 1;
+        }
+        
+        .variable-name {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #ffcc44;
+        }
+        
+        .variable-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .binary-section {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .binary-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ffcc44;
+        }
+        
+        .binary-representation {
+            font-size: 1.8rem;
+            letter-spacing: 6px;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-family: monospace;
+        }
+        
+        .explanation {
+            line-height: 1.7;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            min-height: 140px;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #ff9a00;
+            font-weight: bold;
+        }
+        
+        .bit-highlight {
+            color: #ff5252;
+            font-weight: bold;
+            font-size: 2.2rem;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        
+        .result-value {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 2.5rem;
+            margin-top: 10px;
+        }
+        
+        .algorithm {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .algorithm-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff9a00;
+            font-size: 1.5rem;
+        }
+        
+        .algorithm-step {
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-icon {
+            color: #ff9a00;
+            font-size: 1.2rem;
+        }
+        
+        .current-step {
+            background: rgba(255, 154, 0, 0.2);
+            border-left: 5px solid #ff9a00;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .power-info {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .power-item {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .power-value {
+            font-size: 1.4rem;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1a2980, #ff9a00);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .calculation {
+            font-family: monospace;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .formula {
+            font-size: 1.4rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 154, 0, 0.1);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> Fast Exponentiation (a^b % m)</h1>
+            <p class="subtitle">Efficiently compute modular exponentials using binary representation</p>
+        </header>
+        
+        <p class="description">
+            This algorithm efficiently computes a^b mod m by breaking down the exponent into its binary representation.
+            At each step, we square the base and apply the modulus operation. We only multiply when the binary digit is 1.
+        </p>
+        
+        <div class="formula">
+            Let's compute: <span class="highlight">3<sup>13</sup> mod 11</span>
+        </div>
+        
+        <div class="step-display">Step 0: Initialize variables</div>
+        
+        <div class="visualization">
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-calculator"></i> Variables</h3>
+                <div class="variables">
+                    <div class="variable">
+                        <div class="variable-name">Result</div>
+                        <div class="variable-value" id="result-value">1</div>
+                    </div>
+                    <div class="variable">
+                        <div class="variable-name">Base</div>
+                        <div class="variable-value" id="base-value">3</div>
+                    </div>
+                    <div class="variable">
+                        <div class="variable-name">Exponent</div>
+                        <div class="variable-value" id="exponent-value">13</div>
+                    </div>
+                    <div class="variable">
+                        <div class="variable-name">Modulus</div>
+                        <div class="variable-value" id="modulus-value">11</div>
+                    </div>
+                </div>
+                
+                <div class="binary-section">
+                    <div class="binary-title">Binary Representation of Exponent (13)</div>
+                    <div class="binary-representation" id="binary-rep">
+                        1101
+                    </div>
+                </div>
+                
+                <div class="explanation" id="explanation">
+                    We begin with result = 1, base = 3, exponent = 13, and modulus = 11.<br>
+                    The binary representation of 13 is 1101. We'll process bits from right to left (LSB to MSB).
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-list-ol"></i> Algorithm Steps</h3>
+                <div class="algorithm">
+                    <div class="algorithm-step current-step" id="step0">
+                        <span class="step-icon"><i class="fas fa-play"></i></span>
+                        <span><span class="highlight">Initialize:</span> result = 1, base = a, exponent = b</span>
+                    </div>
+                    <div class="algorithm-step" id="step1">
+                        <span class="step-icon"><i class="fas fa-redo"></i></span>
+                        <span><span class="highlight">While</span> exponent > 0:</span>
+                    </div>
+                    <div class="algorithm-step" id="step2">
+                        <span class="step-icon"><i class="fas fa-question"></i></span>
+                        <span><span class="highlight">If</span> exponent is odd, multiply result by base (mod m)</span>
+                    </div>
+                    <div class="algorithm-step" id="step3">
+                        <span class="step-icon"><i class="fas fa-times"></i></span>
+                        <span>Square the base (mod m)</span>
+                    </div>
+                    <div class="algorithm-step" id="step4">
+                        <span class="step-icon"><i class="fas fa-divide"></i></span>
+                        <span>Divide exponent by 2 (integer division)</span>
+                    </div>
+                </div>
+                
+                <div class="calculation" id="calculation">
+                    Preparing to process the first bit...
+                </div>
+                
+                <div class="power-info">
+                    <div class="power-item">
+                        <div>Standard Method</div>
+                        <div class="power-value">12 multiplications</div>
+                    </div>
+                    <div class="power-item">
+                        <div>Fast Exponentiation</div>
+                        <div class="power-value">5 multiplications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar" style="width: 0%"></div>
+        </div>
+        
+        <div class="btn-group">
+            <button id="prev-btn" disabled><i class="fas fa-arrow-left"></i> Previous Step</button>
+            <button id="next-btn">Next Step <i class="fas fa-arrow-right"></i></button>
+            <button id="reset-btn"><i class="fas fa-sync"></i> Reset</button>
+            <button id="run-all-btn"><i class="fas fa-play-circle"></i> Run All Steps</button>
+        </div>
+        
+        <div class="result">
+            <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #4caf50;"></i>
+            <div>Final Result: <span class="highlight">3<sup>13</sup> mod 11</span> = </div>
+            <div class="result-value" id="result-final">?</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const runAllBtn = document.getElementById('run-all-btn');
+            const stepDisplay = document.querySelector('.step-display');
+            const resultValue = document.getElementById('result-value');
+            const baseValue = document.getElementById('base-value');
+            const exponentValue = document.getElementById('exponent-value');
+            const modulusValue = document.getElementById('modulus-value');
+            const binaryRep = document.getElementById('binary-rep');
+            const explanation = document.getElementById('explanation');
+            const resultFinal = document.getElementById('result-final');
+            const algorithmSteps = document.querySelectorAll('.algorithm-step');
+            const calculation = document.getElementById('calculation');
+            const progressBar = document.getElementById('progress-bar');
+            
+            // Algorithm state
+            let currentStep = 0;
+            let result = 1;
+            let base = 3;
+            let exponent = 13;
+            let modulus = 11;
+            let binaryExp = exponent.toString(2);
+            let stepHistory = [];
+            let runAllInterval = null;
+            let currentBit = binaryExp.length - 1;
+            
+            // Initialize the visualization
+            function initialize() {
+                // Clear any running intervals
+                if (runAllInterval) {
+                    clearInterval(runAllInterval);
+                    runAllInterval = null;
+                }
+                
+                result = 1;
+                base = 3;
+                exponent = 13;
+                modulus = 11;
+                binaryExp = exponent.toString(2);
+                currentStep = 0;
+                currentBit = binaryExp.length - 1;
+                stepHistory = [];
+                
+                updateDisplay();
+                updateAlgorithmSteps();
+                saveStepHistory();
+            }
+            
+            // Save current step to history
+            function saveStepHistory() {
+                stepHistory.push({
+                    step: currentStep,
+                    result: result,
+                    base: base,
+                    exponent: exponent,
+                    binaryExp: binaryExp,
+                    currentBit: currentBit
+                });
+            }
+            
+            // Update the display with current values
+            function updateDisplay() {
+                resultValue.textContent = result;
+                baseValue.textContent = base;
+                exponentValue.textContent = exponent;
+                modulusValue.textContent = modulus;
+                
+                // Highlight the current bit being processed
+                if (currentStep > 0 && currentStep < 17) {
+                    let binaryHTML = '';
+                    for (let i = 0; i < binaryExp.length; i++) {
+                        if (i === currentBit) {
+                            binaryHTML += `<span class="bit-highlight">${binaryExp[i]}</span>`;
+                        } else {
+                            binaryHTML += binaryExp[i];
+                        }
+                    }
+                    binaryRep.innerHTML = binaryHTML;
+                } else {
+                    binaryRep.textContent = binaryExp;
+                }
+                
+                updateExplanation();
+                updateStepDisplay();
+                updateCalculation();
+                
+                // Enable/disable buttons based on current step
+                prevBtn.disabled = currentStep === 0;
+                
+                // Update progress bar
+                const progress = Math.min(100, (currentStep / 16) * 100);
+                progressBar.style.width = `${progress}%`;
+                
+                // Show final result if done
+                if (exponent === 0 && currentStep > 0) {
+                    resultFinal.textContent = result;
+                }
+            }
+            
+            // Update the explanation text based on current step
+            function updateExplanation() {
+                let explanationText = "";
+                
+                switch(currentStep) {
+                    case 0:
+                        explanationText = "We begin with result = 1, base = 3, exponent = 13, and modulus = 11.<br>The binary representation of 13 is 1101. We'll process bits from right to left (LSB to MSB).";
+                        break;
+                    case 1:
+                        explanationText = "We start the loop since exponent (13) is greater than 0.";
+                        break;
+                    case 2:
+                        explanationText = "The exponent (13) is odd, so we multiply result by base and apply mod 11.";
+                        break;
+                    case 3:
+                        explanationText = "We square the base and apply mod 11.";
+                        break;
+                    case 4:
+                        explanationText = "We divide the exponent by 2 (integer division).";
+                        break;
+                    case 5:
+                        explanationText = "We continue the loop since exponent (6) is greater than 0.";
+                        break;
+                    case 6:
+                        explanationText = "The exponent (6) is even, so we skip the multiplication step.";
+                        break;
+                    case 7:
+                        explanationText = "We square the base and apply mod 11.";
+                        break;
+                    case 8:
+                        explanationText = "We divide the exponent by 2 (integer division).";
+                        break;
+                    case 9:
+                        explanationText = "We continue the loop since exponent (3) is greater than 0.";
+                        break;
+                    case 10:
+                        explanationText = "The exponent (3) is odd, so we multiply result by base and apply mod 11.";
+                        break;
+                    case 11:
+                        explanationText = "We square the base and apply mod 11.";
+                        break;
+                    case 12:
+                        explanationText = "We divide the exponent by 2 (integer division).";
+                        break;
+                    case 13:
+                        explanationText = "We continue the loop since exponent (1) is greater than 0.";
+                        break;
+                    case 14:
+                        explanationText = "The exponent (1) is odd, so we multiply result by base and apply mod 11.";
+                        break;
+                    case 15:
+                        explanationText = "We square the base and apply mod 11.";
+                        break;
+                    case 16:
+                        explanationText = "We divide the exponent by 2 (integer division). The exponent is now 0, so we exit the loop.";
+                        break;
+                    default:
+                        explanationText = "Calculation complete!";
+                        break;
+                }
+                
+                explanation.innerHTML = explanationText;
+            }
+            
+            // Update the calculation display
+            function updateCalculation() {
+                let calculationText = "";
+                
+                switch(currentStep) {
+                    case 0:
+                        calculationText = "Initial state: result = 1, base = 3, exponent = 13";
+                        break;
+                    case 1:
+                        calculationText = "Entering loop: exponent (13) > 0";
+                        break;
+                    case 2:
+                        calculationText = "exponent is odd: result = (1 × 3) mod 11 = 3";
+                        break;
+                    case 3:
+                        calculationText = "base = (3 × 3) mod 11 = 9 mod 11 = 9";
+                        break;
+                    case 4:
+                        calculationText = "exponent = 13 ÷ 2 = 6";
+                        break;
+                    case 5:
+                        calculationText = "exponent (6) > 0, continue loop";
+                        break;
+                    case 6:
+                        calculationText = "exponent is even, no multiplication";
+                        break;
+                    case 7:
+                        calculationText = "base = (9 × 9) mod 11 = 81 mod 11 = 4";
+                        break;
+                    case 8:
+                        calculationText = "exponent = 6 ÷ 2 = 3";
+                        break;
+                    case 9:
+                        calculationText = "exponent (3) > 0, continue loop";
+                        break;
+                    case 10:
+                        calculationText = "exponent is odd: result = (3 × 4) mod 11 = 12 mod 11 = 1";
+                        break;
+                    case 11:
+                        calculationText = "base = (4 × 4) mod 11 = 16 mod 11 = 5";
+                        break;
+                    case 12:
+                        calculationText = "exponent = 3 ÷ 2 = 1";
+                        break;
+                    case 13:
+                        calculationText = "exponent (1) > 0, continue loop";
+                        break;
+                    case 14:
+                        calculationText = "exponent is odd: result = (1 × 5) mod 11 = 5 mod 11 = 5";
+                        break;
+                    case 15:
+                        calculationText = "base = (5 × 5) mod 11 = 25 mod 11 = 3";
+                        break;
+                    case 16:
+                        calculationText = "exponent = 1 ÷ 2 = 0";
+                        break;
+                    default:
+                        calculationText = "Final result: 3¹³ mod 11 = 5";
+                        break;
+                }
+                
+                calculation.textContent = calculationText;
+            }
+            
+            // Update the step display text
+            function updateStepDisplay() {
+                let stepText = "";
+                
+                switch(currentStep) {
+                    case 0:
+                        stepText = "Step 0: Initialize variables";
+                        break;
+                    case 1:
+                        stepText = "Step 1: Check if exponent > 0";
+                        break;
+                    case 2:
+                        stepText = "Step 2: Check if exponent is odd";
+                        break;
+                    case 3:
+                        stepText = "Step 3: Square the base (mod m)";
+                        break;
+                    case 4:
+                        stepText = "Step 4: Divide exponent by 2";
+                        break;
+                    case 5:
+                        stepText = "Step 5: Check if exponent > 0";
+                        break;
+                    case 6:
+                        stepText = "Step 6: Check if exponent is odd";
+                        break;
+                    case 7:
+                        stepText = "Step 7: Square the base (mod m)";
+                        break;
+                    case 8:
+                        stepText = "Step 8: Divide exponent by 2";
+                        break;
+                    case 9:
+                        stepText = "Step 9: Check if exponent > 0";
+                        break;
+                    case 10:
+                        stepText = "Step 10: Check if exponent is odd";
+                        break;
+                    case 11:
+                        stepText = "Step 11: Square the base (mod m)";
+                        break;
+                    case 12:
+                        stepText = "Step 12: Divide exponent by 2";
+                        break;
+                    case 13:
+                        stepText = "Step 13: Check if exponent > 0";
+                        break;
+                    case 14:
+                        stepText = "Step 14: Check if exponent is odd";
+                        break;
+                    case 15:
+                        stepText = "Step 15: Square the base (mod m)";
+                        break;
+                    case 16:
+                        stepText = "Step 16: Divide exponent by 2";
+                        break;
+                    default:
+                        stepText = "Calculation complete!";
+                        break;
+                }
+                
+                stepDisplay.textContent = stepText;
+            }
+            
+            // Update algorithm steps highlighting
+            function updateAlgorithmSteps() {
+                algorithmSteps.forEach((step, index) => {
+                    step.classList.remove('current-step');
+                });
+                
+                if (currentStep >= 1 && currentStep <= 4) {
+                    algorithmSteps[1].classList.add('current-step');
+                }
+                if (currentStep === 2 || currentStep === 6 || currentStep === 10 || currentStep === 14) {
+                    algorithmSteps[2].classList.add('current-step');
+                }
+                if (currentStep === 3 || currentStep === 7 || currentStep === 11 || currentStep === 15) {
+                    algorithmSteps[3].classList.add('current-step');
+                }
+                if (currentStep === 4 || currentStep === 8 || currentStep === 12 || currentStep === 16) {
+                    algorithmSteps[4].classList.add('current-step');
+                }
+                if (currentStep === 0) {
+                    algorithmSteps[0].classList.add('current-step');
+                }
+            }
+            
+            // Move to the next step
+            function nextStep() {
+                if (currentStep >= 16) return;
+                
+                currentStep++;
+                
+                // Perform the operation based on the step
+                switch(currentStep) {
+                    case 2:
+                        // exponent is odd: multiply result by base
+                        result = (result * base) % modulus;
+                        currentBit = binaryExp.length - 1;
+                        break;
+                    case 3:
+                        // square the base
+                        base = (base * base) % modulus;
+                        break;
+                    case 4:
+                        // divide exponent by 2
+                        exponent = Math.floor(exponent / 2);
+                        currentBit--;
+                        break;
+                    case 6:
+                        // exponent is even: skip multiplication
+                        break;
+                    case 7:
+                        // square the base
+                        base = (base * base) % modulus;
+                        break;
+                    case 8:
+                        // divide exponent by 2
+                        exponent = Math.floor(exponent / 2);
+                        currentBit--;
+                        break;
+                    case 10:
+                        // exponent is odd: multiply result by base
+                        result = (result * base) % modulus;
+                        break;
+                    case 11:
+                        // square the base
+                        base = (base * base) % modulus;
+                        break;
+                    case 12:
+                        // divide exponent by 2
+                        exponent = Math.floor(exponent / 2);
+                        currentBit--;
+                        break;
+                    case 14:
+                        // exponent is odd: multiply result by base
+                        result = (result * base) % modulus;
+                        break;
+                    case 15:
+                        // square the base
+                        base = (base * base) % modulus;
+                        break;
+                    case 16:
+                        // divide exponent by 2
+                        exponent = Math.floor(exponent / 2);
+                        currentBit--;
+                        break;
+                }
+                
+                saveStepHistory();
+                updateDisplay();
+                updateAlgorithmSteps();
+            }
+            
+            // Move to the previous step
+            function prevStep() {
+                if (currentStep === 0) return;
+                
+                if (stepHistory.length > 1) {
+                    stepHistory.pop(); // Remove current step
+                    const prevState = stepHistory[stepHistory.length - 1];
+                    
+                    currentStep = prevState.step;
+                    result = prevState.result;
+                    base = prevState.base;
+                    exponent = prevState.exponent;
+                    binaryExp = prevState.binaryExp;
+                    currentBit = prevState.currentBit;
+                    
+                    updateDisplay();
+                    updateAlgorithmSteps();
+                }
+            }
+            
+            // Run all steps automatically
+            function runAllSteps() {
+                if (currentStep >= 16) return;
+                
+                // Clear any existing interval
+                if (runAllInterval) {
+                    clearInterval(runAllInterval);
+                }
+                
+                runAllInterval = setInterval(() => {
+                    if (currentStep < 16) {
+                        nextStep();
+                    } else {
+                        clearInterval(runAllInterval);
+                        runAllInterval = null;
+                    }
+                }, 1500);
+            }
+            
+            // Event listeners
+            nextBtn.addEventListener('click', nextStep);
+            prevBtn.addEventListener('click', prevStep);
+            resetBtn.addEventListener('click', initialize);
+            runAllBtn.addEventListener('click', runAllSteps);
+            
+            // Initialize the visualization
+            initialize();
+        });
+    </script>
+</body>
+</html>
