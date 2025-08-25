@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Exponentiation Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --dark: #1a202c;
+            --light: #f7fafc;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --error: #f87171;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-dark: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .problem-statement {
+            grid-column: 1 / -1;
+        }
+        
+        .explanation {
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .visualization-area {
+            width: 100%;
+            height: 300px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        button.secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+        }
+        
+        input[type="number"] {
+            padding: 12px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #drawingCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .drawing-controls button {
+            padding: 8px 15px;
+        }
+        
+        .key-points {
+            margin-top: 20px;
+        }
+        
+        .key-point {
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .key-point i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        .quiz-container {
+            margin-top: 40px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 15px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .option:hover {
+            background: rgba(79, 70, 229, 0.3);
+        }
+        
+        .option.selected {
+            background: rgba(79, 70, 229, 0.5);
+            position: relative;
+        }
+        
+        .option.selected::after {
+            content: "My Answer";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        
+        .quiz-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 15px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--success);
+        }
+        
+        .correct-answer {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .wrong-answer {
+            color: var(--error);
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+        
+        .code-container {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        pre {
+            color: #d4d4d4;
+            font-family: 'Consolas', monospace;
+            line-height: 1.5;
+        }
+        
+        .keyword {
+            color: #569cd6;
+        }
+        
+        .function {
+            color: #dcdcaa;
+        }
+        
+        .number {
+            color: #b5cea8;
+        }
+        
+        .comment {
+            color: #6a9955;
+        }
+        
+        .try-section {
+            margin-top: 40px;
+        }
+        
+        .try-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .try-box {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+        }
+        
+        .try-result {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            min-height: 40px;
+            word-break: break-all;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            opacity: 0.7;
+        }
+        
+        .binary-breakdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .binary-digit {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: var(--glass);
+            transition: all 0.3s ease;
+        }
+        
+        .binary-digit.active {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+        
+        .power-item {
+            padding: 10px 15px;
+            background: var(--glass-dark);
+            border-radius: 8px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .power-value {
+            margin-left: auto;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .grid-item {
+            background: var(--glass);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .grid-item.active {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-binary"></i> Binary Exponentiation</h1>
+            <p class="subtitle">Understanding powers through binary decomposition</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="card problem-statement">
+                <h2 class="card-title"><i class="fas fa-question-circle"></i> Concept Overview</h2>
+                <p>Binary exponentiation is a method for efficiently calculating large powers by breaking down the exponent into its binary representation.</p>
+                <p>For example, to calculate 2¹⁰⁵, we can break down 105 into its binary components:</p>
+                <p>105 = 64 + 32 + 8 + 1 = 2⁶ + 2⁵ + 2³ + 2⁰</p>
+                <p>Therefore, 2¹⁰⁵ = 2⁶⁴ × 2³² × 2⁸ × 2¹</p>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-sitemap"></i> Binary Breakdown</h2>
+                <p>Let's break down the exponent 105 into binary:</p>
+                
+                <div class="binary-breakdown">
+                    <div class="binary-digit active">1</div>
+                    <div class="binary-digit active">1</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit active">1</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit">0</div>
+                    <div class="binary-digit active">1</div>
+                </div>
+                
+                <p>Binary: 1101001 (from most to least significant bit)</p>
+                <p>This corresponds to:</p>
+                
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2⁶ = 64</span>
+                    <span class="power-value">1 × 64</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2⁵ = 32</span>
+                    <span class="power-value">1 × 32</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2⁴ = 16</span>
+                    <span class="power-value">0 × 16</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2³ = 8</span>
+                    <span class="power-value">1 × 8</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2² = 4</span>
+                    <span class="power-value">0 × 4</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2¹ = 2</span>
+                    <span class="power-value">0 × 2</span>
+                </div>
+                <div class="power-item">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>2⁰ = 1</span>
+                    <span class="power-value">1 × 1</span>
+                </div>
+                
+                <div class="power-item" style="background: var(--accent); margin-top: 15px;">
+                    <i class="fas fa-equals"></i>
+                    <span>Total</span>
+                    <span class="power-value">64 + 32 + 8 + 1 = 105</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-calculator"></i> Calculating 2¹⁰⁵</h2>
+                <p>Now we can compute 2¹⁰⁵ using the binary decomposition:</p>
+                
+                <div class="visualization-grid">
+                    <div class="grid-item active">
+                        <div>2¹</div>
+                        <div class="power-value">2</div>
+                    </div>
+                    <div class="grid-item">
+                        <div>2²</div>
+                        <div class="power-value">4</div>
+                    </div>
+                    <div class="grid-item active">
+                        <div>2⁴</div>
+                        <div class="power-value">16</div>
+                    </div>
+                    <div class="grid-item active">
+                        <div>2⁸</div>
+                        <div class="power-value">256</div>
+                    </div>
+                    <div class="grid-item active">
+                        <div>2¹⁶</div>
+                        <div class="power-value">65,536</div>
+                    </div>
+                    <div class="grid-item active">
+                        <div>2³²</div>
+                        <div class="power-value">4,294,967,296</div>
+                    </div>
+                    <div class="grid-item active">
+                        <div>2⁶⁴</div>
+                        <div class="power-value">18,446,744,073,709,551,616</div>
+                    </div>
+                </div>
+                
+                <p>Since 105 = 64 + 32 + 8 + 1, we multiply the corresponding powers:</p>
+                
+                <div class="power-item">
+                    <i class="fas fa-times"></i>
+                    <span>2⁶⁴ × 2³² × 2⁸ × 2¹</span>
+                </div>
+                
+                <div class="power-item" style="background: var(--accent); margin-top: 15px;">
+                    <i class="fas fa-equals"></i>
+                    <span>2¹⁰⁵</span>
+                    <span class="power-value">40,564,819,207,303,340,847,894,502,572,032</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-code"></i> Algorithm Implementation</h2>
+                <div class="code-container">
+                    <pre><span class="keyword">def</span> <span class="function">binary_exponentiation</span>(base, exponent):
+    <span class="comment"># Handle negative exponents</span>
+    <span class="keyword">if</span> exponent < <span class="number">0</span>:
+        base = <span class="number">1</span> / base
+        exponent = -exponent
+    
+    result = <span class="number">1</span>
+    current_power = base
+    
+    <span class="keyword">while</span> exponent > <span class="number">0</span>:
+        <span class="comment"># If the current bit is set, multiply result with current_power</span>
+        <span class="keyword">if</span> exponent % <span class="number">2</span> == <span class="number">1</span>:
+            result *= current_power
+        
+        <span class="comment"># Square the current power</span>
+        current_power *= current_power
+        <span class="comment"># Move to the next bit</span>
+        exponent //= <span class="number">2</span>
+    
+    <span class="keyword">return</span> result
+
+<span class="comment"># Calculate 2^105 using binary exponentiation</span>
+result = binary_exponentiation(<span class="number">2</span>, <span class="number">105</span>)
+print(result)</pre>
+                </div>
+            </div>
+            
+            <div class="card visualization">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Interactive Visualization</h2>
+                <div class="visualization-area">
+                    <div class="canvas-container">
+                        <canvas id="drawingCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="drawing-controls">
+                    <button id="clearCanvas"><i class="fas fa-trash"></i> Clear</button>
+                    <button id="changeColor"><i class="fas fa-palette"></i> Change Color</button>
+                </div>
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="baseInput">Base:</label>
+                        <input type="number" id="baseInput" value="2" min="1" max="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="exponentInput">Exponent:</label>
+                        <input type="number" id="exponentInput" value="105" min="0" max="1000">
+                    </div>
+                    <button id="calculateBtn"><i class="fas fa-calculator"></i> Calculate</button>
+                </div>
+                <div id="visualResult" class="try-result">2^105 = 40,564,819,207,303,340,847,894,502,572,032</div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-key"></i> Key Points to Remember</h2>
+                <div class="key-points">
+                    <div class="key-point">
+                        <i class="fas fa-1"></i>
+                        <div>Binary exponentiation breaks down the exponent into its binary representation</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-2"></i>
+                        <div>Only O(log n) multiplications are needed instead of O(n)</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-3"></i>
+                        <div>Each bit position corresponds to a power of two</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-4"></i>
+                        <div>We only multiply the powers where the binary digit is 1</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-5"></i>
+                        <div>This method works for any base, not just 2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="try-section">
+            <h2 class="card-title"><i class="fas fa-play-circle"></i> Try It Yourself</h2>
+            <div class="try-container">
+                <div class="try-box">
+                    <h3>Calculate Using Binary Exponentiation</h3>
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="tryBase">Base:</label>
+                            <input type="number" id="tryBase" value="2" min="1" max="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="tryExponent">Exponent:</label>
+                            <input type="number" id="tryExponent" value="10" min="0" max="100">
+                        </div>
+                        <button id="tryButton"><i class="fas fa-play"></i> Calculate</button>
+                    </div>
+                    <div id="tryResult" class="try-result">2^10 = 1024</div>
+                </div>
+                
+                <div class="try-box">
+                    <h3>Step-by-Step Simulation</h3>
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="simBase">Base:</label>
+                            <input type="number" id="simBase" value="2" min="1" max="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="simExponent">Exponent:</label>
+                            <input type="number" id="simExponent" value="13" min="0" max="100">
+                        </div>
+                        <button id="simulateButton"><i class="fas fa-forward"></i> Simulate</button>
+                    </div>
+                    <div id="simResult" class="try-result">Click Simulate</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-container">
+            <h2 class="card-title"><i class="fas fa-check-square"></i> Quick Quiz</h2>
+            
+            <div class="quiz-question">
+                <p>1. What is the binary representation of the number 13?</p>
+                <div class="options">
+                    <div class="option">1001</div>
+                    <div class="option">1010</div>
+                    <div class="option" data-correct="true">1101</div>
+                    <div class="option">1110</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>2. How would you express 2¹³ using binary exponentiation?</p>
+                <div class="options">
+                    <div class="option">2¹⁰ × 2² × 2¹</div>
+                    <div class="option">2⁸ × 2⁴ × 2¹</div>
+                    <div class="option" data-correct="true">2⁸ × 2⁴ × 2¹</div>
+                    <div class="option">2⁶ × 2⁴ × 2² × 2¹</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>3. What is the time complexity of binary exponentiation?</p>
+                <div class="options">
+                    <div class="option">O(n)</div>
+                    <div class="option" data-correct="true">O(log n)</div>
+                    <div class="option">O(n log n)</div>
+                    <div class="option">O(1)</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>4. Which exponents would be used to compute 2²³ using binary exponentiation?</p>
+                <div class="options">
+                    <div class="option">2¹⁶ + 2⁴ + 2² + 2¹</div>
+                    <div class="option">2¹⁶ + 2⁸ + 2⁴ + 2² + 2¹</div>
+                    <div class="option" data-correct="true">2¹⁶ + 2⁴ + 2² + 2¹</div>
+                    <div class="option">2¹⁶ + 2⁸ + 2⁴ + 2² + 2¹</div>
+                </div>
+            </div>
+            
+            <div class="quiz-controls">
+                <button id="checkAnswers"><i class="fas fa-check-double"></i> Check Answers</button>
+            </div>
+            
+            <div id="quizResult" class="result">
+                <div class="score">Your score: <span id="scoreValue">0%</span></div>
+                <div id="answerFeedback"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ for effective learning | Binary Exponentiation Visualization</p>
+        </footer>
+    </div>
+
+    <script>
+        // Drawing canvas functionality
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let strokeColor = '#ff006e';
+        let lineWidth = 3;
+        
+        // Set canvas size
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        }
+        
+        // Initialize canvas
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        // Event listeners for drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        // Clear canvas
+        document.getElementById('clearCanvas').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        // Change drawing color
+        document.getElementById('changeColor').addEventListener('click', () => {
+            const colors = ['#ff006e', '#3a86ff', '#8338ec', '#4ade80', '#fbbf24'];
+            strokeColor = colors[Math.floor(Math.random() * colors.length)];
+        });
+        
+        // Binary exponentiation function
+        function binaryExponentiation(base, exponent) {
+            if (exponent < 0) {
+                base = 1 / base;
+                exponent = -exponent;
+            }
+            
+            let result = 1;
+            let currentPower = base;
+            
+            while (exponent > 0) {
+                if (exponent % 2 === 1) {
+                    result *= currentPower;
+                }
+                
+                currentPower *= currentPower;
+                exponent = Math.floor(exponent / 2);
+            }
+            
+            return result;
+        }
+        
+        // Format large numbers with commas
+        function formatNumber(num) {
+            if (typeof num !== 'number') return num;
+            
+            if (num < 1000000) {
+                return num.toLocaleString();
+            }
+            
+            // For very large numbers, use exponential notation
+            if (num > 1e21) {
+                return num.toExponential(4);
+            }
+            
+            return num.toLocaleString();
+        }
+        
+        // Calculate button
+        document.getElementById('calculateBtn').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('baseInput').value);
+            const exponent = parseInt(document.getElementById('exponentInput').value);
+            const result = binaryExponentiation(base, exponent);
+            document.getElementById('visualResult').textContent = `${base}^${exponent} = ${formatNumber(result)}`;
+        });
+        
+        // Try it yourself
+        document.getElementById('tryButton').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('tryBase').value);
+            const exponent = parseInt(document.getElementById('tryExponent').value);
+            const result = binaryExponentiation(base, exponent);
+            document.getElementById('tryResult').textContent = `${base}^${exponent} = ${formatNumber(result)}`;
+        });
+        
+        // Simulation
+        document.getElementById('simulateButton').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('simBase').value);
+            let exponent = parseInt(document.getElementById('simExponent').value);
+            let result = 1;
+            let currentPower = base;
+            let steps = [];
+            
+            steps.push(`Initialization: result = 1, currentPower = ${base}, exponent = ${exponent}`);
+            
+            while (exponent > 0) {
+                if (exponent % 2 === 1) {
+                    steps.push(`Exponent ${exponent} is odd: result *= currentPower (${result} × ${currentPower} = ${result * currentPower})`);
+                    result *= currentPower;
+                } else {
+                    steps.push(`Exponent ${exponent} is even: no change to result`);
+                }
+                
+                steps.push(`Squaring currentPower: ${currentPower} × ${currentPower} = ${currentPower * currentPower}`);
+                currentPower *= currentPower;
+                steps.push(`Halving exponent: ${exponent} // 2 = ${Math.floor(exponent / 2)}`);
+                exponent = Math.floor(exponent / 2);
+            }
+            
+            steps.push(`Final result: ${result}`);
+            
+            // Display steps
+            document.getElementById('simResult').innerHTML = steps.join('<br>');
+        });
+        
+        // Quiz functionality
+        const options = document.querySelectorAll('.option');
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove any existing selections in this question
+                const parent = option.parentElement;
+                const siblings = parent.querySelectorAll('.option');
+                siblings.forEach(sib => sib.classList.remove('selected'));
+                
+                // Select this option
+                option.classList.add('selected');
+            });
+        });
+        
+        document.getElementById('checkAnswers').addEventListener('click', () => {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correctCount = 0;
+            let feedbackHTML = '';
+            
+            questions.forEach((question, index) => {
+                const selectedOption = question.querySelector('.option.selected');
+                
+                if (selectedOption) {
+                    if (selectedOption.dataset.correct === 'true') {
+                        correctCount++;
+                        feedbackHTML += `<p>Question ${index + 1}: <span class="correct-answer">Correct!</span></p>`;
+                    } else {
+                        const correctOption = question.querySelector('.option[data-correct="true"]');
+                        feedbackHTML += `<p>Question ${index + 1}: <span class="wrong-answer">Your answer</span> <span class="correct-answer">Correct: ${correctOption.textContent}</span></p>`;
+                    }
+                } else {
+                    const correctOption = question.querySelector('.option[data-correct="true"]');
+                    feedbackHTML += `<p>Question ${index + 1}: <span class="wrong-answer">No answer selected</span> <span class="correct-answer">Correct: ${correctOption.textContent}</span></p>`;
+                }
+            });
+            
+            const score = Math.round((correctCount / questions.length) * 100);
+            document.getElementById('scoreValue').textContent = `${score}%`;
+            document.getElementById('answerFeedback').innerHTML = feedbackHTML;
+            document.getElementById('quizResult').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Initialize with some values
+        document.getElementById('calculateBtn').click();
+        document.getElementById('tryButton').click();
+    </script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning: Exponentiation (Pow(x, n))</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --accent: #ec4899;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-dark: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .problem-statement {
+            grid-column: 1 / -1;
+        }
+        
+        .explanation {
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .visualization-area {
+            width: 100%;
+            height: 300px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        button.secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+        }
+        
+        input[type="number"] {
+            padding: 12px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #drawingCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .drawing-controls button {
+            padding: 8px 15px;
+        }
+        
+        .key-points {
+            margin-top: 20px;
+        }
+        
+        .key-point {
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .key-point i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        .quiz-container {
+            margin-top: 40px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 15px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            padding: 15px;
+            background: var(--glass-dark);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .option:hover {
+            background: rgba(79, 70, 229, 0.3);
+        }
+        
+        .option.selected {
+            background: rgba(79, 70, 229, 0.5);
+            position: relative;
+        }
+        
+        .option.selected::after {
+            content: "My Answer";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        
+        .quiz-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 15px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--success);
+        }
+        
+        .correct-answer {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .wrong-answer {
+            color: var(--error);
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+        
+        .code-container {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        pre {
+            color: #d4d4d4;
+            font-family: 'Consolas', monospace;
+            line-height: 1.5;
+        }
+        
+        .keyword {
+            color: #569cd6;
+        }
+        
+        .function {
+            color: #dcdcaa;
+        }
+        
+        .number {
+            color: #b5cea8;
+        }
+        
+        .comment {
+            color: #6a9955;
+        }
+        
+        .try-section {
+            margin-top: 40px;
+        }
+        
+        .try-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .try-box {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+        }
+        
+        .try-result {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            min-height: 40px;
+            word-break: break-all;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> Exponentiation: Pow(x, n)</h1>
+            <p class="subtitle">Understanding the efficient calculation of powers</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="card problem-statement">
+                <h2 class="card-title"><i class="fas fa-question-circle"></i> Problem Statement</h2>
+                <p>Implement pow(x, n), which calculates x raised to the power n (i.e., x<sup>n</sup>).</p>
+                <p>We need to implement this efficiently using a method called "exponentiation by squaring".</p>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-lightbulb"></i> Intuition</h2>
+                <div class="explanation">
+                    <p>The naive approach would multiply x by itself n times, resulting in O(n) time complexity.</p>
+                    <p>Instead, we can use exponentiation by squaring which has O(log n) time complexity.</p>
+                    <p>The key idea is to use the property:</p>
+                    <ul>
+                        <li>x<sup>n</sup> = (x<sup>2</sup>)<sup>n/2</sup> if n is even</li>
+                        <li>x<sup>n</sup> = x * (x<sup>2</sup>)<sup>(n-1)/2</sup> if n is odd</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-code"></i> Solution Code</h2>
+                <div class="code-container">
+                    <pre><span class="keyword">def</span> <span class="function">myPow</span>(x, n):
+    <span class="keyword">if</span> n == <span class="number">0</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    
+    <span class="keyword">if</span> n < <span class="number">0</span>:
+        x = <span class="number">1</span> / x
+        n = -n
+    
+    result = <span class="number">1</span>
+    <span class="keyword">while</span> n > <span class="number">0</span>:
+        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:
+            result *= x
+        x *= x
+        n //= <span class="number">2</span>
+    
+    <span class="keyword">return</span> result</pre>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-sitemap"></i> Step-by-Step Explanation</h2>
+                <div class="explanation">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <span>Handle the case when n is 0: any number to the power of 0 is 1.</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <span>If n is negative, convert the problem to calculating (1/x)<sup>-n</sup>.</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <span>Initialize result to 1.</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <span>While n is greater than 0:</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <span>If n is odd, multiply the result by x.</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">6</span>
+                        <span>Square x and halve n (using integer division).</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">7</span>
+                        <span>Return the result.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card visualization">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Visualization</h2>
+                <div class="visualization-area">
+                    <div class="canvas-container">
+                        <canvas id="drawingCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="drawing-controls">
+                    <button id="clearCanvas"><i class="fas fa-trash"></i> Clear</button>
+                    <button id="changeColor"><i class="fas fa-palette"></i> Change Color</button>
+                </div>
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="baseInput">Base (x):</label>
+                        <input type="number" id="baseInput" value="2">
+                    </div>
+                    <div class="input-group">
+                        <label for="exponentInput">Exponent (n):</label>
+                        <input type="number" id="exponentInput" value="5">
+                    </div>
+                    <button id="calculateBtn"><i class="fas fa-calculator"></i> Calculate</button>
+                </div>
+                <div id="visualResult" class="try-result">2^5 = 32</div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-key"></i> Key Points to Remember</h2>
+                <div class="key-points">
+                    <div class="key-point">
+                        <i class="fas fa-1"></i>
+                        <div>Time complexity is O(log n) instead of O(n)</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-2"></i>
+                        <div>Handle negative exponents by using reciprocal</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-3"></i>
+                        <div>Use the properties of exponents to break down the problem</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-4"></i>
+                        <div>While loop continues until n becomes 0</div>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-5"></i>
+                        <div>When n is odd, we multiply the result by the current base</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="try-section">
+            <h2 class="card-title"><i class="fas fa-play-circle"></i> Try It Yourself</h2>
+            <div class="try-container">
+                <div class="try-box">
+                    <h3>Calculate Pow(x, n)</h3>
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="tryBase">Base (x):</label>
+                            <input type="number" id="tryBase" value="3">
+                        </div>
+                        <div class="input-group">
+                            <label for="tryExponent">Exponent (n):</label>
+                            <input type="number" id="tryExponent" value="4">
+                        </div>
+                        <button id="tryButton"><i class="fas fa-play"></i> Run</button>
+                    </div>
+                    <div id="tryResult" class="try-result">3^4 = 81</div>
+                </div>
+                
+                <div class="try-box">
+                    <h3>Step-by-Step Simulation</h3>
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="simBase">Base (x):</label>
+                            <input type="number" id="simBase" value="2">
+                        </div>
+                        <div class="input-group">
+                            <label for="simExponent">Exponent (n):</label>
+                            <input type="number" id="simExponent" value="10">
+                        </div>
+                        <button id="simulateButton"><i class="fas fa-forward"></i> Simulate</button>
+                    </div>
+                    <div id="simResult" class="try-result">Click Simulate</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-container">
+            <h2 class="card-title"><i class="fas fa-check-square"></i> Quick Quiz</h2>
+            
+            <div class="quiz-question">
+                <p>1. What is the time complexity of the exponentiation by squaring algorithm?</p>
+                <div class="options">
+                    <div class="option" data-correct="true">O(log n)</div>
+                    <div class="option">O(n)</div>
+                    <div class="option">O(n log n)</div>
+                    <div class="option">O(1)</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>2. What is the value of 2^10?</p>
+                <div class="options">
+                    <div class="option">20</div>
+                    <div class="option">100</div>
+                    <div class="option" data-correct="true">1024</div>
+                    <div class="option">512</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>3. How do we handle negative exponents in the algorithm?</p>
+                <div class="options">
+                    <div class="option">We ignore the negative sign</div>
+                    <div class="option">We convert it to positive and calculate normally</div>
+                    <div class="option" data-correct="true">We take the reciprocal and make exponent positive</div>
+                    <div class="option">We return 0</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>4. What is the base case for the recursion in this algorithm?</p>
+                <div class="options">
+                    <div class="option">When n == 1</div>
+                    <div class="option">When x == 0</div>
+                    <div class="option" data-correct="true">When n == 0</div>
+                    <div class="option">When n < 0</div>
+                </div>
+            </div>
+            
+            <div class="quiz-controls">
+                <button id="checkAnswers"><i class="fas fa-check-double"></i> Check Answers</button>
+            </div>
+            
+            <div id="quizResult" class="result">
+                <div class="score">Your score: <span id="scoreValue">0%</span></div>
+                <div id="answerFeedback"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ for effective learning | LeetCode Problem 50: Pow(x, n)</p>
+        </footer>
+    </div>
+
+    <script>
+        // Drawing canvas functionality
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let strokeColor = '#ec4899';
+        let lineWidth = 3;
+        
+        // Set canvas size
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        }
+        
+        // Initialize canvas
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        // Event listeners for drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        });
+        
+        // Clear canvas
+        document.getElementById('clearCanvas').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        // Change drawing color
+        document.getElementById('changeColor').addEventListener('click', () => {
+            const colors = ['#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+            strokeColor = colors[Math.floor(Math.random() * colors.length)];
+        });
+        
+        // Pow function implementation
+        function myPow(x, n) {
+            if (n === 0) return 1;
+            
+            if (n < 0) {
+                x = 1 / x;
+                n = -n;
+            }
+            
+            let result = 1;
+            while (n > 0) {
+                if (n % 2 === 1) {
+                    result *= x;
+                }
+                x *= x;
+                n = Math.floor(n / 2);
+            }
+            
+            return result;
+        }
+        
+        // Calculate button
+        document.getElementById('calculateBtn').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('baseInput').value);
+            const exponent = parseInt(document.getElementById('exponentInput').value);
+            const result = myPow(base, exponent);
+            document.getElementById('visualResult').textContent = `${base}^${exponent} = ${result}`;
+        });
+        
+        // Try it yourself
+        document.getElementById('tryButton').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('tryBase').value);
+            const exponent = parseInt(document.getElementById('tryExponent').value);
+            const result = myPow(base, exponent);
+            document.getElementById('tryResult').textContent = `${base}^${exponent} = ${result}`;
+        });
+        
+        // Simulation
+        document.getElementById('simulateButton').addEventListener('click', () => {
+            const base = parseFloat(document.getElementById('simBase').value);
+            let exponent = parseInt(document.getElementById('simExponent').value);
+            let result = 1;
+            let steps = [];
+            
+            if (exponent < 0) {
+                steps.push(`Exponent is negative, so we'll calculate 1/${base}^${-exponent}`);
+                base = 1 / base;
+                exponent = -exponent;
+            }
+            
+            steps.push(`Initialization: result = 1, x = ${base}, n = ${exponent}`);
+            
+            while (exponent > 0) {
+                if (exponent % 2 === 1) {
+                    steps.push(`n is odd (${exponent}), so result *= x: ${result} * ${base} = ${result * base}`);
+                    result *= base;
+                } else {
+                    steps.push(`n is even (${exponent}), so we skip multiplying result`);
+                }
+                
+                steps.push(`Squaring x: ${base} * ${base} = ${base * base}`);
+                base *= base;
+                steps.push(`Halving n: ${exponent} // 2 = ${Math.floor(exponent / 2)}`);
+                exponent = Math.floor(exponent / 2);
+            }
+            
+            steps.push(`Final result: ${result}`);
+            
+            // Display steps
+            document.getElementById('simResult').innerHTML = steps.join('<br>');
+        });
+        
+        // Quiz functionality
+        const options = document.querySelectorAll('.option');
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove any existing selections in this question
+                const parent = option.parentElement;
+                const siblings = parent.querySelectorAll('.option');
+                siblings.forEach(sib => sib.classList.remove('selected'));
+                
+                // Select this option
+                option.classList.add('selected');
+            });
+        });
+        
+        document.getElementById('checkAnswers').addEventListener('click', () => {
+            const questions = document.querySelectorAll('.quiz-question');
+            let correctCount = 0;
+            let feedbackHTML = '';
+            
+            questions.forEach((question, index) => {
+                const selectedOption = question.querySelector('.option.selected');
+                
+                if (selectedOption) {
+                    if (selectedOption.dataset.correct === 'true') {
+                        correctCount++;
+                        feedbackHTML += `<p>Question ${index + 1}: <span class="correct-answer">Correct!</span></p>`;
+                    } else {
+                        const correctOption = question.querySelector('.option[data-correct="true"]');
+                        feedbackHTML += `<p>Question ${index + 1}: <span class="wrong-answer">Your answer</span> <span class="correct-answer">Correct: ${correctOption.textContent}</span></p>`;
+                    }
+                } else {
+                    const correctOption = question.querySelector('.option[data-correct="true"]');
+                    feedbackHTML += `<p>Question ${index + 1}: <span class="wrong-answer">No answer selected</span> <span class="correct-answer">Correct: ${correctOption.textContent}</span></p>`;
+                }
+            });
+            
+            const score = Math.round((correctCount / questions.length) * 100);
+            document.getElementById('scoreValue').textContent = `${score}%`;
+            document.getElementById('answerFeedback').innerHTML = feedbackHTML;
+            document.getElementById('quizResult').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

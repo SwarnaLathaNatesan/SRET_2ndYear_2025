@@ -19,4 +19,4 @@ print("Last 100 digits:", str(result)[-100:])
 print(f"Execution time: {end_time - start_time:.4f} seconds")
 
 
-print("First 100 digits:", str(result))
+print("All digits:", str(result))
