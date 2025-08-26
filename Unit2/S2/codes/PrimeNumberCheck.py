@@ -1,9 +1,12 @@
 # Python program to check for prime number (optimized)
 def is_prime_optimized(n):
+
     if n <= 1: return False, 0
     if n == 2: return True, 0
     if n % 2 == 0: return False, 1
     iterations = 0
+
+
     for i in range(3, int(n**0.5) + 1, 2):
         iterations += 1
         if n % i == 0:
