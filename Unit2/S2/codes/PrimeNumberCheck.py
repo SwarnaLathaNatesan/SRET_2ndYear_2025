@@ -7,9 +7,9 @@ def is_prime_optimized(n):
     iterations = 0
 
 
-    for i in range(3, int(n**0.5) + 1, 2):
+    for i in range(2, int(n**0.5) + 1, 6):
         iterations += 1
-        if n % i == 0:
+        if n % i == 0 and n % (i+2):
          return False, iterations
     return True, iterations
 
@@ -20,9 +20,13 @@ print(f"Iterations required: {iters}")
 
 
 totalIter = 0
+primeCounter = 0
 for i in range (2, 1001):
     result, iters = is_prime_optimized(i)
     totalIter = totalIter + iters
+    if result 
+	primeCounter = primeCounter+1
+	
     print(f"{i} is prime: {result}")
 
 print(f" total Iterations required: {totalIter}")
