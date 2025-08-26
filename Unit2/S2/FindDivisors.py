@@ -14,8 +14,8 @@ def find_divisors(n):
         if n % i == 0:
             divisors.append(i)
             # Add the complementary divisor
-            if i != n // i:
-                divisors.append(n // i)
+            if i != n / i:
+                divisors.append(n / i)
     
     # Return sorted divisors
     return sorted(divisors)
