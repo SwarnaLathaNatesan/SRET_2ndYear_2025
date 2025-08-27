@@ -12,3 +12,5 @@ def sieve_of_eratosthenes(n):
     # Collect prime numbers
     primes = [num for num, prime in enumerate(is_prime) if prime]
     return primes
+
+sieve_of_eratosthenes(1001)

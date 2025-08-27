@@ -1,4 +1,6 @@
 # Modular Arithmetic Operations
+import time
+
 
 def mod_add(a, b, m):
     return (a % m + b % m) % m
@@ -46,6 +48,15 @@ def mod_pow_withBitWiseOperator(base, exponent, mod):
     print(f"In {counter} iterations")
     return result
 
+
+def naive_exp_mod(base, exp, mod):
+    result = 1
+    base = base % mod
+    for _ in range(exp):
+        result = (result * base) % mod
+    return result
+
+
 # Bitwise Operator Programs
 
 def bitwise_xor(a, b):
@@ -90,11 +101,27 @@ if __name__ == "__main__":
     exponent = 33333333
     mod = 5
 
+    start_time = time.time()
+    result =  mod_pow(base, exponent, mod)
+    end_time = time.time()
+
     print("\nFast Exponentiation Example:")
-    print(f"{base}^{exponent} % {mod} =", mod_pow(base, exponent, mod))
+    print(f"{base}^{exponent} % {mod} =", result)
+    print(f"Execution time: {end_time - start_time:.4f} seconds\n")
 
 
 
+    base = 2
+    exponent = 33333333
+    mod = 5
+
+    start_time = time.time()
+    result =  naive_exp_mod(base, exponent, mod)
+    end_time = time.time()
+
+    print("\nBruteforce Exponentiation Example:")
+    print(f"{base}^{exponent} % {mod} =", result)
+    print(f"Execution time: {end_time - start_time:.4f} seconds\n")
 
 
     x = 12

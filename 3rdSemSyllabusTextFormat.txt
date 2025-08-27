@@ -1,0 +1,26 @@
+
+Topics
+
+Number System (6 Hours)
+Programming with maths logic - pattens, data series, lcd, gcd, prime numbers, linear algebra problems, modular arithmetic. Segment tree, Hashing algorithms and use cases.
+
+Recursion & Trees (6 Hours)
+Deep concepts behind Recursion, problems with recursion from easy level to difficult levels (backtracking). Trees, Basic problem solving with trees, binary trees, sorting and searching using binary trees - basic level.
+
+
+AVL Trees & Graphs (6 Hours)
+Problem solving with Cartesian trees, AVL- trees, Disjoint set union. Introduction to graph theory, more sorting and searching with trees- medium level (DFS, BFS). 
+
+
+Data Science mathematics and problem- solving (6 Hours)
+Learn with fun using python-linear algebra, statistics, discrete probability, calculus. Random variables - types of random variables, discrete and continuous families of distribution, Entropy, Functions of random variables, bayes law.
+
+
+Data Science Python Libraries and
+problem-solving using them (6 Hours) Data handling with Pandas and MongoDB, Scientific computing with Scipy, Probability and statistics with Numpy,
+Data visualization with seaborn, matplotlib.
+Specific Learning Objectives To solve problems based on tree data structure using recursion.
+To solve problems based on number system.
+To learn the fundamentals of AVL tree, Graphs and their traversal mechanism.
+To develop problem-solving skills with Data Science mathematics
+To learn Python Libraries for Data Science and simple problem solving

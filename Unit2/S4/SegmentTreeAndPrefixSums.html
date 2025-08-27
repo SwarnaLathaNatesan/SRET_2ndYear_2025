@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment Tree & Prefix Sum Visualizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gradient-start: #3498db;
+            --gradient-end: #2c3e50;
+            --glow-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glow-color);
+        }
+        
+        h1 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 2.2rem;
+            margin: 30px 0 20px;
+            color: var(--light);
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+        }
+        
+        h3 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 1.8rem;
+            margin: 25px 0 15px;
+            color: var(--light);
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .visualization {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .array-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .array-element {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--secondary);
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 5px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .array-index {
+            position: absolute;
+            top: -25px;
+            font-size: 0.9rem;
+            color: var(--light);
+        }
+        
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .tree-node {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+            margin: 0 10px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .tree-connector {
+            position: absolute;
+            background: white;
+            height: 2px;
+            transform-origin: 0 0;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .primary-btn {
+            background: linear-gradient(45deg, var(--secondary), #2980b9);
+        }
+        
+        .accent-btn {
+            background: linear-gradient(45deg, var(--accent), #c0392b);
+        }
+        
+        .success-btn {
+            background: linear-gradient(45deg, var(--success), #27ae60);
+        }
+        
+        .drawing-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .drawing-canvas {
+            background: white;
+            border-radius: 10px;
+            width: 100%;
+            height: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            cursor: crosshair;
+        }
+        
+        .tools {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .color-btn.active {
+            border-color: white;
+            transform: scale(1.2);
+        }
+        
+        .clear-btn {
+            margin-left: auto;
+        }
+        
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .option.selected {
+            background: rgba(52, 152, 219, 0.3);
+            border: 2px solid var(--secondary);
+        }
+        
+        .seal {
+            position: absolute;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .summary {
+            background: rgba(46, 204, 113, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 40px 0;
+        }
+        
+        .key-points {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .key-points li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Segment Trees & Prefix Sums</h1>
+            <p>Interactive Visualizations & Learning</p>
+        </header>
+        
+        <div class="grid">
+            <div>
+                <div class="card">
+                    <h2>Prefix Sum Array</h2>
+                    <p>A prefix sum array allows us to quickly compute range sums by storing cumulative sums.</p>
+                    
+                    <div class="visualization">
+                        <h3>Original Array: [2, 4, 1, 7, 3, 5, 2, 6]</h3>
+                        <div class="array-container" id="original-array">
+                            <!-- Original array will be rendered here -->
+                        </div>
+                        
+                        <h3>Prefix Sum Array</h3>
+                        <div class="array-container" id="prefix-array">
+                            <!-- Prefix array will be rendered here -->
+                        </div>
+                        
+                        <div class="buttons">
+                            <button class="primary-btn" onclick="prevStep('prefix')"><i class="fas fa-arrow-left"></i> Previous</button>
+                            <button class="primary-btn" onclick="nextStep('prefix')">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        
+                        <p id="prefix-explanation">Step 1: Initialize prefix[0] = 0</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Segment Tree</h2>
+                    <p>A segment tree is a data structure that allows efficient range queries and updates.</p>
+                    
+                    <div class="visualization">
+                        <h3>Segment Tree for [2, 4, 1, 7, 3, 5, 2, 6]</h3>
+                        <div class="tree-container" id="segment-tree">
+                            <!-- Segment tree will be rendered here -->
+                        </div>
+                        
+                        <div class="buttons">
+                            <button class="primary-btn" onclick="prevStep('segment')"><i class="fas fa-arrow-left"></i> Previous</button>
+                            <button class="primary-btn" onclick="nextStep('segment')">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        
+                        <p id="segment-explanation">Step 1: Leaf nodes contain the original array values</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="card">
+                    <h2>Interactive Drawing & Explanation</h2>
+                    <p>Draw directly on the visualizations to explain concepts. Use the tools below.</p>
+                    
+                    <div class="tools">
+                        <div class="color-btn active" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
+                        <div class="color-btn" style="background-color: #3498db;" data-color="#3498db"></div>
+                        <div class="color-btn" style="background-color: #2ecc71;" data-color="#2ecc71"></div>
+                        <div class="color-btn" style="background-color: #f1c40f;" data-color="#f1c40f"></div>
+                        <div class="color-btn" style="background-color: #9b59b6;" data-color="#9b59b6"></div>
+                        <button class="accent-btn clear-btn" onclick="clearCanvas()"><i class="fas fa-trash"></i> Clear Drawing</button>
+                    </div>
+                    
+                    <div class="drawing-container">
+                        <canvas class="drawing-canvas" id="drawing-canvas" width="800" height="300"></canvas>
+                    </div>
+                    
+                    <div class="buttons">
+                        <button class="success-btn" onclick="showExample()"><i class="fas fa-play"></i> Show Example</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>LeetCode Problems</h2>
+                    <div class="code-block">
+                        <p><strong>303. Range Sum Query - Immutable</strong></p>
+                        <pre><code>class NumArray:
+    def __init__(self, nums):
+        self.prefix = [0]
+        for num in nums:
+            self.prefix.append(self.prefix[-1] + num)
+
+    def sumRange(self, left, right):
+        return self.prefix[right+1] - self.prefix[left]
+
+# Usage:
+nums = [2, 4, 1, 7, 3, 5, 2, 6]
+na = NumArray(nums)
+print(na.sumRange(2, 5))  # Output: 16 (1+7+3+5)</code></pre>
+                    </div>
+                    
+                    <div class="code-block">
+                        <p><strong>307. Range Sum Query - Mutable</strong></p>
+                        <pre><code>class SegmentTree:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.size = 1
+        while self.size < self.n:
+            self.size *= 2
+        self.tree = [0] * (2 * self.size)
+        for i in range(self.n):
+            self.tree[self.size + i] = nums[i]
+        for i in range(self.size-1, 0, -1):
+            self.tree[i] = self.tree[2*i] + self.tree[2*i+1]
+    
+    def update(self, index, value):
+        pos = self.size + index
+        self.tree[pos] = value
+        while pos > 1:
+            pos //= 2
+            self.tree[pos] = self.tree[2*pos] + self.tree[2*pos+1]
+    
+    def query(self, l, r):
+        l += self.size
+        r += self.size
+        res = 0
+        while l <= r:
+            if l % 2 == 1:
+                res += self.tree[l]
+                l += 1
+            if r % 2 == 0:
+                res += self.tree[r]
+                r -= 1
+            l //= 2
+            r //= 2
+        return res</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h2>Key Points to Remember</h2>
+            <ul class="key-points">
+                <li>Prefix Sums allow O(1) range sum queries but require O(n) time for updates</li>
+                <li>Segment Trees allow O(log n) range queries and O(log n) updates</li>
+                <li>Prefix Sums are ideal when the array is static (no updates)</li>
+                <li>Segment Trees are better when the array is dynamic (frequent updates)</li>
+                <li>Both techniques can be extended to higher dimensions</li>
+            </ul>
+        </div>
+        
+        <div class="quiz-container">
+            <h2>Test Your Understanding</h2>
+            
+            <div class="question">
+                <h3>Question 1: What is the time complexity for range sum queries using a prefix sum array?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 0)">O(1)</div>
+                    <div class="option" onclick="selectOption(this, 0)">O(log n)</div>
+                    <div class="option" onclick="selectOption(this, 0)">O(n)</div>
+                    <div class="option" onclick="selectOption(this, 0)">O(n log n)</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Question 2: When would you prefer a segment tree over a prefix sum array?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 1)">When the array is frequently updated</div>
+                    <div class="option" onclick="selectOption(this, 1)">When you need to make many queries on a static array</div>
+                    <div class="option" onclick="selectOption(this, 1)">When memory usage is the primary concern</div>
+                    <div class="option" onclick="selectOption(this, 1)">When you only need to query the entire array</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Question 3: What is the space complexity of both data structures?</h3>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 2)">O(n) for both</div>
+                    <div class="option" onclick="selectOption(this, 2)">O(1) for prefix sum, O(n) for segment tree</div>
+                    <div class="option" onclick="selectOption(this, 2)">O(n) for prefix sum, O(n log n) for segment tree</div>
+                    <div class="option" onclick="selectOption(this, 2)">O(log n) for both</div>
+                </div>
+            </div>
+            
+            <button class="success-btn" onclick="checkAnswers()" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-check-circle"></i> Check Answers
+            </button>
+            
+            <div class="result" id="quiz-result">
+                <h3>Your Score: <span id="score">0%</span></h3>
+                <p id="result-details"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample array for visualization
+        const sampleArray = [2, 4, 1, 7, 3, 5, 2, 6];
+        let prefixSteps = 1;
+        let segmentSteps = 1;
+        
+        // Initialize the page
+        window.onload = function() {
+            initDraw();
+            renderOriginalArray();
+            renderPrefixSum();
+            renderSegmentTree();
+        };
+        
+        // Drawing canvas functionality
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentColor = '#e74c3c';
+        let lineWidth = 3;
+        
+        // Set canvas background to white
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Initialize drawing
+        function initDraw() {
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchend', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Color selection
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelector('.color-btn.active').classList.remove('active');
+                    btn.classList.add('active');
+                    currentColor = btn.getAttribute('data-color');
+                });
+            });
+        }
+        
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            [lastX, lastY] = [e.clientX - rect.left, e.clientY - rect.top];
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            [lastX, lastY] = [currentX, currentY];
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function clearCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function showExample() {
+            clearCanvas();
+            ctx.font = '20px Arial';
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillText('Example: sum from index 2 to 5', 30, 40);
+            ctx.fillText('Prefix Sum: prefix[6] - prefix[2] = 22 - 6 = 16', 30, 70);
+            ctx.fillText('Segment Tree: query(2, 5) = 1+7+3+5 = 16', 30, 100);
+            
+            // Draw on the array visualizations
+            highlightRange(2, 5);
+        }
+        
+        function renderOriginalArray() {
+            const container = document.getElementById('original-array');
+            container.innerHTML = '';
+            
+            sampleArray.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.innerHTML = `${value}<span class="array-index">${index}</span>`;
+                container.appendChild(element);
+            });
+        }
+        
+        function renderPrefixSum() {
+            const container = document.getElementById('prefix-array');
+            const explanation = document.getElementById('prefix-explanation');
+            container.innerHTML = '';
+            
+            let prefix = [0];
+            for (let i = 0; i < Math.min(prefixSteps, sampleArray.length + 1); i++) {
+                if (i > 0) {
+                    prefix.push(prefix[i-1] + sampleArray[i-1]);
+                }
+                
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.innerHTML = `${prefix[i]}<span class="array-index">${i}</span>`;
+                container.appendChild(element);
+            }
+            
+            if (prefixSteps === 1) {
+                explanation.textContent = 'Step 1: Initialize prefix[0] = 0';
+            } else if (prefixSteps <= sampleArray.length + 1) {
+                explanation.textContent = `Step ${prefixSteps}: prefix[${prefixSteps-1}] = prefix[${prefixSteps-2}] + array[${prefixSteps-2}] = ${prefix[prefixSteps-2]} + ${sampleArray[prefixSteps-2]} = ${prefix[prefixSteps-1]}`;
+            } else {
+                explanation.textContent = 'Complete: Prefix sum array built';
+            }
+        }
+        
+        function renderSegmentTree() {
+            const container = document.getElementById('segment-tree');
+            const explanation = document.getElementById('segment-explanation');
+            container.innerHTML = '';
+            
+            if (segmentSteps === 1) {
+                explanation.textContent = 'Step 1: Leaf nodes contain the original array values';
+                
+                const level = document.createElement('div');
+                level.className = 'tree-level';
+                
+                sampleArray.forEach(value => {
+                    const node = document.createElement('div');
+                    node.className = 'tree-node';
+                    node.textContent = value;
+                    level.appendChild(node);
+                });
+                
+                container.appendChild(level);
+            } else if (segmentSteps === 2) {
+                explanation.textContent = 'Step 2: Building first level of internal nodes';
+                
+                // Leaf level
+                const leafLevel = document.createElement('div');
+                leafLevel.className = 'tree-level';
+                
+                sampleArray.forEach(value => {
+                    const node = document.createElement('div');
+                    node.className = 'tree-node';
+                    node.textContent = value;
+                    leafLevel.appendChild(node);
+                });
+                
+                container.appendChild(leafLevel);
+                
+                // First internal level
+                const internalLevel = document.createElement('div');
+                internalLevel.className = 'tree-level';
+                
+                for (let i = 0; i < sampleArray.length; i += 2) {
+                    const sum = sampleArray[i] + (sampleArray[i+1] || 0);
+                    const node = document.createElement('div');
+                    node.className = 'tree-node';
+                    node.textContent = sum;
+                    internalLevel.appendChild(node);
+                }
+                
+                container.appendChild(internalLevel);
+            } else {
+                explanation.textContent = 'Complete: Segment tree built (simplified visualization)';
+                
+                // Simplified full tree for demonstration
+                const root = document.createElement('div');
+                root.className = 'tree-node';
+                root.textContent = '30';
+                root.style.margin = '20px 0';
+                container.appendChild(root);
+                
+                const level2 = document.createElement('div');
+                level2.className = 'tree-level';
+                
+                const node1 = document.createElement('div');
+                node1.className = 'tree-node';
+                node1.textContent = '14';
+                
+                const node2 = document.createElement('div');
+                node2.className = 'tree-node';
+                node2.textContent = '16';
+                
+                level2.appendChild(node1);
+                level2.appendChild(node2);
+                container.appendChild(level2);
+            }
+        }
+        
+        function highlightRange(start, end) {
+            const elements = document.querySelectorAll('#original-array .array-element');
+            elements.forEach((el, index) => {
+                if (index >= start && index <= end) {
+                    el.style.background = '#e74c3c';
+                    el.style.color = 'white';
+                }
+            });
+            
+            const prefixElements = document.querySelectorAll('#prefix-array .array-element');
+            if (prefixElements.length > 6) {
+                prefixElements[6].style.background = '#2ecc71';
+                prefixElements[2].style.background = '#2ecc71';
+            }
+        }
+        
+        function nextStep(type) {
+            if (type === 'prefix' && prefixSteps < sampleArray.length + 2) {
+                prefixSteps++;
+                renderPrefixSum();
+            } else if (type === 'segment' && segmentSteps < 3) {
+                segmentSteps++;
+                renderSegmentTree();
+            }
+        }
+        
+        function prevStep(type) {
+            if (type === 'prefix' && prefixSteps > 1) {
+                prefixSteps--;
+                renderPrefixSum();
+            } else if (type === 'segment' && segmentSteps > 1) {
+                segmentSteps--;
+                renderSegmentTree();
+            }
+        }
+        
+        // Quiz functionality
+        const correctAnswers = [0, 0, 0]; // Indices of correct options for each question
+        const userAnswers = [-1, -1, -1]; // -1 means not answered
+        
+        function selectOption(optionElem, questionIndex) {
+            const options = optionElem.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            optionElem.classList.add('selected');
+            
+            const optionIndex = Array.from(options).indexOf(optionElem);
+            userAnswers[questionIndex] = optionIndex;
+        }
+        
+        function checkAnswers() {
+            let correctCount = 0;
+            let resultHTML = "";
+            
+            for (let i = 0; i < correctAnswers.length; i++) {
+                if (userAnswers[i] === correctAnswers[i]) {
+                    correctCount++;
+                } else {
+                    resultHTML += `<p><strong>Question ${i+1}:</strong> Your answer was incorrect. The correct answer is option ${correctAnswers[i] + 1}.</p>`;
+                }
+            }
+            
+            const score = Math.round((correctCount / correctAnswers.length) * 100);
+            document.getElementById('score').textContent = `${score}%`;
+            document.getElementById('result-details').innerHTML = resultHTML;
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

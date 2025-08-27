@@ -429,9 +429,9 @@
     result = <span class="number">1</span>
     <span class="keyword">while</span> n > <span class="number">0</span>:
         <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:
-            result *= x
-        x *= x
-        n //= <span class="number">2</span>
+            result = result * x
+        x = x * x
+        n = n // <span class="number">2</span>
     
     <span class="keyword">return</span> result</pre>
                 </div>

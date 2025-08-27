@@ -1,0 +1,4 @@
+
+
+Naive Solution
+A naive solution is a straightforward, simple approach to solving a problem that is often inefficient and not optimized for performance or scalability.

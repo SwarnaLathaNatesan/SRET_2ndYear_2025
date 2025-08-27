@@ -8,10 +8,14 @@ def is_prime_optimized(n):
 
 
     for i in range(3, int(n**0.5) + 1, 2):
-        iterations += 1
         if n % i == 0 :
          return False, iterations
     return True, iterations
+
+
+
+
+
 
 number = 1001
 result, iters = is_prime_optimized(number)

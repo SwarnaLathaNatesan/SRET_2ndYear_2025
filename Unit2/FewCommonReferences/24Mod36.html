@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 mod 36 = 24 - Mathematical Proof</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: #4A90E2;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #4A90E2;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .math-expression {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 15px;
+            margin: 15px 0;
+            background: #e8f4fc;
+            border-radius: 8px;
+            font-family: 'Cambria Math', serif;
+        }
+        
+        .visualization {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .number-line {
+            width: 100%;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .line {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            width: 90%;
+            height: 3px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        .marker {
+            position: absolute;
+            top: 30%;
+            width: 4px;
+            height: 40%;
+            background: #777;
+            transform: translateX(-50%);
+        }
+        
+        .marker-label {
+            position: absolute;
+            top: 75%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+        }
+        
+        .value {
+            position: absolute;
+            top: 30%;
+            width: 40px;
+            height: 40px;
+            background: #FF6B6B;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            left: 0%;
+            transition: left 2s ease-in-out;
+        }
+        
+        .division-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .division-box {
+            width: 200px;
+            height: 100px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .division-expression {
+            font-size: 1.5rem;
+            font-family: 'Cambria Math', serif;
+        }
+        
+        .explanation {
+            line-height: 1.6;
+            margin: 15px 0;
+            font-size: 1.1rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+        
+        .step-number {
+            background: #4A90E2;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .result {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            color: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .result-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .proof {
+            background: #e8f4fc;
+            padding: 20px;
+            border-left: 4px solid #4A90E2;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: #4A90E2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .decimal-proof {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .decimal-calculation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .decimal-step {
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .decimal-arrow {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .decimal-calculation {
+                flex-direction: column;
+            }
+            
+            .decimal-arrow {
+                transform: rotate(90deg);
+            }
+        }
+        
+        .animation-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Proving 24 mod 36 = 24</h1>
+            <p class="subtitle">Understanding the Modulus Operation</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>What is Modulus Operation?</h2>
+                <p class="explanation">The modulus operation finds the remainder after division of one number by another. For two numbers a and b, "a mod b" is the remainder when a is divided by b.</p>
+                
+                <div class="math-expression">
+                    a mod b = remainder when a is divided by b
+                </div>
+                
+                <div class="proof">
+                    <h3>Key Property</h3>
+                    <p class="explanation">If a < b, then a mod b = a. This is because if the dividend is smaller than the divisor, the quotient is 0 and the remainder is the dividend itself.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Visualizing 24 mod 36 on a Number Line</h2>
+                <p class="explanation">Since 24 is less than 36, when we try to divide 24 by 36, it doesn't even complete one full division. The remainder is simply 24.</p>
+                
+                <div class="number-line" id="numberLine">
+                    <div class="line"></div>
+                    <!-- Markers will be added by JavaScript -->
+                </div>
+                
+                <div class="animation-controls">
+                    <button onclick="animateNumberLine()">Replay Animation</button>
+                </div>
+                
+                <div class="math-expression">
+                    24 < 36 ⇒ 24 mod 36 = 24
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Decimal Proof</h2>
+                
+                <div class="decimal-proof">
+                    <h3>Using Decimal Division</h3>
+                    <p class="explanation">We can also prove this using decimal division:</p>
+                    <div class="math-expression">24 ÷ 36 = 0.666...</div>
+                    <p class="explanation">The integer part is 0, which means 36 goes into 24 zero times.</p>
+                    <div class="math-expression">Remainder = 24 - (36 × 0) = 24</div>
+                    <p class="explanation">Thus, 24 mod 36 = 24</p>
+                </div>
+                
+                <h3>Using 0.666 × 36</h3>
+                <p class="explanation">We can also approach this by recognizing that 0.666... is the decimal equivalent of 2/3:</p>
+                
+                <div class="decimal-calculation">
+                    <div class="decimal-step">
+                        <div>0.666 × 36</div>
+                        <div>≈ 23.976</div>
+                    </div>
+                    <div class="decimal-arrow">→</div>
+                    <div class="decimal-step">
+                        <div>Round to nearest integer</div>
+                        <div>≈ 24</div>
+                    </div>
+                    <div class="decimal-arrow">→</div>
+                    <div class="decimal-step">
+                        <div>24 mod 36</div>
+                        <div>= 24</div>
+                    </div>
+                </div>
+                
+                <p class="explanation">This shows that 0.666 × 36 is approximately 24, which is consistent with our modulus calculation.</p>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Division Equation</h3>
+                        <p>For any integers a and b, the division algorithm states:</p>
+                        <div class="math-expression">a = b × q + r, where 0 ≤ r < b</div>
+                        <p>In our case, a = 24 and b = 36.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Find Quotient and Remainder</h3>
+                        <p>We need to find integers q and r such that:</p>
+                        <div class="math-expression">24 = 36 × q + r, with 0 ≤ r < 36</div>
+                        <p>Since 24 < 36, the only solution is q = 0 and r = 24.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Apply Modulus Definition</h3>
+                        <p>By definition, the modulus is the remainder r:</p>
+                        <div class="math-expression">24 mod 36 = r = 24</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Division Visualization</h2>
+                <div class="visualization">
+                    <div class="division-visual">
+                        <div class="division-box" id="divisionBox">
+                            <span>36</span>
+                            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 0%; background: #4A90E2; transition: height 2s;"></div>
+                        </div>
+                        <div class="division-expression">24 ÷ 36 = 0 remainder 24</div>
+                    </div>
+                </div>
+                
+                <div class="animation-controls">
+                    <button onclick="animateDivision()">Replay Animation</button>
+                </div>
+                
+                <p class="explanation">The blue area represents 24, which is less than the divisor 36. Since we can't subtract 36 from 24 even once, the quotient is 0 and the remainder is 24.</p>
+            </div>
+            
+            <div class="result">
+                <h2>Final Result</h2>
+                <div class="result-number">24</div>
+                <p>24 mod 36 = <strong>24</strong></p>
+            </div>
+            
+            <div class="section">
+                <h2>Why is this Important?</h2>
+                <p class="explanation">Understanding modulus operations is fundamental in:</p>
+                <ul class="explanation" style="margin-left: 20px;">
+                    <li>Computer programming and cryptography</li>
+                    <li>Number theory and modular arithmetic</li>
+                    <li>Clock arithmetic (12-hour clock is mod 12)</li>
+                    <li>Hash functions and data structures</li>
+                </ul>
+            </div>
+            
+            <div class="controls">
+                <button onclick="animateAll()">Replay All Animations</button>
+                <button onclick="window.location.reload()">Reset Page</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created for educational purposes | Mathematical Proof</p>
+    </footer>
+
+    <script>
+        // Create number line visualization
+        function createNumberLine() {
+            const numberLine = document.getElementById('numberLine');
+            
+            // Clear existing markers
+            const markers = numberLine.querySelectorAll('.marker, .marker-label, .value');
+            markers.forEach(el => el.remove());
+            
+            // Add markers for 0, 36, and 72
+            for (let i = 0; i <= 2; i++) {
+                const value = i * 36;
+                const position = 5 + (value / 72) * 90; // Scale to fit 0-72 range
+                
+                const marker = document.createElement('div');
+                marker.className = 'marker';
+                marker.style.left = `${position}%`;
+                
+                const label = document.createElement('div');
+                label.className = 'marker-label';
+                label.textContent = value;
+                label.style.left = `${position}%`;
+                
+                numberLine.appendChild(marker);
+                numberLine.appendChild(label);
+            }
+            
+            // Add the value 24
+            const value24 = document.createElement('div');
+            value24.className = 'value';
+            value24.textContent = '24';
+            value24.id = 'value24';
+            value24.style.left = `${5 + (24 / 72) * 90}%`;
+            numberLine.appendChild(value24);
+        }
+        
+        // Animate number line
+        function animateNumberLine() {
+            const value = document.getElementById('value24');
+            value.style.transition = 'all 0.1s';
+            value.style.left = '5%';
+            
+            setTimeout(() => {
+                value.style.transition = 'left 2s ease-in-out';
+                value.style.left = `${5 + (24 / 72) * 90}%`;
+            }, 100);
+        }
+        
+        // Animate division visualization
+        function animateDivision() {
+            const divisionFill = document.querySelector('#divisionBox div');
+            divisionFill.style.transition = 'all 0.1s';
+            divisionFill.style.height = '0%';
+            
+            setTimeout(() => {
+                divisionFill.style.transition = 'height 2s ease-in-out';
+                divisionFill.style.height = '24%';
+            }, 100);
+        }
+        
+        // Animate all visualizations
+        function animateAll() {
+            animateNumberLine();
+            animateDivision();
+        }
+        
+        // Initialize on page load
+        window.onload = function() {
+            createNumberLine();
+            
+            // Animate after a short delay
+            setTimeout(animateAll, 500);
+        };
+    </script>
+</body>
+</html>
