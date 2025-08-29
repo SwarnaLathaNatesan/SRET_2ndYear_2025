@@ -1,0 +1,49 @@
+https://promptperfect.jina.ai/
+
+
+What is the output of 
+
+x = [23,25, 90] * 3
+
+x[2] +=  1
+x[2] = x[2] + 1
+
+print(x)
+
+
+
+x = [23,25, 90] * 3
+
+x[2] =+  1
+x[2] = x[2] + 1
+
+print(x)
+
+
+
+quo = 42
+res = []
+
+while quo > 0 :
+    
+    quo = quo // 2
+    rem = quo % 2
+    res.append(rem)
+
+print (res)
+
+
+
+
+#dynamic list creation and addition
+
+n = 6
+
+triangle = []
+res = []
+for i in range (1, n):
+    for j in range (1 , i+1):
+        res.append(j)
+    triangle.append(res)
+    res = []
+print(triangle)
