@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quiz Challenge</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #ffba08;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c0c2c, #1e1e4c);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4cc9f0, #f72585);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .teams-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .team {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .team:hover {
+            transform: translateY(-5px);
+        }
+        
+        .team-name {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--success);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .selected {
+            background: rgba(67, 97, 238, 0.3);
+            border: 2px solid var(--primary);
+        }
+        
+        .correct {
+            background: rgba(76, 201, 240, 0.3);
+            border: 2px solid var(--success);
+        }
+        
+        .incorrect {
+            background: rgba(247, 37, 133, 0.3);
+            border: 2px solid var(--accent);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .score {
+            font-size: 2rem;
+            margin: 20px 0;
+            color: var(--success);
+        }
+        
+        .share {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .whatsapp-btn {
+            background: linear-gradient(to right, #25D366, #128C7E);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .team-score {
+            font-size: 2.5rem;
+            margin: 10px 0;
+            color: var(--warning);
+        }
+        
+        @media (max-width: 768px) {
+            .teams-container {
+                flex-direction: column;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Python Quiz Challenge</h1>
+            <p class="subtitle">Test your knowledge of Python programming and number systems!</p>
+        </header>
+        
+        <div class="teams-container">
+            <div class="team">
+                <h2 class="team-name">Team 1</h2>
+                <input type="text" id="team1-name" placeholder="Enter team name">
+                <div class="team-score" id="team1-score">0</div>
+            </div>
+            
+            <div class="team">
+                <h2 class="team-name">Team 2</h2>
+                <input type="text" id="team2-name" placeholder="Enter team name">
+                <div class="team-score" id="team2-score">0</div>
+            </div>
+        </div>
+        
+        <div class="quiz-container" id="quiz-container">
+            <div class="question" id="question">
+                <!-- Question will be inserted here -->
+            </div>
+            
+            <div class="options" id="options">
+                <!-- Options will be inserted here -->
+            </div>
+            
+            <div class="navigation">
+                <button id="prev-btn">Previous</button>
+                <button id="next-btn">Next</button>
+                <button id="submit-btn" class="hidden">Submit Quiz</button>
+            </div>
+        </div>
+        
+        <div class="results hidden" id="results">
+            <h2>Quiz Results</h2>
+            <div class="score" id="final-score"></div>
+            <p>Share your results on WhatsApp!</p>
+            
+            <div class="share">
+                <button class="whatsapp-btn" id="share-team1">
+                    <i>📱</i> Share Team 1 Score
+                </button>
+                <button class="whatsapp-btn" id="share-team2">
+                    <i>📱</i> Share Team 2 Score
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions
+        const questions = [
+            {
+                question: "What is the output of: print(2 ** 3 ** 2)?",
+                options: ["64", "512", "36", "Syntax Error"],
+                answer: 1,
+                explanation: "Exponentiation has right-to-left associativity in Python, so 3**2 is evaluated first (9), then 2**9 = 512."
+            },
+            {
+                question: "Which algorithm is most efficient for finding prime numbers up to N?",
+                options: ["Trial Division", "Sieve of Eratosthenes", "Fermat's Test", "Miller-Rabin Test"],
+                answer: 1,
+                explanation: "The Sieve of Eratosthenes has a time complexity of O(n log log n), making it very efficient for generating all primes up to N."
+            },
+            {
+                question: "What is the GCD of 48 and 18 using Euclid's algorithm?",
+                options: ["3", "6", "8", "12"],
+                answer: 1,
+                explanation: "48 ÷ 18 = 2 with remainder 12, then 18 ÷ 12 = 1 with remainder 6, then 12 ÷ 6 = 2 with remainder 0. So GCD is 6."
+            },
+            {
+                question: "What does this code output: print(0.1 + 0.2 == 0.3)?",
+                options: ["True", "False", "Syntax Error", "None"],
+                answer: 1,
+                explanation: "Due to floating-point precision issues, 0.1 + 0.2 results in 0.30000000000000004, which is not exactly equal to 0.3."
+            },
+            {
+                question: "Which data structure is most efficient for range sum queries?",
+                options: ["Array", "Hash Table", "Segment Tree", "Linked List"],
+                answer: 2,
+                explanation: "Segment Trees allow O(log n) time for range queries and updates, making them very efficient for range operations."
+            },
+            {
+                question: "What is the value of 25 mod 7?",
+                options: ["3", "4", "5", "6"],
+                answer: 1,
+                explanation: "7 * 3 = 21, and 25 - 21 = 4, so 25 mod 7 is 4."
+            },
+            {
+                question: "What is the output of: print([i for i in range(10) if i % 2 == 0])?",
+                options: ["[0, 2, 4, 6, 8]", "[2, 4, 6, 8]", "[0, 2, 4, 6, 8, 10]", "[1, 3, 5, 7, 9]"],
+                answer: 0,
+                explanation: "The list comprehension generates even numbers from 0 to 8 (inclusive)."
+            },
+            {
+                question: "Which hashing technique handles collisions by using a linked list?",
+                options: ["Linear Probing", "Quadratic Probing", "Double Hashing", "Separate Chaining"],
+                answer: 3,
+                explanation: "Separate Chaining handles collisions by storing multiple elements in the same bucket using a linked list."
+            }
+        ];
+
+        // Initialize variables
+        let currentQuestion = 0;
+        let team1Score = 0;
+        let team2Score = 0;
+        let selectedAnswers = Array(questions.length).fill(null);
+        let currentTeam = 1; // 1 or 2
+
+        // DOM elements
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsEl = document.getElementById('results');
+        const finalScoreEl = document.getElementById('final-score');
+        const team1ScoreEl = document.getElementById('team1-score');
+        const team2ScoreEl = document.getElementById('team2-score');
+        const shareTeam1Btn = document.getElementById('share-team1');
+        const shareTeam2Btn = document.getElementById('share-team2');
+        const team1NameInput = document.getElementById('team1-name');
+        const team2NameInput = document.getElementById('team2-name');
+
+        // Load question
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionEl.innerHTML = `<span>Q${currentQuestion + 1}:</span> ${question.question}`;
+            
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                if (selectedAnswers[currentQuestion] === index) {
+                    optionEl.classList.add('selected');
+                }
+                optionEl.textContent = option;
+                optionEl.addEventListener('click', () => selectOption(index));
+                optionsEl.appendChild(optionEl);
+            });
+            
+            // Update navigation buttons
+            prevBtn.classList.toggle('hidden', currentQuestion === 0);
+            nextBtn.classList.toggle('hidden', currentQuestion === questions.length - 1);
+            submitBtn.classList.toggle('hidden', currentQuestion !== questions.length - 1);
+        }
+
+        // Select option
+        function selectOption(index) {
+            selectedAnswers[currentQuestion] = index;
+            loadQuestion();
+        }
+
+        // Next question
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        });
+
+        // Previous question
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        // Submit quiz
+        submitBtn.addEventListener('click', () => {
+            // Calculate scores
+            team1Score = 0;
+            team2Score = 0;
+            
+            selectedAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    if (currentTeam === 1) team1Score++;
+                    else team2Score++;
+                }
+            });
+            
+            // Update score displays
+            team1ScoreEl.textContent = team1Score;
+            team2ScoreEl.textContent = team2Score;
+            
+            // Show results
+            quizContainer.classList.add('hidden');
+            resultsEl.classList.remove('hidden');
+            
+            // Set final score text
+            const team1Name = team1NameInput.value || 'Team 1';
+            const team2Name = team2NameInput.value || 'Team 2';
+            finalScoreEl.innerHTML = `
+                ${team1Name}: ${team1Score}/${questions.length}<br>
+                ${team2Name}: ${team2Score}/${questions.length}
+            `;
+            
+            // Switch team for next round
+            currentTeam = currentTeam === 1 ? 2 : 1;
+        });
+
+        // Share results via WhatsApp
+        shareTeam1Btn.addEventListener('click', () => {
+            const teamName = team1NameInput.value || 'Team 1';
+            const message = `I scored ${team1Score}/${questions.length} in the Python Quiz Challenge! Try to beat me!`;
+            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        });
+
+        shareTeam2Btn.addEventListener('click', () => {
+            const teamName = team2NameInput.value || 'Team 2';
+            const message = `I scored ${team2Score}/${questions.length} in the Python Quiz Challenge! Try to beat me!`;
+            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        });
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>

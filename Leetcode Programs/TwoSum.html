@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --secondary: #ff6b8b;
+            --accent: #6c63ff;
+            --dark: #2d2b55;
+            --light: #f8f9fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .hashmap-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .hashmap-header-key, .hashmap-header-value {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hashmap-pair {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s;
+            margin-bottom: 5px;
+        }
+
+        .hashmap-key, .hashmap-value {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .hashmap-key {
+            color: var(--primary);
+        }
+
+        .hashmap-value {
+            color: var(--secondary);
+        }
+
+        .hashmap-arrow {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .hashmap-pair.active {
+            background: #e0e8ff;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--gradient);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .content-section h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .whiteboard-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+        
+        .color-btn.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+        
+        .clear-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .toggle-whiteboard {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        #whiteboard-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+        }
+        
+        #whiteboard-overlay.active {
+            pointer-events: all;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            grid-column: 1 / -1;
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: #e0e8ff;
+        }
+        
+        .option.selected::after {
+            content: "My Answer";
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .quiz-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3a5aee;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #ff5378;
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .correct-answer {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .incorrect-answer {
+            color: var(--secondary);
+            text-decoration: line-through;
+        }
+        
+        .code-section {
+            background: #2d2b55;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .code-keyword {
+            color: #ff79c6;
+        }
+        
+        .code-function {
+            color: #50fa7b;
+        }
+        
+        .code-variable {
+            color: #8be9fd;
+        }
+        
+        .code-comment {
+            color: #6272a4;
+        }
+        
+        .visualization {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .array-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .array-element {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s;
+        }
+        
+        .array-element.current {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        .array-element.sorted {
+            background: var(--success);
+        }
+        
+        .hashmap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+            align-items: center;
+        }
+        
+        .summary {
+            background: #e0e8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .summary h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .key-points {
+            list-style-type: none;
+        }
+        
+        .key-points li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-points li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            font-size: 1.2rem;
+        }
+        
+        .visualization-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .visualization-text {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            font-weight: 500;
+            min-height: 60px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #6c757d;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .whiteboard-controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                left: 20px;
+                right: auto;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Whiteboard Overlay Canvas -->
+    <canvas id="whiteboard-overlay"></canvas>
+    
+    <!-- Whiteboard Controls -->
+    <div class="whiteboard-controls">
+        <div class="color-btn active" style="background-color: #000000;" data-color="#000000"></div>
+        <div class="color-btn" style="background-color: #ff6b8b;" data-color="#ff6b8b"></div>
+        <div class="color-btn" style="background-color: #4a6bff;" data-color="#4a6bff"></div>
+        <div class="color-btn" style="background-color: #28a745;" data-color="#28a745"></div>
+        <div class="color-btn" style="background-color: #ffc107;" data-color="#ffc107"></div>
+        <button class="clear-btn" id="clear-btn">
+            <i class="fas fa-broom"></i> Clear
+        </button>
+    </div>
+    
+    <button class="toggle-whiteboard" id="toggle-whiteboard">
+        <i class="fas fa-pen"></i> Enable Whiteboard
+    </button>
+    
+    <div class="container">
+        <header>
+            <h1>Interactive Learning Platform</h1>
+            <p class="subtitle">Visualize, Learn, and Practice Coding Concepts</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="content-section">
+                <h2>Two Sum Problem</h2>
+                <p>Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.</p>
+                
+                <div class="visualization">
+                    <h3>Visualization</h3>
+                    <p>Let's find two numbers that add up to <strong>9</strong></p>
+                    <div class="array-container" id="array-visual">
+                        <div class="array-element">3</div>
+                        <div class="array-element">5</div>
+                        <div class="array-element">2</div>
+                        <div class="array-element">7</div>
+                        <div class="array-element">6</div>
+                    </div>
+                    
+                    <div class="visualization-text" id="visualization-text">
+                        Click "Visualize Solution" to start the visualization
+                    </div>
+                    
+                    <div class="hashmap-container" id="hashmap-visual">
+                        <h4>Hash Map (Number → Index)</h4>
+                        <div id="hashmap-pairs"></div>
+                    </div>
+                    
+                    <div class="visualization-controls">
+                        <button class="btn btn-primary" id="visualize-btn">Visualize Solution</button>
+                        <button class="btn btn-secondary" id="reset-visualization">Reset Visualization</button>
+                    </div>
+                </div>
+                
+                <div class="code-section">
+                    <pre><code><span class="code-keyword">def</span> <span class="code-function">two_sum</span>(nums, target):
+    <span class="code-comment"># Create a dictionary to store value-index pairs</span>
+    num_map = {}
+    
+    <span class="code-keyword">for</span> i, num <span class="code-keyword">in</span> enumerate(nums):
+        complement = target - num
+        
+        <span class="code-keyword">if</span> complement <span class="code-keyword">in</span> num_map:
+            <span class="code-keyword">return</span> [num_map[complement], i]
+        
+        num_map[num] = i
+    
+    <span class="code-keyword">return</span> []</code></pre>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Key Points</h2>
+                
+                <div class="summary">
+                    <h3>Summary: Two Sum Problem</h3>
+                    <ul class="key-points">
+                        <li>Use a hash map (dictionary) to store each number's index</li>
+                        <li>For each number, calculate the complement (target - current number)</li>
+                        <li>Check if the complement exists in the hash map</li>
+                        <li>If found, return the current index and the complement's index</li>
+                        <li>Time Complexity: O(n) - We traverse the list once</li>
+                        <li>Space Complexity: O(n) - We store n elements in the hash map</li>
+                    </ul>
+                </div>
+                
+                <h3>Related Problems</h3>
+                <ul class="key-points">
+                    <li>Three Sum</li>
+                    <li>Four Sum</li>
+                    <li>Two Sum II - Input Array Is Sorted</li>
+                    <li>Two Sum IV - Input is a BST</li>
+                </ul>
+                
+                <h3>Pattern: Hash Map</h3>
+                <p>This problem uses the hash map pattern to achieve O(n) time complexity by trading space for time.</p>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2>Quick Quiz: Test Your Knowledge</h2>
+                    <p>Select the correct answers and check your understanding</p>
+                </div>
+                
+                <div class="question">
+                    <h3>Question 1: What is the time complexity of the optimal solution for the Two Sum problem?</h3>
+                </div>
+                
+                <div class="options">
+                    <div class="option" data-correct="true">O(n)</div>
+                    <div class="option">O(n log n)</div>
+                    <div class="option">O(n²)</div>
+                    <div class="option">O(1)</div>
+                </div>
+                
+                <div class="question">
+                    <h3>Question 2: Which data structure is most efficient for solving the Two Sum problem?</h3>
+                </div>
+                
+                <div class="options">
+                    <div class="option">Array</div>
+                    <div class="option" data-correct="true">Hash Map</div>
+                    <div class="option">Linked List</div>
+                    <div class="option">Binary Tree</div>
+                </div>
+                
+                <div class="question">
+                    <h3>Question 3: What would be the output of two_sum([3, 2, 4], 6)?</h3>
+                </div>
+                
+                <div class="options">
+                    <div class="option">[0, 1]</div>
+                    <div class="option" data-correct="true">[1, 2]</div>
+                    <div class="option">[0, 2]</div>
+                    <div class="option">[2, 4]</div>
+                </div>
+                
+                <div class="quiz-buttons">
+                    <button class="btn btn-primary" id="check-answers">Check Answers</button>
+                    <button class="btn btn-secondary" id="reset-quiz">Reset Quiz</button>
+                </div>
+                
+                <div class="result" id="quiz-result">
+                    <div class="score">Your Score: <span id="score-value">0%</span></div>
+                    <h3>Review:</h3>
+                    <div class="question-review">
+                        <!-- Results will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ for interactive learning | © 2023 Interactive Learning Platform</p>
+        </footer>
+    </div>
+
+    <script>
+        // Whiteboard functionality
+        const canvas = document.getElementById('whiteboard-overlay');
+        const ctx = canvas.getContext('2d');
+        const clearBtn = document.getElementById('clear-btn');
+        const colorButtons = document.querySelectorAll('.color-btn');
+        const toggleWhiteboardBtn = document.getElementById('toggle-whiteboard');
+        const checkAnswersBtn = document.getElementById('check-answers');
+        const resetQuizBtn = document.getElementById('reset-quiz');
+        const quizResult = document.getElementById('quiz-result');
+        const scoreValue = document.getElementById('score-value');
+        const visualizeBtn = document.getElementById('visualize-btn');
+        const resetVisualizationBtn = document.getElementById('reset-visualization');
+        const arrayVisual = document.getElementById('array-visual');
+        const hashmapPairs = document.getElementById('hashmap-pairs');
+        const visualizationText = document.getElementById('visualization-text');
+        
+        // Set canvas size to full window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        // Initial resize
+        resizeCanvas();
+        
+        // Set initial drawing style
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = '#000000';
+        
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let whiteboardActive = false;
+        let visualizationInterval;
+        
+        // Handle mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Handle touch events
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('touchend', handleTouchEnd);
+        
+        function startDrawing(e) {
+            if (!whiteboardActive) return;
+            
+            isDrawing = true;
+            const coords = getCoordinates(e);
+            [lastX, lastY] = [coords.x, coords.y];
+            
+            // Prevent default to avoid scrolling on touch devices
+            e.preventDefault();
+        }
+        
+        function draw(e) {
+            if (!isDrawing || !whiteboardActive) return;
+            
+            const coords = getCoordinates(e);
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(coords.x, coords.y);
+            ctx.stroke();
+            
+            [lastX, lastY] = [coords.x, coords.y];
+            
+            // Prevent default to avoid scrolling on touch devices
+            e.preventDefault();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function handleTouchStart(e) {
+            if (!whiteboardActive) return;
+            
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function handleTouchMove(e) {
+            if (!whiteboardActive) return;
+            
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function handleTouchEnd(e) {
+            if (!whiteboardActive) return;
+            
+            const mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function getCoordinates(e) {
+            if (e.type.startsWith('touch')) {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: e.touches[0].clientX - rect.left,
+                    y: e.touches[0].clientY - rect.top
+                };
+            } else {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+        }
+        
+        // Clear canvas
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        // Change drawing color
+        colorButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                colorButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                ctx.strokeStyle = btn.dataset.color;
+            });
+        });
+        
+        // Toggle whiteboard
+        toggleWhiteboardBtn.addEventListener('click', () => {
+            whiteboardActive = !whiteboardActive;
+            canvas.classList.toggle('active', whiteboardActive);
+            
+            if (whiteboardActive) {
+                toggleWhiteboardBtn.innerHTML = '<i class="fas fa-times"></i> Disable Whiteboard';
+                toggleWhiteboardBtn.style.background = '#ff6b8b';
+            } else {
+                toggleWhiteboardBtn.innerHTML = '<i class="fas fa-pen"></i> Enable Whiteboard';
+                toggleWhiteboardBtn.style.background = '#4a6bff';
+            }
+        });
+        
+        // Quiz functionality
+        const options = document.querySelectorAll('.option');
+        
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selection from other options in the same question
+                const parent = option.parentElement;
+                const siblings = parent.querySelectorAll('.option');
+                siblings.forEach(sib => sib.classList.remove('selected'));
+                
+                // Select this option
+                option.classList.add('selected');
+            });
+        });
+        
+        // Check answers
+        checkAnswersBtn.addEventListener('click', () => {
+            let correctCount = 0;
+            let totalQuestions = 0;
+            let reviewHTML = '';
+            
+            document.querySelectorAll('.options').forEach(questionOptions => {
+                totalQuestions++;
+                const selectedOption = questionOptions.querySelector('.option.selected');
+                
+                if (selectedOption && selectedOption.dataset.correct === "true") {
+                    correctCount++;
+                    reviewHTML += `<p><span class="correct-answer">Question ${totalQuestions}: Correct!</span></p>`;
+                } else {
+                    const correctOption = questionOptions.querySelector('.option[data-correct="true"]');
+                    reviewHTML += `
+                        <p><span class="incorrect-answer">Question ${totalQuestions}: Your answer was incorrect.</span>
+                        <span class="correct-answer"> Correct answer: "${correctOption.textContent}"</span></p>
+                    `;
+                }
+            });
+            
+            const score = (correctCount / totalQuestions) * 100;
+            scoreValue.textContent = `${score.toFixed(0)}%`;
+            document.querySelector('.question-review').innerHTML = reviewHTML;
+            quizResult.classList.add('show');
+            
+            // Scroll to results
+            quizResult.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Reset quiz
+        resetQuizBtn.addEventListener('click', () => {
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            quizResult.classList.remove('show');
+        });
+        
+        // Visualization for Two Sum
+        function resetVisualization() {
+            const elements = arrayVisual.querySelectorAll('.array-element');
+            elements.forEach(el => {
+                el.classList.remove('current', 'sorted');
+            });
+            
+            hashmapPairs.innerHTML = '';
+            visualizationText.textContent = 'Click "Visualize Solution" to start the visualization';
+            
+            if (visualizationInterval) {
+                clearInterval(visualizationInterval);
+            }
+        }
+        
+        resetVisualizationBtn.addEventListener('click', resetVisualization);
+        
+        function updateHashmapVisualization(numMap) {
+            hashmapPairs.innerHTML = '';
+            
+            // Create header for the hash map table
+            const headerElement = document.createElement('div');
+            headerElement.className = 'hashmap-header';
+            headerElement.innerHTML = `
+                <span class="hashmap-header-key">Number</span>
+                <span class="hashmap-header-value">Index</span>
+            `;
+            hashmapPairs.appendChild(headerElement);
+            
+            for (const [key, value] of Object.entries(numMap)) {
+                const pairElement = document.createElement('div');
+                pairElement.className = 'hashmap-pair';
+                pairElement.innerHTML = `
+                    <span class="hashmap-key">${key}</span>
+                    <span class="hashmap-arrow">→</span>
+                    <span class="hashmap-value">${value}</span>
+                `;
+                hashmapPairs.appendChild(pairElement);
+                
+                // Highlight the most recent addition
+                if (parseInt(key) === parseInt(Object.keys(numMap).pop())) {
+                    pairElement.classList.add('active');
+                    
+                    // Remove highlight after a delay
+                    setTimeout(() => {
+                        pairElement.classList.remove('active');
+                    }, 1000);
+                }
+            }
+            
+            if (Object.keys(numMap).length === 0) {
+                hashmapPairs.innerHTML = '<div class="hashmap-pair">Hash map is empty</div>';
+            }
+        }
+        
+        visualizeBtn.addEventListener('click', () => {
+            try {
+                resetVisualization();
+                
+                const elements = arrayVisual.querySelectorAll('.array-element');
+                const nums = [3, 5, 2, 7, 6];
+                const target = 9;
+                const numMap = {};
+                let i = 0;
+                
+                visualizationInterval = setInterval(() => {
+                    if (i >= nums.length) {
+                        clearInterval(visualizationInterval);
+                        visualizationText.textContent = 'No solution found!';
+                        return;
+                    }
+                    
+                    // Reset all elements
+                    elements.forEach(el => el.classList.remove('current'));
+                    
+                    // Highlight current element
+                    elements[i].classList.add('current');
+                    
+                    const num = nums[i];
+                    const complement = target - num;
+                    
+                    visualizationText.textContent = `Checking nums[${i}] = ${num}. Complement needed: ${target} - ${num} = ${complement}`;
+                    
+                    // Check if complement exists in hash map
+                    if (complement in numMap) {
+                        // Solution found
+                        visualizationText.textContent = `Solution found! nums[${numMap[complement]}] + nums[${i}] = ${complement} + ${num} = ${target}`;
+                        
+                        elements[numMap[complement]].classList.add('sorted');
+                        elements[i].classList.add('sorted');
+                        
+                        clearInterval(visualizationInterval);
+                        return;
+                    }
+                    
+                    // Update hash map visualization
+                    numMap[num] = i;
+                    updateHashmapVisualization(numMap);
+                    
+                    i++;
+                }, 2000);
+            } catch (error) {
+                console.error('Visualization error:', error);
+                visualizationText.textContent = 'An error occurred during visualization. Please try again.';
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Initialize the page with some content
+        window.addEventListener('load', () => {
+            // Add some initial drawing instructions
+            setTimeout(() => {
+                if (whiteboardActive) {
+                    ctx.font = "24px Arial";
+                    ctx.fillStyle = "#4a6bff";
+                    ctx.fillText("Draw anywhere on the screen!", 50, 50);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

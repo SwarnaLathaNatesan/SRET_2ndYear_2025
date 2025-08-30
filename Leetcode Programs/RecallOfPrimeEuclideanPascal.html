@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Programming Visualizations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --secondary: #ff6b8b;
+            --accent: #6c63ff;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: linear-gradient(120deg, #4a6bff, #6c63ff);
+            --code-bg: #f8f9fa;
+            --code-border: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 20px 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .drawing-tools {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+        
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+            margin-top: 30px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .visualization {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .code-container {
+            background: var(--code-bg);
+            color: var(--dark);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Roboto Mono', monospace;
+            border: 1px solid var(--code-border);
+        }
+        
+        .code-keyword {
+            color: #ff6b8b;
+            font-weight: bold;
+        }
+        
+        .code-function {
+            color: #4a6bff;
+        }
+        
+        .code-comment {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .code-string {
+            color: #28a745;
+        }
+        
+        .code-number {
+            color: #6f42c1;
+        }
+        
+        .code-operator {
+            color: #ff6b8b;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quiz-container {
+            margin: 30px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .quiz-options {
+            margin: 15px 0;
+        }
+        
+        .quiz-option {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quiz-option input {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .quiz-submit {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .answer-stamp {
+            color: var(--success);
+            font-weight: bold;
+            margin-left: 10px;
+            display: none;
+        }
+        
+        .correct {
+            color: var(--success);
+        }
+        
+        .incorrect {
+            color: #dc3545;
+        }
+        
+        .blink {
+            animation: blink-animation 1s steps(5, start) infinite;
+        }
+        
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+        
+        .summary {
+            background: linear-gradient(120deg, #e3f2fd, #bbdefb);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .summary h2 {
+            color: #1565c0;
+            border-bottom: 2px solid #64b5f6;
+        }
+        
+        .key-points {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .key-points li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .key-points li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            color: var(--dark);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Drawing canvas */
+        #drawingCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+        }
+        
+        .drawing-enabled #drawingCanvas {
+            pointer-events: all;
+        }
+        
+        /* Algorithm visualization styles */
+        .pascal-triangle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .pascal-row {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .pascal-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2px;
+            background: linear-gradient(135deg, #4a6bff, #6c63ff);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .euclidean-vis {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .pascal-cell {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <span>CodeVisualizer Pro</span>
+            </div>
+            <div class="drawing-tools">
+                <div class="color-palette">
+                    <div class="color-option" style="background-color: #ff6b8b;" data-color="#ff6b8b"></div>
+                    <div class="color-option" style="background-color: #4a6bff;" data-color="#4a6bff"></div>
+                    <div class="color-option" style="background-color: #28a745;" data-color="#28a745"></div>
+                    <div class="color-option" style="background-color: #ffc107;" data-color="#ffc107"></div>
+                    <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
+                </div>
+                <button id="drawBtn" class="tool-btn">
+                    <i class="fas fa-pen"></i>
+                    <span>Draw Mode</span>
+                </button>
+                <button id="clearBtn" class="tool-btn">
+                    <i class="fas fa-eraser"></i>
+                    <span>Clear Drawing</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Advanced Programming Visualizations</h1>
+        
+        <div class="card">
+            <h2>Decimal to Binary Conversion</h2>
+            <p>Convert a decimal number to its binary representation by repeatedly dividing by 2 and recording the remainders.</p>
+            
+            <div class="visualization">
+                <label for="decimalInput">Enter a decimal number:</label>
+                <input type="number" id="decimalInput" min="0" value="13">
+                <button id="convertBtn" class="btn">Convert to Binary</button>
+                <div id="binaryResult" class="code-container">Binary result will appear here</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code><span class="code-keyword">def</span> <span class="code-function">decimal_to_binary</span>(n):
+    <span class="code-keyword">if</span> n == <span class="code-number">0</span>:
+        <span class="code-keyword">return</span> <span class="code-string">"0"</span>
+    binary = <span class="code-string">""</span>
+    <span class="code-keyword">while</span> n > <span class="code-number">0</span>:
+        binary = <span class="code-function">str</span>(n % <span class="code-number">2</span>) + binary
+        n = n // <span class="code-number">2</span>
+    <span class="code-keyword">return</span> binary
+
+<span class="code-comment"># Example usage</span>
+<span class="code-function">print</span>(decimal_to_binary(<span class="code-number">13</span>))  <span class="code-comment"># Output: "1101"</span></code></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Fibonacci Sequence</h2>
+            <p>The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones.</p>
+            
+            <div class="visualization">
+                <label for="fibInput">Enter the number of terms:</label>
+                <input type="number" id="fibInput" min="1" max="20" value="7">
+                <button id="generateFibBtn" class="btn">Generate Sequence</button>
+                <div id="fibResult" class="code-container">Fibonacci sequence will appear here</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code><span class="code-keyword">def</span> <span class="code-function">fibonacci</span>(n):
+    <span class="code-keyword">if</span> n <= <span class="code-number">0</span>:
+        <span class="code-keyword">return</span> []
+    <span class="code-keyword">elif</span> n == <span class="code-number">1</span>:
+        <span class="code-keyword">return</span> [<span class="code-number">0</span>]
+    <span class="code-keyword">elif</span> n == <span class="code-number">2</span>:
+        <span class="code-keyword">return</span> [<span class="code-number">0</span>, <span class="code-number">1</span>]
+    
+    fib_sequence = [<span class="code-number">0</span>, <span class="code-number">1</span>]
+    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-number">2</span>, n):
+        next_num = fib_sequence[i-<span class="code-number">1</span>] + fib_sequence[i-<span class="code-number">2</span>]
+        fib_sequence.append(next_num)
+    
+    <span class="code-keyword">return</span> fib_sequence
+
+<span class="code-comment"># Example usage</span>
+<span class="code-function">print</span>(fibonacci(<span class="code-number">7</span>))  <span class="code-comment"># Output: [0, 1, 1, 2, 3, 5, 8]</span></code></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Pascal's Triangle</h2>
+            <p>Pascal's Triangle is a triangular array where each number is the sum of the two directly above it.</p>
+            
+            <div class="visualization">
+                <label for="pascalInput">Enter the number of rows:</label>
+                <input type="number" id="pascalInput" min="1" max="10" value="5">
+                <button id="generatePascalBtn" class="btn">Generate Triangle</button>
+                <div id="pascalResult" class="code-container">Pascal's Triangle will appear here</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code><span class="code-keyword">def</span> <span class="code-function">pascal_triangle</span>(n):
+    triangle = []
+    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(n):
+        row = [<span class="code-number">1</span>] * (i + <span class="code-number">1</span>)
+        <span class="code-keyword">if</span> i > <span class="code-number">1</span>:
+            <span class="code-keyword">for</span> j <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-number">1</span>, i):
+                row[j] = triangle[i-<span class="code-number">1</span>][j-<span class="code-number">1</span>] + triangle[i-<span class="code-number">1</span>][j]
+        triangle.append(row)
+    <span class="code-keyword">return</span> triangle
+
+<span class="code-comment"># Example usage</span>
+<span class="code-function">print</span>(pascal_triangle(<span class="code-number">5</span>))
+<span class="code-comment"># Output: [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]</span></code></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Euclidean Algorithm for GCD</h2>
+            <p>The Euclidean algorithm finds the greatest common divisor (GCD) of two numbers by repeatedly applying the GCD formula: GCD(a, b) = GCD(b, a mod b).</p>
+            
+            <div class="visualization">
+                <label for="gcdA">Enter first number:</label>
+                <input type="number" id="gcdA" min="1" value="48">
+                <label for="gcdB">Enter second number:</label>
+                <input type="number" id="gcdB" min="1" value="18">
+                <button id="calculateGcdBtn" class="btn">Calculate GCD</button>
+                <div id="gcdResult" class="code-container">GCD result will appear here</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code><span class="code-keyword">def</span> <span class="code-function">gcd</span>(a, b):
+    <span class="code-keyword">while</span> b != <span class="code-number">0</span>:
+        a, b = b, a % b
+    <span class="code-keyword">return</span> a
+
+<span class="code-comment"># Example usage</span>
+<span class="code-function">print</span>(gcd(<span class="code-number">48</span>, <span class="code-number">18</span>))  <span class="code-comment"># Output: 6</span>
+
+<span class="code-comment"># LCM using GCD</span>
+<span class="code-keyword">def</span> <span class="code-function">lcm</span>(a, b):
+    <span class="code-keyword">return</span> (a * b) // gcd(a, b)
+
+<span class="code-function">print</span>(lcm(<span class="code-number">12</span>, <span class="code-number">18</span>))  <span class="code-comment"># Output: 36</span></code></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Prime Number Check (Efficient Approach)</h2>
+            <p>Check if a number is prime by testing divisibility only up to the square root of the number.</p>
+            
+            <div class="visualization">
+                <label for="primeInput">Enter a number to check:</label>
+                <input type="number" id="primeInput" min="2" value="17">
+                <button id="checkPrimeBtn" class="btn">Check Prime</button>
+                <div id="primeResult" class="code-container">Prime check result will appear here</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code><span class="code-keyword">def</span> <span class="code-function">is_prime</span>(n):
+    <span class="code-keyword">if</span> n <= <span class="code-number">1</span>:
+        <span class="code-keyword">return</span> <span class="code-keyword">False</span>
+    <span class="code-keyword">if</span> n == <span class="code-number">2</span>:
+        <span class="code-keyword">return</span> <span class="code-keyword">True</span>
+    <span class="code-keyword">if</span> n % <span class="code-number">2</span> == <span class="code-number">0</span>:
+        <span class="code-keyword">return</span> <span class="code-keyword">False</span>
+    
+    <span class="code-comment"># Check divisibility up to sqrt(n)</span>
+    i = <span class="code-number">3</span>
+    <span class="code-keyword">while</span> i * i <= n:
+        <span class="code-keyword">if</span> n % i == <span class="code-number">0</span>:
+            <span class="code-keyword">return</span> <span class="code-keyword">False</span>
+        i += <span class="code-number">2</span>
+    
+    <span class="code-keyword">return</span> <span class="code-keyword">True</span>
+
+<span class="code-comment"># Example usage</span>
+<span class="code-function">print</span>(is_prime(<span class="code-number">17</span>))  <span class="code-comment"># Output: True</span>
+<span class="code-function">print</span>(is_prime(<span class="code-number">15</span>))  <span class="code-comment"># Output: False</span></code></pre>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h2>Key Points to Remember</h2>
+            <ul class="key-points">
+                <li>Binary conversion involves dividing by 2 and tracking remainders</li>
+                <li>Fibonacci sequence starts with 0 and 1, each subsequent number is the sum of the previous two</li>
+                <li>Pascal's Triangle: Each number is the sum of the two directly above it</li>
+                <li>Euclidean algorithm for GCD uses the property that GCD(a, b) = GCD(b, a mod b)</li>
+                <li>LCM can be calculated using the formula: LCM(a, b) = (a * b) / GCD(a, b)</li>
+                <li>Prime numbers are only divisible by 1 and themselves</li>
+                <li>Efficient prime checking only requires testing divisibility up to sqrt(n)</li>
+            </ul>
+        </div>
+        
+        <div class="quiz-container">
+            <h2>Quick Quiz</h2>
+            <p>Test your understanding of the concepts covered.</p>
+            
+            <div class="quiz-question" id="q1">
+                <h3>Question 1: What is the binary representation of decimal number 10?</h3>
+                <div class="quiz-options">
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="a"> 
+                        <span>1010 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="b"> 
+                        <span>1100 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="c"> 
+                        <span>1001 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="d"> 
+                        <span>1011 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="q2">
+                <h3>Question 2: Which of these is the correct Fibonacci sequence?</h3>
+                <div class="quiz-options">
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="a"> 
+                        <span>0, 1, 1, 2, 3, 5, 8 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="b"> 
+                        <span>1, 2, 3, 4, 5, 6, 7 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="c"> 
+                        <span>0, 1, 2, 3, 5, 8, 13 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="d"> 
+                        <span>1, 1, 2, 3, 5, 8, 13 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="q3">
+                <h3>Question 3: What is the GCD of 48 and 18?</h3>
+                <div class="quiz-options">
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="a"> 
+                        <span>3 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="b"> 
+                        <span>6 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="c"> 
+                        <span>9 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="d"> 
+                        <span>12 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="q4">
+                <h3>Question 4: Which row of Pascal's Triangle is: 1, 4, 6, 4, 1?</h3>
+                <div class="quiz-options">
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="a"> 
+                        <span>Row 3 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="b"> 
+                        <span>Row 4 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="c"> 
+                        <span>Row 5 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="d"> 
+                        <span>Row 6 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="q5">
+                <h3>Question 5: Which of these numbers is prime?</h3>
+                <div class="quiz-options">
+                    <label class="quiz-option">
+                        <input type="radio" name="q5" value="a"> 
+                        <span>17 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q5" value="b"> 
+                        <span>21 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q5" value="c"> 
+                        <span>27 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q5" value="d"> 
+                        <span>33 <span class="answer-stamp">My Answer</span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="quiz-submit">
+                <button id="submitQuiz" class="btn">Submit Answers</button>
+            </div>
+            
+            <div id="quizResult" class="result-container">
+                <h3>Quiz Results: <span id="score"></span></h3>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created with ❤️ for effective learning | CodeVisualizer Pro © 2023</p>
+    </footer>
+
+    <canvas id="drawingCanvas"></canvas>
+
+    <script>
+        // Drawing functionality
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const drawBtn = document.getElementById('drawBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const colorOptions = document.querySelectorAll('.color-option');
+        
+        let isDrawing = false;
+        let currentColor = '#ff6b8b';
+        let currentMode = 'scroll';
+        
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+        
+        function startDrawing(e) {
+            if (currentMode !== 'draw') return;
+            isDrawing = true;
+            draw(e);
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentColor;
+            
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX, e.clientY);
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (currentMode !== 'draw') return;
+            isDrawing = true;
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            startDrawing(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            draw(mouseEvent);
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            stopDrawing();
+        });
+        
+        drawBtn.addEventListener('click', () => {
+            if (currentMode === 'scroll') {
+                currentMode = 'draw';
+                drawBtn.innerHTML = '<i class="fas fa-hand-paper"></i><span>Scroll Mode</span>';
+                document.body.classList.add('drawing-enabled');
+            } else {
+                currentMode = 'scroll';
+                drawBtn.innerHTML = '<i class="fas fa-pen"></i><span>Draw Mode</span>';
+                document.body.classList.remove('drawing-enabled');
+            }
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                currentColor = option.getAttribute('data-color');
+                // Highlight selected color
+                colorOptions.forEach(opt => opt.style.transform = 'scale(1)');
+                option.style.transform = 'scale(1.3)';
+            });
+        });
+        
+        // Decimal to Binary Conversion
+        document.getElementById('convertBtn').addEventListener('click', () => {
+            const decimalInput = document.getElementById('decimalInput');
+            const decimalValue = parseInt(decimalInput.value);
+            
+            if (isNaN(decimalValue) || decimalValue < 0) {
+                alert('Please enter a valid non-negative integer');
+                return;
+            }
+            
+            // Visualization of the conversion process
+            let num = decimalValue;
+            let steps = [];
+            
+            if (num === 0) {
+                steps.push({ number: 0, remainder: 0 });
+            } else {
+                while (num > 0) {
+                    const remainder = num % 2;
+                    steps.push({ number: num, remainder: remainder });
+                    num = Math.floor(num / 2);
+                }
+            }
+            
+            let resultHTML = `<p>Steps to convert ${decimalValue} to binary:</p><div class="conversion-steps">`;
+            
+            steps.forEach(step => {
+                resultHTML += `<div class="step">${step.number} ÷ 2 = ${Math.floor(step.number / 2)} Remainder: ${step.remainder}</div>`;
+            });
+            
+            const binaryResult = steps.reverse().map(step => step.remainder).join('');
+            resultHTML += `</div><p><strong>Binary Result:</strong> ${binaryResult}</p>`;
+            
+            document.getElementById('binaryResult').innerHTML = resultHTML;
+        });
+        
+        // Fibonacci Sequence
+        document.getElementById('generateFibBtn').addEventListener('click', () => {
+            const fibInput = document.getElementById('fibInput');
+            const n = parseInt(fibInput.value);
+            
+            if (isNaN(n) || n < 1 || n > 20) {
+                alert('Please enter a valid number between 1 and 20');
+                return;
+            }
+            
+            let fibSequence = [];
+            if (n >= 1) fibSequence.push(0);
+            if (n >= 2) fibSequence.push(1);
+            
+            for (let i = 2; i < n; i++) {
+                fibSequence.push(fibSequence[i-1] + fibSequence[i-2]);
+            }
+            
+            let resultHTML = `<p>Fibonacci sequence with ${n} terms:</p>`;
+            resultHTML += `<div class="fib-sequence">${fibSequence.join(', ')}</div>`;
+            
+            // Visualization
+            resultHTML += `<div class="fib-visualization" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">`;
+            fibSequence.forEach((num, index) => {
+                resultHTML += `<div style="background: linear-gradient(135deg, #4a6bff, #6c63ff); color: white; padding: 10px; border-radius: 8px; text-align: center;">
+                    <div>F<sub>${index}</sub></div>
+                    <div style="font-weight: bold; font-size: 1.2em;">${num}</div>
+                </div>`;
+            });
+            resultHTML += `</div>`;
+            
+            document.getElementById('fibResult').innerHTML = resultHTML;
+        });
+        
+        // Pascal's Triangle
+        document.getElementById('generatePascalBtn').addEventListener('click', () => {
+            const pascalInput = document.getElementById('pascalInput');
+            const n = parseInt(pascalInput.value);
+            
+            if (isNaN(n) || n < 1 || n > 10) {
+                alert('Please enter a valid number between 1 and 10');
+                return;
+            }
+            
+            // Generate Pascal's Triangle
+            let triangle = [];
+            for (let i = 0; i < n; i++) {
+                let row = [1];
+                for (let j = 1; j < i; j++) {
+                    row.push(triangle[i-1][j-1] + triangle[i-1][j]);
+                }
+                if (i > 0) row.push(1);
+                triangle.push(row);
+            }
+            
+            let resultHTML = `<p>Pascal's Triangle with ${n} rows:</p>`;
+            resultHTML += `<div class="pascal-triangle">`;
+            
+            triangle.forEach(row => {
+                resultHTML += `<div class="pascal-row">`;
+                row.forEach(cell => {
+                    resultHTML += `<div class="pascal-cell">${cell}</div>`;
+                });
+                resultHTML += `</div>`;
+            });
+            
+            resultHTML += `</div>`;
+            resultHTML += `<p><strong>Python representation:</strong> ${JSON.stringify(triangle)}</p>`;
+            
+            document.getElementById('pascalResult').innerHTML = resultHTML;
+        });
+        
+        // GCD Calculation
+        document.getElementById('calculateGcdBtn').addEventListener('click', () => {
+            const gcdA = parseInt(document.getElementById('gcdA').value);
+            const gcdB = parseInt(document.getElementById('gcdB').value);
+            
+            if (isNaN(gcdA) || isNaN(gcdB) || gcdA < 1 || gcdB < 1) {
+                alert('Please enter valid positive integers');
+                return;
+            }
+            
+            let a = gcdA;
+            let b = gcdB;
+            let steps = [];
+            
+            while (b !== 0) {
+                steps.push({ a: a, b: b, remainder: a % b });
+                [a, b] = [b, a % b];
+            }
+            
+            let resultHTML = `<p>Steps to calculate GCD(${gcdA}, ${gcdB}):</p><div class="euclidean-vis">`;
+            
+            steps.forEach((step, index) => {
+                resultHTML += `<div class="step">Step ${index + 1}: GCD(${step.a}, ${step.b}) = ${step.b} and ${step.a} % ${step.b} = ${step.remainder}</div>`;
+            });
+            
+            resultHTML += `</div><p><strong>GCD Result:</strong> ${a}</p>`;
+            
+            // Calculate LCM using GCD
+            const lcm = (gcdA * gcdB) / a;
+            resultHTML += `<p><strong>LCM(${gcdA}, ${gcdB}):</strong> (${gcdA} × ${gcdB}) / ${a} = ${lcm}</p>`;
+            
+            document.getElementById('gcdResult').innerHTML = resultHTML;
+        });
+        
+        // Prime Number Check
+        document.getElementById('checkPrimeBtn').addEventListener('click', () => {
+            const primeInput = parseInt(document.getElementById('primeInput').value);
+            
+            if (isNaN(primeInput) || primeInput < 2) {
+                alert('Please enter a valid integer greater than 1');
+                return;
+            }
+            
+            let isPrime = true;
+            let factors = [];
+            
+            if (primeInput === 2) {
+                isPrime = true;
+            } else if (primeInput % 2 === 0) {
+                isPrime = false;
+                factors.push(2);
+            } else {
+                // Check divisibility up to sqrt(n)
+                for (let i = 3; i * i <= primeInput; i += 2) {
+                    if (primeInput % i === 0) {
+                        isPrime = false;
+                        factors.push(i);
+                        break;
+                    }
+                }
+            }
+            
+            let resultHTML = '';
+            if (isPrime) {
+                resultHTML = `<p style="color: var(--success);"><strong>${primeInput} is a prime number!</strong></p>`;
+                resultHTML += `<p>It has no divisors other than 1 and itself.</p>`;
+            } else {
+                resultHTML = `<p style="color: var(--secondary);"><strong>${primeInput} is not a prime number.</strong></p>`;
+                if (factors.length > 0) {
+                    resultHTML += `<p>It is divisible by ${factors[0]}.</p>`;
+                }
+            }
+            
+            document.getElementById('primeResult').innerHTML = resultHTML;
+        });
+        
+        // Quiz functionality
+        document.getElementById('submitQuiz').addEventListener('click', () => {
+            // Correct answers
+            const correctAnswers = {
+                q1: 'a',
+                q2: 'a',
+                q3: 'b',
+                q4: 'c',
+                q5: 'a'
+            };
+            
+            // Question texts without numbers
+            const questionTexts = {
+                q1: "What is the binary representation of decimal number 10?",
+                q2: "Which of these is the correct Fibonacci sequence?",
+                q3: "What is the GCD of 48 and 18?",
+                q4: "Which row of Pascal's Triangle is: 1, 4, 6, 4, 1?",
+                q5: "Which of these numbers is prime?"
+            };
+            
+            // Calculate score
+            let score = 0;
+            const questions = ['q1', 'q2', 'q3', 'q4', 'q5'];
+            
+            questions.forEach(question => {
+                const selectedOption = document.querySelector(`input[name=${question}]:checked`);
+                if (selectedOption && selectedOption.value === correctAnswers[question]) {
+                    score++;
+                }
+            });
+            
+            const percentage = (score / questions.length * 100).toFixed(0);
+            
+            // Display results
+            document.getElementById('score').textContent = `${percentage}% (${score}/${questions.length})`;
+            
+            let resultDetails = '<p><strong>Question Review:</strong></p>';
+            
+            questions.forEach(question => {
+                const selectedOption = document.querySelector(`input[name=${question}]:checked`);
+                const isCorrect = selectedOption && selectedOption.value === correctAnswers[question];
+                
+                resultDetails += `<div class="question-review ${isCorrect ? 'correct' : 'incorrect'}">
+                    <p><strong>Question ${question.substring(1)}:</strong> ${questionTexts[question]}</p>
+                    <p>Your answer: ${selectedOption ? selectedOption.parentElement.textContent.replace('My Answer', '').trim() : 'Not answered'}</p>`;
+                
+                if (!isCorrect) {
+                    // Show correct answer for wrong attempts
+                    const correctOption = document.querySelector(`input[name=${question}][value="${correctAnswers[question]}"]`);
+                    resultDetails += `<p>Correct answer: ${correctOption.parentElement.textContent.replace('My Answer', '').trim()}</p>`;
+                }
+                
+                resultDetails += `</div>`;
+            });
+            
+            document.getElementById('resultDetails').innerHTML = resultDetails;
+            document.getElementById('quizResult').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Add stamp to selected answers
+        const quizOptions = document.querySelectorAll('.quiz-option input');
+        quizOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                // Remove all stamps from this question
+                const question = this.name;
+                document.querySelectorAll(`input[name=${question}]`).forEach(opt => {
+                    opt.parentElement.querySelector('.answer-stamp').style.display = 'none';
+                });
+                
+                // Add stamp to selected option
+                this.parentElement.querySelector('.answer-stamp').style.display = 'inline';
+            });
+        });
+        
+        // Initialize with some examples
+        document.getElementById('convertBtn').click();
+        document.getElementById('generateFibBtn').click();
+        document.getElementById('generatePascalBtn').click();
+        document.getElementById('calculateGcdBtn').click();
+        document.getElementById('checkPrimeBtn').click();
+    </script>
+</body>
+</html>
