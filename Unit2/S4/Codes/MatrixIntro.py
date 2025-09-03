@@ -13,7 +13,7 @@ for row in matrix:
 # Update element at row 1, column 2
 matrix[0][1] = 5
 
-# Update the element at row 0, column 0
+# Update the element at row 3, column 3
 #matrix = 9
 
 print("\nMatrix After Updates:")
