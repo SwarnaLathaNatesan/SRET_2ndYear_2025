@@ -1,0 +1,34 @@
+Prime Number
+Sieve of Eratosthene
+Fibonacci series
+Pascal Triangle
+GCD using Euclidean
+LCM using GCD
+Decimal to Binary
+Fast Exponentiation (Binary Exponentiation)
+Modular arithmetic
+Matrix Rotation
+Segment Tree
+Hashing
+
+
+
+A - Attention in class
+B - More recall is required. Need cheat sheet
+c - More visualization is required for understanding
+D - all of this 
+E - other Reasons
+
+
+Prime Number
+Modular arithmetic (a * b) % c 
+((a %c) * (b%c) ) %c
+
+
+
+(Binary to Decimal)
+Matrix 
+Segment tree
+Hashing
+basics - Data Patterns
+
