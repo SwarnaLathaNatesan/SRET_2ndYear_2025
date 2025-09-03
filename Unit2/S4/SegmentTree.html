@@ -15,99 +15,102 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             color: #333;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 15px;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
+            margin-bottom: 15px;
+            padding: 12px;
             background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
         
-        .array-display {
+        .arrays-container {
             display: flex;
-            justify-content: center;
-            margin: 20px 0;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .array-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            min-height: 150px;
+        }
+        
+        .array-panel h2 {
+            color: #6a11cb;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.1rem;
+        }
+        
+        .array-elements {
+            display: flex;
             flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
         }
         
         .array-element {
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 10px;
             border-radius: 50%;
             background: linear-gradient(145deg, #6a11cb, #2575fc);
             color: white;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
             position: relative;
+            font-size: 0.9rem;
         }
         
         .index {
             position: absolute;
-            top: -20px;
-            font-size: 0.9rem;
+            top: -15px;
+            font-size: 0.7rem;
             color: #6a11cb;
             font-weight: bold;
         }
         
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .panel {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .panel h2 {
-            color: #6a11cb;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
         .tree-container {
             position: relative;
-            height: 500px;
-            margin: 20px 0;
+            height: 320px;
+            margin: 12px 0;
             overflow: hidden;
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(255, 200, 239, 0.2) 0%, rgba(163, 217, 249, 0.2) 90%),
                 url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 15a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5zm0 10c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0 60a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5zm0 10c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zM15 50a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5zm10 0c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm60 0a5 5 0 0 0-5 5 5 5 0 0 0 5 5 5 5 0 0 0 5-5 5 5 0 0 0-5-5zm-10 0c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z' fill='%236a11cb' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
         }
         
         .node {
@@ -121,18 +124,18 @@
         .range-label {
             background-color: #3c1361;
             color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            margin-bottom: 8px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-bottom: 4px;
             font-weight: bold;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
             z-index: 2;
         }
         
         .ball {
-            width: 60px;
-            height: 60px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #6b4c9f, #4a2c82);
             color: white;
@@ -140,11 +143,11 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 0.9rem;
             box-shadow: 
-                0 6px 12px rgba(0, 0, 0, 0.2), 
-                inset 0 -8px 16px rgba(0, 0, 0, 0.2), 
-                inset 0 8px 16px rgba(255, 255, 255, 0.2);
+                0 3px 6px rgba(0, 0, 0, 0.2), 
+                inset 0 -4px 8px rgba(0, 0, 0, 0.2), 
+                inset 0 4px 8px rgba(255, 255, 255, 0.2);
             position: relative;
             z-index: 2;
         }
@@ -160,41 +163,43 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
         }
         
         button {
             background: linear-gradient(to right, #6a11cb, #2575fc);
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
+            padding: 8px 12px;
+            border-radius: 16px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            min-width: 60px;
         }
         
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
         }
         
         .highlight {
-            animation: highlight 1.5s ease;
+            animation: highlight 1.2s ease;
         }
         
         @keyframes highlight {
             0% { transform: scale(1); }
-            50% { transform: scale(1.15); box-shadow: 0 0 25px #ffcc00, 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 -8px 16px rgba(0, 0, 0, 0.2), inset 0 8px 16px rgba(255, 255, 255, 0.2); }
+            50% { transform: scale(1.1); box-shadow: 0 0 12px #ffcc00, 0 3px 6px rgba(0, 0, 0, 0.2), inset 0 -4px 8px rgba(0, 0, 0, 0.2), inset 0 4px 8px rgba(255, 255, 255, 0.2); }
             100% { transform: scale(1); }
         }
         
         .path {
             background-color: #ffcc00 !important;
-            box-shadow: 0 0 15px #ffcc00;
+            box-shadow: 0 0 8px #ffcc00;
         }
         
         .highlighted-node .ball {
@@ -209,51 +214,98 @@
         
         .instructions {
             background: linear-gradient(120deg, #e3f2fd 0%, #f3e5f5 100%);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.8rem;
         }
         
         .instructions h3 {
             color: #6a11cb;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
         }
         
         .instructions ul {
-            padding-left: 20px;
-            margin: 10px 0;
+            padding-left: 16px;
+            margin: 6px 0;
         }
         
         .instructions li {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         
-        .calculation {
+        .construction-steps {
+            margin-top: 12px;
+        }
+        
+        .step {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 0.8rem;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 6px;
             font-weight: bold;
-            color: #6a11cb;
+            font-size: 0.7rem;
+        }
+        
+        .segment-array-element {
+            padding: 5px 10px;
+            background: linear-gradient(145deg, #6a11cb, #2575fc);
+            color: white;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 3px;
+            display: inline-block;
+        }
+        
+        .segment-array-element.highlight {
+            background: linear-gradient(145deg, #ffcc00, #ff9900);
+            color: #333;
         }
         
         footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 12px;
             color: #6a11cb;
             font-weight: 500;
+            font-size: 0.8rem;
         }
         
         @media (max-width: 768px) {
-            .content {
+            .arrays-container {
                 flex-direction: column;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 1.4rem;
+            }
+            
+            button {
+                padding: 6px 10px;
+                min-width: 55px;
+                font-size: 0.7rem;
+            }
+            
+            .tree-container {
+                height: 280px;
             }
         }
     </style>
@@ -265,66 +317,85 @@
             <p class="subtitle">Array: [1, 2, 3, 4, 5, 6]</p>
         </header>
         
-        <div class="array-display">
-            <div class="array-element">
-                <span class="index">0</span>
-                <span class="value">1</span>
+        <div class="arrays-container">
+            <div class="array-panel">
+                <h2>Original Array</h2>
+                <div class="array-elements">
+                    <div class="array-element">
+                        <span class="index">0</span>
+                        <span class="value">1</span>
+                    </div>
+                    <div class="array-element">
+                        <span class="index">1</span>
+                        <span class="value">2</span>
+                    </div>
+                    <div class="array-element">
+                        <span class="index">2</span>
+                        <span class="value">3</span>
+                    </div>
+                    <div class="array-element">
+                        <span class="index">3</span>
+                        <span class="value">4</span>
+                    </div>
+                    <div class="array-element">
+                        <span class="index">4</span>
+                        <span class="value">5</span>
+                    </div>
+                    <div class="array-element">
+                        <span class="index">5</span>
+                        <span class="value">6</span>
+                    </div>
+                </div>
             </div>
-            <div class="array-element">
-                <span class="index">1</span>
-                <span class="value">2</span>
-            </div>
-            <div class="array-element">
-                <span class="index">2</span>
-                <span class="value">3</span>
-            </div>
-            <div class="array-element">
-                <span class="index">3</span>
-                <span class="value">4</span>
-            </div>
-            <div class="array-element">
-                <span class="index">4</span>
-                <span class="value">5</span>
-            </div>
-            <div class="array-element">
-                <span class="index">5</span>
-                <span class="value">6</span>
+            
+            <div class="array-panel">
+                <h2>Segment Tree Array</h2>
+                <div class="array-elements" id="segmentArray">
+                    <div class="segment-array-element">[0,5]:21</div>
+                    <div class="segment-array-element">[0,2]:6</div>
+                    <div class="segment-array-element">[3,5]:15</div>
+                    <div class="segment-array-element">[0,1]:3</div>
+                    <div class="segment-array-element">[2,2]:3</div>
+                    <div class="segment-array-element">[3,4]:9</div>
+                    <div class="segment-array-element">[5,5]:6</div>
+                    <div class="segment-array-element">[0,0]:1</div>
+                    <div class="segment-array-element">[1,1]:2</div>
+                    <div class="segment-array-element">[3,3]:4</div>
+                    <div class="segment-array-element">[4,4]:5</div>
+                </div>
             </div>
         </div>
         
         <div class="controls">
-            <button id="showFullTree">Show Full Tree</button>
-            <button id="showRangeQuery">Show Range [2,5] Query</button>
+            <button id="showConstruction" title="Build Tree">BT</button>
+            <button id="showFullTree" title="Show Full Tree">FT</button>
+            <button id="showRangeQuery" title="Range Query [2,5]">RQ</button>
+            <button id="resetView" title="Reset View">RS</button>
         </div>
         
-        <div class="content">
-            <div class="panel">
-                <h2>Segment Tree Structure</h2>
-                <div class="tree-container" id="tree"></div>
-            </div>
+        <div class="tree-container" id="tree"></div>
+        
+        <div class="instructions">
+            <h3>Button Guide</h3>
+            <ul>
+                <li><strong>BT</strong> - Build Tree: Shows the construction process</li>
+                <li><strong>FT</strong> - Full Tree: Displays the complete segment tree</li>
+                <li><strong>RQ</strong> - Range Query: Highlights the [2,5] query</li>
+                <li><strong>RS</strong> - Reset: Returns to the default view</li>
+            </ul>
             
-            <div class="panel">
-                <h2>Range Query [2,5]</h2>
-                <div class="instructions">
-                    <h3>Query Explanation</h3>
-                    <p>To calculate the sum of elements from index 2 to 5:</p>
-                    <ul>
-                        <li>Start at the root node [0,5]</li>
-                        <li>Check if current segment is within [2,5]</li>
-                        <li>Traverse to the right child [3,5] (fully within range)</li>
-                        <li>Traverse till the left child [2,2] (fully within range)</li>
-                        <li>Combine results from nodes [2,2] and [3,5]</li>
-                    </ul>
-                    
-                    <div class="calculation">
-                        Sum = Node [2,2] + Node [3,5] = 3 + 15 = 18
-                    </div>
+            <div class="construction-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span>Leaf nodes get values from the original array</span>
                 </div>
-                
-                <div class="instructions">
-                    <h3>How Segment Trees Work</h3>
-                    <p>A segment tree is a data structure that allows efficient range queries and updates. Each node stores information about a segment of the array. For range sum queries, each node stores the sum of elements in its segment.</p>
-                    <p>The tree is built recursively by dividing the array into halves until we reach single elements.</p>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span>Parent nodes are calculated as the sum of their children</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span>Values propagate upward until the root contains the total sum</span>
                 </div>
             </div>
         </div>
@@ -337,29 +408,42 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const treeContainer = document.getElementById('tree');
+            const segmentArray = document.getElementById('segmentArray');
+            const showConstructionBtn = document.getElementById('showConstruction');
             const showFullTreeBtn = document.getElementById('showFullTree');
             const showRangeQueryBtn = document.getElementById('showRangeQuery');
+            const resetViewBtn = document.getElementById('resetView');
             
             // Segment tree data for array [1, 2, 3, 4, 5, 6]
             const treeData = [
-                { id: 1, value: 21, range: [0, 5], level: 1, position: 0.5, parent: null },
-                { id: 2, value: 6, range: [0, 2], level: 2, position: 0.25, parent: 1 },
-                { id: 3, value: 15, range: [3, 5], level: 2, position: 0.75, parent: 1 },
-                { id: 4, value: 3, range: [0, 1], level: 3, position: 0.125, parent: 2 },
-                { id: 5, value: 3, range: [2, 2], level: 3, position: 0.375, parent: 2 },
-                { id: 6, value: 9, range: [3, 4], level: 3, position: 0.625, parent: 3 },
-                { id: 7, value: 6, range: [5, 5], level: 3, position: 0.875, parent: 3 },
-                { id: 8, value: 1, range: [0, 0], level: 4, position: 0.0625, parent: 4 },
-                { id: 9, value: 2, range: [1, 1], level: 4, position: 0.1875, parent: 4 },
-                { id: 10, value: 4, range: [3, 3], level: 4, position: 0.5625, parent: 6 },
-                { id: 11, value: 5, range: [4, 4], level: 4, position: 0.6875, parent: 6 }
+                { id: 1, value: 21, range: [0, 5], level: 1, position: 0.5, parent: null, built: false },
+                { id: 2, value: 6, range: [0, 2], level: 2, position: 0.25, parent: 1, built: false },
+                { id: 3, value: 15, range: [3, 5], level: 2, position: 0.75, parent: 1, built: false },
+                { id: 4, value: 3, range: [0, 1], level: 3, position: 0.125, parent: 2, built: false },
+                { id: 5, value: 3, range: [2, 2], level: 3, position: 0.375, parent: 2, built: false },
+                { id: 6, value: 9, range: [3, 4], level: 3, position: 0.625, parent: 3, built: false },
+                { id: 7, value: 6, range: [5, 5], level: 3, position: 0.875, parent: 3, built: false },
+                { id: 8, value: 1, range: [0, 0], level: 4, position: 0.0625, parent: 4, built: false },
+                { id: 9, value: 2, range: [1, 1], level: 4, position: 0.1875, parent: 4, built: false },
+                { id: 10, value: 4, range: [3, 3], level: 4, position: 0.5625, parent: 6, built: false },
+                { id: 11, value: 5, range: [4, 4], level: 4, position: 0.6875, parent: 6, built: false }
             ];
             
             // Nodes involved in range query [2,5]
             const rangeQueryNodes = [5, 3]; // [2,2] and [3,5]
             
+            // Clear and initialize segment array display
+            segmentArray.innerHTML = '';
+            treeData.forEach(node => {
+                const elem = document.createElement('div');
+                elem.className = 'segment-array-element';
+                elem.id = `segment-${node.id}`;
+                elem.textContent = `[${node.range[0]},${node.range[1]}]:${node.value}`;
+                segmentArray.appendChild(elem);
+            });
+            
             // Draw the tree
-            function drawTree(highlightRangeQuery = false) {
+            function drawTree(highlightNodes = [], highlightConnectors = []) {
                 treeContainer.innerHTML = '';
                 
                 const containerWidth = treeContainer.offsetWidth;
@@ -372,7 +456,7 @@
                     
                     const parent = treeData.find(n => n.id === node.parent);
                     
-                    if (parent) {
+                    if (parent && node.built && parent.built) {
                         const parentX = containerWidth * parent.position;
                         const parentY = levelHeight * parent.level;
                         const nodeX = containerWidth * node.position;
@@ -385,10 +469,10 @@
                         connector.className = 'connector';
                         connector.style.width = length + 'px';
                         connector.style.left = parentX + 'px';
-                        connector.style.top = parentY + 30 + 'px';
+                        connector.style.top = parentY + 20 + 'px';
                         connector.style.transform = `rotate(${angle}deg)`;
                         
-                        if (highlightRangeQuery && rangeQueryNodes.includes(node.id) && rangeQueryNodes.includes(parent.id)) {
+                        if (highlightConnectors.includes(node.id) && highlightConnectors.includes(parent.id)) {
                             connector.classList.add('path');
                         }
                         
@@ -398,15 +482,17 @@
                 
                 // Draw nodes
                 treeData.forEach(node => {
+                    if (!node.built) return;
+                    
                     const nodeX = containerWidth * node.position;
                     const nodeY = levelHeight * node.level;
                     
                     const nodeElement = document.createElement('div');
                     nodeElement.className = 'node';
-                    nodeElement.style.left = (nodeX - 30) + 'px';
+                    nodeElement.style.left = (nodeX - 20) + 'px';
                     nodeElement.style.top = nodeY + 'px';
                     
-                    if (highlightRangeQuery && rangeQueryNodes.includes(node.id)) {
+                    if (highlightNodes.includes(node.id)) {
                         nodeElement.classList.add('highlighted-node');
                     }
                     
@@ -418,33 +504,105 @@
                     ball.className = 'ball';
                     ball.textContent = node.value;
                     
-                    nodeElement.appendChild(rangeLabel);
-                    nodeElement.appendChild(ball);
-                    
-                    if (highlightRangeQuery && rangeQueryNodes.includes(node.id)) {
+                    if (highlightNodes.includes(node.id)) {
                         ball.classList.add('highlight');
                     }
+                    
+                    nodeElement.appendChild(rangeLabel);
+                    nodeElement.appendChild(ball);
                     
                     treeContainer.appendChild(nodeElement);
                 });
             }
             
+            // Highlight corresponding segment array element
+            function highlightSegmentElement(id, highlight = true) {
+                const elem = document.getElementById(`segment-${id}`);
+                if (elem) {
+                    if (highlight) {
+                        elem.classList.add('highlight');
+                    } else {
+                        elem.classList.remove('highlight');
+                    }
+                }
+            }
+            
+            // Show construction animation
+            function showConstruction() {
+                // Reset all nodes
+                treeData.forEach(node => {
+                    node.built = false;
+                    highlightSegmentElement(node.id, false);
+                });
+                
+                // Build from bottom up
+                const buildOrder = [
+                    [8, 9, 10, 11],  // Leaves
+                    [4, 5, 6, 7],    // Level 3
+                    [2, 3],          // Level 2
+                    [1]              // Root
+                ];
+                
+                let delay = 0;
+                buildOrder.forEach(level => {
+                    level.forEach(id => {
+                        setTimeout(() => {
+                            const node = treeData.find(n => n.id === id);
+                            node.built = true;
+                            drawTree([id]);
+                            highlightSegmentElement(id, true);
+                        }, delay);
+                        delay += 700;
+                    });
+                });
+                
+                // Final draw
+                setTimeout(() => drawTree(), delay);
+            }
+            
+            // Show full tree
+            function showFullTree() {
+                treeData.forEach(node => {
+                    node.built = true;
+                    highlightSegmentElement(node.id, false);
+                });
+                drawTree();
+            }
+            
+            // Show range query
+            function showRangeQuery() {
+                treeData.forEach(node => {
+                    node.built = true;
+                    highlightSegmentElement(node.id, false);
+                });
+                
+                rangeQueryNodes.forEach(id => {
+                    highlightSegmentElement(id, true);
+                });
+                
+                drawTree(rangeQueryNodes, rangeQueryNodes);
+            }
+            
+            // Reset view
+            function resetView() {
+                treeData.forEach(node => {
+                    node.built = true;
+                    highlightSegmentElement(node.id, false);
+                });
+                drawTree();
+            }
+            
             // Initial draw
-            drawTree();
+            resetView();
             
             // Event listeners
-            showFullTreeBtn.addEventListener('click', function() {
-                drawTree(false);
-            });
-            
-            showRangeQueryBtn.addEventListener('click', function() {
-                drawTree(true);
-            });
+            showConstructionBtn.addEventListener('click', showConstruction);
+            showFullTreeBtn.addEventListener('click', showFullTree);
+            showRangeQueryBtn.addEventListener('click', showRangeQuery);
+            resetViewBtn.addEventListener('click', resetView);
             
             // Adjust tree on window resize
-            window.addEventListener('resize', function() {
-                drawTree();
-            });
+            window.addEventListener('resize', resetView);
         });
     </script>
 </body>

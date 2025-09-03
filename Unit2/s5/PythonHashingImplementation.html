@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Hashing Visualization (with Collision Handling)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .hash-table {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .hash-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #ffcc00;
+        }
+        .table {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .table-row {
+            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .index {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            min-width: 80px;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .value {
+            padding: 15px;
+            flex-grow: 1;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #ffcc00;
+            color: #1a2a6c;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #ffdd44;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .output {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            min-height: 100px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        .formula {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .formula-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+        .formula-content {
+            font-size: 1.3rem;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .explanation {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .highlight {
+            background-color: #ffcc00;
+            color: #1a2a6c;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .value.highlighted {
+            background-color: #ffcc00;
+            color: #1a2a6c;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+        .value.collision {
+            background-color: #ff5252;
+            color: white;
+            font-weight: bold;
+        }
+        .probing-steps {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        .step {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #ffcc00;
+            padding-left: 10px;
+        }
+        @media (max-width: 768px) {
+            .visualization {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Python Hashing with Collision Resolution</h1>
+            <p class="description">
+                This visualization shows how Python handles hash collisions using Open Addressing and linear probing.
+                Watch how values are stored and retrieved even when they hash to the same index.
+            </p>
+        </header>
+
+        <div class="visualization">
+            <div class="hash-table">
+                <h2 class="hash-title">Hash Table (Size: 5)</h2>
+                <div class="table">
+                    <div class="table-row">
+                        <div class="index">Index 0</div>
+                        <div class="value" id="value-0">Empty</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="index">Index 1</div>
+                        <div class="value" id="value-1">Empty</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="index">Index 2</div>
+                        <div class="value" id="value-2">Empty</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="index">Index 3</div>
+                        <div class="value" id="value-3">Empty</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="index">Index 4</div>
+                        <div class="value" id="value-4">Empty</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h2 class="hash-title">Controls</h2>
+                <div class="control-group">
+                    <label for="value-input">Value to Insert/Lookup:</label>
+                    <input type="text" id="value-input" placeholder="Enter a value (e.g., 55)">
+                </div>
+                <div class="control-group">
+                    <button id="insert-btn">Insert Value</button>
+                    <button id="find-btn">Find Value</button>
+                    <button id="reset-btn">Reset Table</button>
+                </div>
+                <div class="control-group">
+                    <label>Output:</label>
+                    <div class="output" id="output">Enter a value and click Insert or Find.<br>Try values like 3, 55, 8, 13</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula">
+            <h2 class="formula-title">Python's Collision Resolution</h2>
+            <div class="formula-content">
+                index = (hash(value) + probe_number) % table_size
+            </div>
+            <div class="explanation">
+                <p>When a collision occurs (two values hash to the same index), Python doesn't just fail. It uses a method called <span class="highlight">Open Addressing</span> with a probing sequence to find the next available slot.</p>
+                
+                <p><strong>Linear Probing:</strong> If the initial index is occupied, Python checks the next index, and the next, until it finds an empty slot.</p>
+                
+                <p><strong>Example:</strong> If both 3 and 55 hash to index 1, but index 1 is occupied by 3, then 55 will be placed in the next available slot (index 2).</p>
+                
+                <p><strong>Lookup:</strong> When searching for 55, Python will check index 1 first, find 3, then continue probing until it finds 55 at index 2.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableSize = 5;
+            const hashTable = Array(tableSize).fill(null);
+            const valueInput = document.getElementById('value-input');
+            const insertBtn = document.getElementById('insert-btn');
+            const findBtn = document.getElementById('find-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const output = document.getElementById('output');
+            
+            // Function to compute hash (simplified version of Python's hash)
+            function computeHash(value) {
+                // For simplicity, we'll use a custom hash that causes collisions for demonstration
+                if (value == '3') return 1;  // Force hash to 1
+                if (value == '55') return 6; // 6 % 5 = 1 (Collision with 3!)
+                if (value == '8') return 3;  // 3 % 5 = 3
+                if (value == '13') return 8; // 8 % 5 = 3 (Collision with 8!)
+                
+                // For other values, use a generic approach
+                if (typeof value === 'string') {
+                    let hash = 0;
+                    for (let i = 0; i < value.length; i++) {
+                        hash = ((hash << 5) - hash) + value.charCodeAt(i);
+                        hash |= 0;
+                    }
+                    return Math.abs(hash);
+                } else {
+                    return Math.abs(parseInt(value) || 0);
+                }
+            }
+            
+            // Function to find the next available slot using linear probing
+            function findSlot(value, forInsert = true) {
+                const hashValue = computeHash(value);
+                let index = hashValue % tableSize;
+                const steps = [];
+                
+                let attempts = 0;
+                while (attempts < tableSize) {
+                    steps.push(`Checking index ${index}: ${hashTable[index] === null ? 'Empty' : `Occupied by ${hashTable[index]}`}`);
+                    
+                    if (forInsert) {
+                        // For insertion, we're looking for an empty slot or the same value
+                        if (hashTable[index] === null || hashTable[index] === value) {
+                            return {index, steps, found: hashTable[index] === value};
+                        }
+                    } else {
+                        // For lookup, we're looking for the value or an empty slot (which means not found)
+                        if (hashTable[index] === value) {
+                            return {index, steps, found: true};
+                        }
+                        if (hashTable[index] === null) {
+                            return {index: -1, steps, found: false};
+                        }
+                    }
+                    
+                    // Linear probing: move to the next index
+                    index = (index + 1) % tableSize;
+                    attempts++;
+                }
+                
+                return {index: -1, steps, found: false}; // Table is full
+            }
+            
+            // Function to update the visualization
+            function updateVisualization() {
+                for (let i = 0; i < tableSize; i++) {
+                    const valueElement = document.getElementById(`value-${i}`);
+                    valueElement.textContent = hashTable[i] === null ? 'Empty' : hashTable[i];
+                    valueElement.classList.remove('highlighted');
+                    valueElement.classList.remove('collision');
+                }
+            }
+            
+            // Insert value into hash table with collision resolution
+            function insertValue() {
+                const value = valueInput.value.trim();
+                if (!value) {
+                    output.textContent = 'Please enter a value.';
+                    return;
+                }
+                
+                const hashValue = computeHash(value);
+                const initialIndex = hashValue % tableSize;
+                
+                output.innerHTML = `Inserting value: <span class="highlight">${value}</span><br>
+                                    Hash value: <span class="highlight">${hashValue}</span><br>
+                                    Initial index: <span class="highlight">${initialIndex}</span><br>`;
+                
+                const result = findSlot(value, true);
+                
+                // Show probing steps
+                if (result.steps.length > 0) {
+                    output.innerHTML += `<div class="probing-steps"><strong>Probing steps:</strong>`;
+                    result.steps.forEach(step => {
+                        output.innerHTML += `<div class="step">${step}</div>`;
+                    });
+                    output.innerHTML += `</div>`;
+                }
+                
+                if (result.index !== -1) {
+                    if (result.found) {
+                        output.innerHTML += `<br>Value already exists at index ${result.index}!`;
+                        highlightCell(result.index, value);
+                    } else {
+                        hashTable[result.index] = value;
+                        highlightCell(result.index, value);
+                        // Mark as collision if not placed at initial index
+                        if (result.index !== initialIndex) {
+                            const valueElement = document.getElementById(`value-${result.index}`);
+                            valueElement.classList.add('collision');
+                            output.innerHTML += `<br>Collision resolved! Value placed at index <span class="highlight">${result.index}</span> instead of ${initialIndex}`;
+                        } else {
+                            output.innerHTML += `<br>Value inserted successfully at index ${result.index}!`;
+                        }
+                    }
+                } else {
+                    output.innerHTML += `<br>Hash table is full! Cannot insert ${value}.`;
+                }
+            }
+            
+            // Find value in hash table with collision resolution
+            function findValue() {
+                const value = valueInput.value.trim();
+                if (!value) {
+                    output.textContent = 'Please enter a value.';
+                    return;
+                }
+                
+                const hashValue = computeHash(value);
+                const initialIndex = hashValue % tableSize;
+                
+                output.innerHTML = `Looking up value: <span class="highlight">${value}</span><br>
+                                    Hash value: <span class="highlight">${hashValue}</span><br>
+                                    Initial index: <span class="highlight">${initialIndex}</span><br>`;
+                
+                const result = findSlot(value, false);
+                
+                // Show probing steps
+                if (result.steps.length > 0) {
+                    output.innerHTML += `<div class="probing-steps"><strong>Probing steps:</strong>`;
+                    result.steps.forEach(step => {
+                        output.innerHTML += `<div class="step">${step}</div>`;
+                    });
+                    output.innerHTML += `</div>`;
+                }
+                
+                if (result.found) {
+                    highlightCell(result.index, value);
+                    output.innerHTML += `<br>Value found at index ${result.index}!`;
+                } else {
+                    output.innerHTML += `<br>Value not found in the hash table.`;
+                }
+            }
+            
+            // Highlight a cell
+            function highlightCell(index, value) {
+                if (index >= 0 && index < tableSize) {
+                    const valueElement = document.getElementById(`value-${index}`);
+                    valueElement.textContent = value;
+                    valueElement.classList.add('highlighted');
+                }
+            }
+            
+            // Reset hash table
+            function resetTable() {
+                for (let i = 0; i < tableSize; i++) {
+                    hashTable[i] = null;
+                }
+                updateVisualization();
+                output.innerHTML = 'Hash table has been reset.<br>Try inserting values like 3, 55, 8, 13 to see collision handling.';
+                valueInput.value = '';
+            }
+            
+            // Event listeners
+            insertBtn.addEventListener('click', insertValue);
+            findBtn.addEventListener('click', findValue);
+            resetBtn.addEventListener('click', resetTable);
+            
+            // Allow Enter key to trigger insert
+            valueInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    insertValue();
+                }
+            });
+            
+            // Initialize visualization
+            updateVisualization();
+            
+            // Pre-populate with example values
+            setTimeout(() => {
+                valueInput.value = '3';
+                insertValue();
+                
+                setTimeout(() => {
+                    valueInput.value = '8';
+                    insertValue();
+                    valueInput.value = '';
+                    output.innerHTML += '<br><br>Now try inserting 55 (will collide with 3) or 13 (will collide with 8)';
+                }, 1000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>
