@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning: Matrix Rotation & Segment Trees</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --code-bg: #2d2d2d;
+            --gloss: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.2) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gloss);
+        }
+        
+        h1 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--secondary);
+        }
+        
+        h2 {
+            font-family: 'Roboto Slab', serif;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        .summary-box {
+            background: #e8f4fc;
+            border-left: 4px solid var(--secondary);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+        }
+        
+        .summary-box h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .interactive-box {
+            background: #fffce5;
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .quiz-container {
+            margin: 30px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .options label {
+            display: block;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #ddd;
+        }
+        
+        .options label:hover {
+            background: #e9ecef;
+        }
+        
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .my-answer {
+            display: inline-block;
+            padding: 3px 10px;
+            margin-left: 15px;
+            background: var(--success);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .code-container {
+            background: var(--code-bg);
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .code-keyword { color: #ff79c6; }
+        .code-function { color: #50fa7b; }
+        .code-var { color: #f1fa8c; }
+        .code-number { color: #bd93f9; }
+        .code-comment { color: #6272a4; }
+        .code-string { color: #f1fa8c; }
+        
+        .matrix {
+            display: inline-block;
+            margin: 15px 0;
+            border-collapse: collapse;
+        }
+        
+        .matrix td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-weight: bold;
+            background: white;
+        }
+        
+        .visualization {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            gap: 20px;
+        }
+        
+        .viz-step {
+            text-align: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .viz-step p {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .segment-tree {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .tree-node {
+            fill: #3498db;
+            stroke: #2c3e50;
+            stroke-width: 2;
+            rx: 5;
+        }
+        
+        .tree-text {
+            fill: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        
+        .tree-line {
+            stroke: #2c3e50;
+            stroke-width: 2;
+        }
+        
+        .array-element {
+            fill: #e74c3c;
+            stroke: #2c3e50;
+            stroke-width: 2;
+            rx: 5;
+        }
+        
+        .array-text {
+            fill: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .feedback {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+        
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Advanced Algorithm Concepts</h1>
+            <p class="subtitle">Interactive learning experience with Matrix Rotation and Segment Trees</p>
+        </header>
+        
+        <div class="card">
+            <h2>Matrix Rotation</h2>
+            <p>Matrix rotation is a fundamental operation in computer science and mathematics where we rotate the elements of a matrix by a certain degree, typically 90, 180, or 270 degrees.</p>
+            
+            <h3>How to Rotate a Matrix 90 Degrees Clockwise</h3>
+            <ol>
+                <li>Transpose the matrix (swap rows with columns)</li>
+                <li>Reverse each row of the transposed matrix</li>
+            </ol>
+            
+            <div class="visualization">
+                <div class="viz-step">
+                    <p>Original Matrix</p>
+                    <table class="matrix">
+                        <tr><td>1</td><td>2</td><td>3</td></tr>
+                        <tr><td>4</td><td>5</td><td>6</td></tr>
+                        <tr><td>7</td><td>8</td><td>9</td></tr>
+                    </table>
+                </div>
+                <div class="viz-step">
+                    <p>Transposed</p>
+                    <table class="matrix">
+                        <tr><td>1</td><td>4</td><td>7</td></tr>
+                        <tr><td>2</td><td>5</td><td>8</td></tr>
+                        <tr><td>3</td><td>6</td><td>9</td></tr>
+                    </table>
+                </div>
+                <div class="viz-step">
+                    <p>Rows Reversed (90° Clockwise)</p>
+                    <table class="matrix">
+                        <tr><td>7</td><td>4</td><td>1</td></tr>
+                        <tr><td>8</td><td>5</td><td>2</td></tr>
+                        <tr><td>9</td><td>6</td><td>3</td></tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="summary-box">
+                <h3>Key Points: Matrix Rotation</h3>
+                <ul>
+                    <li>Rotating 90° clockwise: Transpose then reverse each row</li>
+                    <li>Rotating 90° counter-clockwise: Reverse each row then transpose</li>
+                    <li>In-place rotation requires careful element swapping</li>
+                    <li>Time complexity: O(n²) for an n x n matrix</li>
+                    <li>Space complexity: O(1) if done in-place</li>
+                </ul>
+            </div>
+            
+            <h3>Python Implementation</h3>
+            <div class="code-container">
+                <pre><span class="code-keyword">def</span> <span class="code-function">rotate_matrix</span>(matrix):
+    <span class="code-comment"># Transpose the matrix</span>
+    n = <span class="code-function">len</span>(matrix)
+    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(n):
+        <span class="code-keyword">for</span> j <span class="code-keyword">in</span> <span class="code-function">range</span>(i, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    
+    <span class="code-comment"># Reverse each row</span>
+    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(n):
+        matrix[i].<span class="code-function">reverse</span>()
+    
+    <span class="code-keyword">return</span> matrix
+
+<span class="code-comment"># Example usage</span>
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+rotated = rotate_matrix(matrix)
+<span class="code-function">print</span>(rotated)  <span class="code-comment"># Output: [[7, 4, 1], [8, 5, 2], [9, 6, 3]]</span></pre>
+<pre>
+
+'''
+To Understand Iterations : 
+Iteration 1: i=0, j=0 → Swap (0,0) with (0,0) → No change
+Iteration 2: i=0, j=1 → Swap (0,1) with (1,0) → Correct swap
+Iteration 3: i=0, j=2 → Swap (0,2) with (2,0) → Correct swap
+Iteration 4: i=1, j=1 → Swap (1,1) with (1,1) → No change  
+Iteration 5: i=1, j=2 → Swap (1,2) with (2,1) → Correct swap
+Iteration 6: i=2, j=2 → Swap (2,2) with (2,2) → No change
+'''
+</pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Segment Trees</h2>
+            <p>A segment tree is a data structure that allows efficient range queries and updates on an array. It's particularly useful for problems involving range minimum/maximum queries, range sums, and other aggregate operations.</p>
+            
+            <h3>How Segment Trees Work</h3>
+            <ol>
+                <li>The original array is divided into segments</li>
+                <li>Each node in the tree represents a segment of the array</li>
+                <li>The root represents the entire array</li>
+                <li>Each leaf represents a single element</li>
+                <li>Internal nodes represent merged segments</li>
+            </ol>
+            
+            
+            <div class="summary-box">
+                <h3>Key Points: Segment Trees</h3>
+                <ul>
+                    <li>Efficient for range queries: O(log n) time complexity</li>
+                    <li>Updates also take O(log n) time</li>
+                    <li>Requires O(n) storage space</li>
+                    <li>Can be extended to support lazy propagation for range updates</li>
+                    <li>Useful for problems involving range queries and updates</li>
+                </ul>
+            </div>
+            
+            <h3>Python Implementation</h3>
+            <div class="code-container">
+                <pre><span class="code-keyword">class</span> <span class="code-function">SegmentTree</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-var">self</span>, data):
+        <span class="code-var">self</span>.n = <span class="code-function">len</span>(data)
+        <span class="code-var">self</span>.size = 1
+        <span class="code-keyword">while</span> <span class="code-var">self</span>.size < <span class="code-var">self</span>.n:
+            <span class="code-var">self</span>.size *= 2
+        <span class="code-var">self</span>.tree = [0] * (2 * <span class="code-var">self</span>.size)
+        
+        <span class="code-comment"># Build the tree</span>
+        <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-var">self</span>.n):
+            <span class="code-var">self</span>.tree[<span class="code-var">self</span>.size + i] = data[i]
+        <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-var">self</span>.size - 1, 0, -1):
+            <span class="code-var">self</span>.tree[i] = <span class="code-var">self</span>.tree[2 * i] + <span class="code-var">self</span>.tree[2 * i + 1]
+    
+    <span class="code-keyword">def</span> <span class="code-function">query</span>(<span class="code-var">self</span>, l, r):
+        <span class="code-comment"># Query range [l, r)</span>
+        l += <span class="code-var">self</span>.size
+        r += <span class="code-var">self</span>.size
+        res = 0
+        <span class="code-keyword">while</span> l < r:
+            <span class="code-keyword">if</span> l & 1:
+                res += <span class="code-var">self</span>.tree[l]
+                l += 1
+            <span class="code-keyword">if</span> r & 1:
+                r -= 1
+                res += <span class="code-var">self</span>.tree[r]
+            l //= 2
+            r //= 2
+        <span class="code-keyword">return</span> res
+    
+    <span class="code-keyword">def</span> <span class="code-function">update</span>(<span class="code-var">self</span>, index, value):
+        index += <span class="code-var">self</span>.size
+        <span class="code-var">self</span>.tree[index] = value
+        index //= 2
+        <span class="code-keyword">while</span> index >= 1:
+            <span class="code-var">self</span>.tree[index] = <span class="code-var">self</span>.tree[2 * index] + <span class="code-var">self</span>.tree[2 * index + 1]
+            index //= 2
+
+<span class="code-comment"># Example usage</span>
+data = [1, 3, 5, 7, 9, 11]
+st = <span class="code-function">SegmentTree</span>(data)
+<span class="code-function">print</span>(st.<span class="code-function">query</span>(1, 4))  <span class="code-comment"># Output: 15 (3 + 5 + 7)</span>
+st.<span class="code-function">update</span>(2, 10)      <span class="code-comment"># Update index 2 to value 10</span>
+<span class="code-function">print</span>(st.<span class="code-function">query</span>(1, 4))  <span class="code-comment"># Output: 20 (3 + 10 + 7)</span></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Test Your Knowledge</h2>
+            <p>Take this quick quiz to reinforce what you've learned about Matrix Rotation and Segment Trees.</p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>Question 1: What are the two main steps to rotate a matrix 90 degrees clockwise?</h3>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="A"> Reverse rows then transpose</label>
+                        <label><input type="radio" name="q1" value="B"> Transpose then reverse rows</label>
+                        <label><input type="radio" name="q1" value="C"> Reverse columns then transpose</label>
+                        <label><input type="radio" name="q1" value="D"> Transpose then reverse columns</label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 2: What is the time complexity of rotating an n x n matrix?</h3>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="A"> O(n)</label>
+                        <label><input type="radio" name="q2" value="B"> O(n log n)</label>
+                        <label><input type="radio" name="q2" value="C"> O(n²)</label>
+                        <label><input type="radio" name="q2" value="D"> O(1)</label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 3: What is the main advantage of using a Segment Tree?</h3>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="A"> Efficient element insertion and deletion</label>
+                        <label><input type="radio" name="q3" value="B"> Efficient range queries and updates</label>
+                        <label><input type="radio" name="q3" value="C"> Minimal memory usage</label>
+                        <label><input type="radio" name="q3" value="D"> Simple implementation</label>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 4: What is the time complexity of a range query on a Segment Tree?</h3>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="A"> O(1)</label>
+                        <label><input type="radio" name="q4" value="B"> O(n)</label>
+                        <label><input type="radio" name="q4" value="C"> O(log n)</label>
+                        <label><input type="radio" name="q4" value="D"> O(n log n)</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" id="check-answers">Check Answers</button>
+            
+            <div class="result-container" id="quiz-result">
+                <h3>Quiz Results</h3>
+                <div class="score">Score: <span id="score-value">0</span>%</div>
+                <div id="feedback"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Interactive Educational Document &copy; 2023 | Matrix Rotation & Segment Trees</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add "my answer" stamp when a radio button is selected
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Remove any existing stamps in this question
+                    const question = this.closest('.quiz-question');
+                    const existingStamps = question.querySelectorAll('.my-answer');
+                    existingStamps.forEach(stamp => stamp.remove());
+                    
+                    // Add new stamp
+                    const label = this.parentElement;
+                    const stamp = document.createElement('span');
+                    stamp.classList.add('my-answer');
+                    stamp.innerHTML = '<i class="fas fa-pen"></i> my answer';
+                    label.appendChild(stamp);
+                });
+            });
+            
+            // Check answers button
+            document.getElementById('check-answers').addEventListener('click', function() {
+                const answers = {
+                    q1: 'B', // Transpose then reverse rows
+                    q2: 'C', // O(n²)
+                    q3: 'B', // Efficient range queries and updates
+                    q4: 'C'  // O(log n)
+                };
+                
+                let score = 0;
+                let feedbackHTML = '';
+                
+                // Check each question
+                for (let i = 1; i <= 4; i++) {
+                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                    const question = document.querySelector(`.quiz-question:nth-child(${i})`);
+                    
+                    if (selected) {
+                        if (selected.value === answers[`q${i}`]) {
+                            score += 25;
+                            feedbackHTML += `<div class="feedback correct">Question ${i}: Correct! Well done.</div>`;
+                        } else {
+                            feedbackHTML += `<div class="feedback incorrect">Question ${i}: Incorrect. The correct answer was ${answers[`q${i}`]}.</div>`;
+                        }
+                    } else {
+                        feedbackHTML += `<div class="feedback incorrect">Question ${i}: Not answered. The correct answer was ${answers[`q${i}`]}.</div>`;
+                    }
+                }
+                
+                // Display results
+                document.getElementById('score-value').textContent = score;
+                document.getElementById('feedback').innerHTML = feedbackHTML;
+                document.getElementById('quiz-result').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

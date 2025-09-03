@@ -1,0 +1,7 @@
+Segment Tree
+https://segment-tree-visualization.vercel.app/
+
+
+
+Hashing in Python
+https://www.cs.usfca.edu/~galles/visualization/OpenHash.html

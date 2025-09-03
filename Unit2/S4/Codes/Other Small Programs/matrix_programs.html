@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Matrix Programs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        code { color: #c7254e; }
+    </style>
+</head>
+<body>
+    <h1>Matrix Programs in Python</h1>
+<h2>Transpose</h2>
+<pre><code>def transpose(matrix):
+    result = []
+    for i in range(len(matrix[0])):
+        result.append([matrix[j][i] for j in range(len(matrix))])
+    return result
+</code></pre>
+<h2>Matrix Add</h2>
+<pre><code>def matrix_add(A, B):
+    result = []
+    for i in range(len(A)):
+        result.append([A[i][j] + B[i][j] for j in range(len(A[0]))])
+    return result
+</code></pre>
+<h2>Scalar Multiply</h2>
+<pre><code>def scalar_multiply(matrix, scalar):
+    result = []
+    for row in matrix:
+        result.append([element * scalar for element in row])
+    return result
+</code></pre>
+<h2>Trace</h2>
+<pre><code>def trace(matrix):
+    total = 0
+    for i in range(min(len(matrix), len(matrix[0]))):
+        total += matrix[i][i]
+    return total
+</code></pre>
+<h2>Is Square</h2>
+<pre><code>def is_square(matrix):
+    for row in matrix:
+        if len(row) != len(matrix):
+            return False
+    return True
+</code></pre>
+<h2>Main Diagonal</h2>
+<pre><code>def main_diagonal(matrix):
+    diagonal = []
+    for i in range(min(len(matrix), len(matrix[0]))):
+        diagonal.append(matrix[i][i])
+    return diagonal
+</code></pre>
+<h2>Anti Diagonal</h2>
+<pre><code>def anti_diagonal(matrix):
+    diagonal = []
+    for i in range(len(matrix)):
+        diagonal.append(matrix[i][len(matrix)-1-i])
+    return diagonal
+</code></pre>
+<h2>Row Sums</h2>
+<pre><code>def row_sums(matrix):
+    sums = []
+    for row in matrix:
+        sums.append(sum(row))
+    return sums
+</code></pre>
+<h2>Col Sums</h2>
+<pre><code>def col_sums(matrix):
+    sums = []
+    for j in range(len(matrix[0])):
+        sums.append(sum(matrix[i][j] for i in range(len(matrix))))
+    return sums
+</code></pre>
+<h2>Is Identity</h2>
+<pre><code>def is_identity(matrix):
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] != (1 if i == j else 0):
+                return False
+    return True
+</code></pre>
+<h2>Flatten Matrix</h2>
+<pre><code>def flatten_matrix(matrix):
+    flat = []
+    for row in matrix:
+        flat.extend(row)
+    return flat
+</code></pre>
+<h2>Identity Matrix</h2>
+<pre><code>def identity_matrix(n):
+    matrix = []
+    for i in range(n):
+        matrix.append([1 if i == j else 0 for j in range(n)])
+    return matrix
+</code></pre>
+<h2>Elementwise Multiply</h2>
+<pre><code>def elementwise_multiply(A, B):
+    result = []
+    for i in range(len(A)):
+        result.append([A[i][j] * B[i][j] for j in range(len(A[0]))])
+    return result
+</code></pre>
+<h2>Is Zero Matrix</h2>
+<pre><code>def is_zero_matrix(matrix):
+    for row in matrix:
+        for element in row:
+            if element != 0:
+                return False
+    return True
+</code></pre>
+<h2>Matrix Dimensions</h2>
+<pre><code>def matrix_dimensions(matrix):
+    if not matrix:
+        return (0, 0)
+    return (len(matrix), len(matrix[0]))
+</code></pre>
+<h2>Row Maximums</h2>
+<pre><code>def row_maximums(matrix):
+    maximums = []
+    for row in matrix:
+        maximums.append(max(row))
+    return maximums
+</code></pre>
+<h2>Col Maximums</h2>
+<pre><code>def col_maximums(matrix):
+    maximums = []
+    for j in range(len(matrix[0])):
+        maximums.append(max(matrix[i][j] for i in range(len(matrix))))
+    return maximums
+</code></pre>
+<h2>Rotate 180</h2>
+<pre><code>def rotate_180(matrix):
+    result = []
+    for row in reversed(matrix):
+        result.append(list(reversed(row)))
+    return result
+</code></pre>
+<h2>Is Symmetric</h2>
+<pre><code>def is_symmetric(matrix):
+    for i in range(len(matrix)):
+        for j in range(i):
+            if matrix[i][j] != matrix[j][i]:
+                return False
+    return True
+</code></pre>
+<h2>Min Element Pos</h2>
+<pre><code>def min_element_pos(matrix):
+    min_val = min(min(row) for row in matrix)
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] == min_val:
+                return (i, j)
+</code></pre>
+</body></html>
