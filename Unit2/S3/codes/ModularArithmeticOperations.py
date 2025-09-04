@@ -11,7 +11,7 @@ def mod_sub(a, b, m):
 
 def mod_mul(a, b, m):
     return (a % m * b % m) % m
-
+# (a*b) % m
 
 # Fast Exponentiation (Binary Exponentiation) with Modular Arithmetic
 def mod_pow(base, exponent, mod):
