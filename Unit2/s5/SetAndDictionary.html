@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sets vs Dictionaries</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .comparison {
+                flex-direction: column;
+            }
+        }
+        
+        .card {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .card-subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .structure {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .set-item {
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .dict-item {
+            border-left: 5px solid #3498db;
+        }
+        
+        .item-key {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 40px;
+            text-align: center;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-value {
+            margin-left: 15px;
+            padding: 8px 12px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            flex-grow: 1;
+        }
+        
+        .item-arrow {
+            margin: 0 10px;
+            color: #7f8c8d;
+        }
+        
+        .visualization {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .viz-container {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .viz-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: #2c3e50;
+        }
+        
+        .hash-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        
+        .slot {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            border-radius: 8px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slot-index {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .slot-value {
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100px;
+            font-weight: bold;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .explanation {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .explanation h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .point {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .point h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .pictorial {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .pictorial-item {
+            text-align: center;
+            margin: 15px;
+        }
+        
+        .pictorial-box {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .set-box {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .dict-box {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .pictorial-item p {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .highlight {
+            animation: highlight 0.8s ease;
+        }
+        
+        @keyframes highlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 255, 0, 0.6); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sets vs Dictionaries</h1>
+            <p class="subtitle">Understanding the differences in how they store data</p>
+        </header>
+        
+        <div class="pictorial">
+            <div class="pictorial-item">
+                <div class="pictorial-box set-box">
+                    <div style="font-size: 3rem;">{ }</div>
+                    <div style="margin-top: 10px;">Only Keys</div>
+                </div>
+                <p>Set Structure</p>
+            </div>
+            
+            <div class="pictorial-item">
+                <div class="pictorial-box dict-box">
+                    <div style="font-size: 2rem;">{ key: value }</div>
+                    <div style="margin-top: 10px;">Key-Value Pairs</div>
+                </div>
+                <p>Dictionary Structure</p>
+            </div>
+        </div>
+        
+        <div class="comparison">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Set</h2>
+                    <p class="card-subtitle">Stores only unique keys</p>
+                </div>
+                <div class="structure" id="set-structure">
+                    <div class="item set-item">
+                        <div class="item-key">10</div>
+                    </div>
+                    <div class="item set-item">
+                        <div class="item-key">25</div>
+                    </div>
+                    <div class="item set-item">
+                        <div class="item-key">42</div>
+                    </div>
+                </div>
+                <p><strong>Characteristics:</strong></p>
+                <ul>
+                    <li>Only stores unique values</li>
+                    <li>Optimized for membership testing</li>
+                    <li>No associated values</li>
+                    <li>Less memory usage</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Dictionary</h2>
+                    <p class="card-subtitle">Stores key-value pairs</p>
+                </div>
+                <div class="structure" id="dict-structure">
+                    <div class="item dict-item">
+                        <div class="item-key">10</div>
+                        <div class="item-arrow">→</div>
+                        <div class="item-value">"Alice"</div>
+                    </div>
+                    <div class="item dict-item">
+                        <div class="item-key">25</div>
+                        <div class="item-arrow">→</div>
+                        <div class="item-value">"Bob"</div>
+                    </div>
+                    <div class="item dict-item">
+                        <div class="item-key">42</div>
+                        <div class="item-arrow">→</div>
+                        <div class="item-value">"Charlie"</div>
+                    </div>
+                </div>
+                <p><strong>Characteristics:</strong></p>
+                <ul>
+                    <li>Stores unique keys with associated values</li>
+                    <li>Optimized for key-based data retrieval</li>
+                    <li>Allows updating values for existing keys</li>
+                    <li>More memory usage than sets</li>
+                </ul>
+            </div>
+        </div>
+        
+
+        <div class="visualization">
+            <div class="viz-container">
+                <h3 class="viz-title">Set Internal Structure</h3>
+                <div class="hash-table" id="set-table">
+                    <!-- Will be generated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="viz-container">
+                <h3 class="viz-title">Dictionary Internal Structure</h3>
+                <div class="hash-table" id="dict-table">
+                    <!-- Will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h2>Key Differences</h2>
+            <div class="key-points">
+                <div class="point">
+                    <h3>Storage</h3>
+                    <p>Sets store only keys, while dictionaries store key-value pairs. This makes dictionaries more memory-intensive but allows them to associate data with each key.</p>
+                </div>
+                <div class="point">
+                    <h3>Use Cases</h3>
+                    <p>Sets are ideal for membership testing and removing duplicates. Dictionaries are perfect for storing and retrieving data using unique identifiers.</p>
+                </div>
+                <div class="point">
+                    <h3>Operations</h3>
+                    <p>Sets support operations like union, intersection, and difference. Dictionaries support key-based value access, insertion, and deletion.</p>
+                </div>
+                <div class="point">
+                    <h3>Duplicates</h3>
+                    <p>Both reject duplicate keys, but dictionaries allow updating values for existing keys, while sets simply ignore duplicate values.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize data structures
+            const setData = new Set();
+            const dictData = new Map();
+            
+            // Initialize hash table visuals
+            initHashTables();
+            
+            // DOM elements
+            const keyInput = document.getElementById('key-input');
+            const valueInput = document.getElementById('value-input');
+            const addBtn = document.getElementById('add-btn');
+            const testBtn = document.getElementById('test-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const setStructure = document.getElementById('set-structure');
+            const dictStructure = document.getElementById('dict-structure');
+            const setTable = document.getElementById('set-table');
+            const dictTable = document.getElementById('dict-table');
+            
+            // Initialize hash table visuals
+            function initHashTables() {
+                setTable.innerHTML = '';
+                dictTable.innerHTML = '';
+                
+                for (let i = 0; i < 10; i++) {
+                    const setSlot = document.createElement('div');
+                    setSlot.className = 'slot';
+                    setSlot.innerHTML = `
+                        <div class="slot-index">${i}</div>
+                        <div class="slot-value"></div>
+                    `;
+                    setTable.appendChild(setSlot);
+                    
+                    const dictSlot = document.createElement('div');
+                    dictSlot.className = 'slot';
+                    dictSlot.innerHTML = `
+                        <div class="slot-index">${i}</div>
+                        <div class="slot-value"></div>
+                    `;
+                    dictTable.appendChild(dictSlot);
+                }
+            }
+            
+            // Add item to both data structures
+            function addItem() {
+                const key = parseInt(keyInput.value);
+                const value = valueInput.value;
+                
+                if (isNaN(key) || key < 1 || key > 99) {
+                    alert('Please enter a valid key between 1 and 99');
+                    return;
+                }
+                
+                // Add to set
+                const setSizeBefore = setData.size;
+                setData.add(key);
+                
+                // Add to dictionary
+                dictData.set(key, value || `Value${key}`);
+                
+                updateVisualization();
+                
+                // Highlight the changes
+                const hash = key % 10;
+                highlightSlot(setTable.children[hash]);
+                highlightSlot(dictTable.children[hash]);
+                
+                // Clear inputs
+                keyInput.value = '';
+                valueInput.value = '';
+                keyInput.focus();
+            }
+            
+            // Test membership
+            function testMembership() {
+                const key = parseInt(keyInput.value);
+                
+                if (isNaN(key) || key < 1 || key > 99) {
+                    alert('Please enter a valid key between 1 and 99');
+                    return;
+                }
+                
+                const inSet = setData.has(key);
+                const inDict = dictData.has(key);
+                
+                const hash = key % 10;
+                
+                if (inSet) {
+                    highlightSlot(setTable.children[hash], 'pulse');
+                }
+                
+                if (inDict) {
+                    highlightSlot(dictTable.children[hash], 'pulse');
+                }
+                
+                alert(`Key ${key} is ${inSet ? 'in' : 'not in'} the set and ${inDict ? 'in' : 'not in'} the dictionary`);
+                
+                keyInput.value = '';
+                valueInput.value = '';
+                keyInput.focus();
+            }
+            
+            // Reset both data structures
+            function resetData() {
+                setData.clear();
+                dictData.clear();
+                updateVisualization();
+                keyInput.value = '';
+                valueInput.value = '';
+                keyInput.focus();
+            }
+            
+            // Update the visualization
+            function updateVisualization() {
+                // Update set structure
+                setStructure.innerHTML = '';
+                setData.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'item set-item';
+                    item.innerHTML = `<div class="item-key">${key}</div>`;
+                    setStructure.appendChild(item);
+                });
+                
+                // Update dictionary structure
+                dictStructure.innerHTML = '';
+                dictData.forEach((value, key) => {
+                    const item = document.createElement('div');
+                    item.className = 'item dict-item';
+                    item.innerHTML = `
+                        <div class="item-key">${key}</div>
+                        <div class="item-arrow">→</div>
+                        <div class="item-value">"${value}"</div>
+                    `;
+                    dictStructure.appendChild(item);
+                });
+                
+                // Update hash tables
+                for (let i = 0; i < 10; i++) {
+                    setTable.children[i].querySelector('.slot-value').textContent = '';
+                    dictTable.children[i].querySelector('.slot-value').textContent = '';
+                }
+                
+                setData.forEach(key => {
+                    const hash = key % 10;
+                    const slot = setTable.children[hash].querySelector('.slot-value');
+                    slot.textContent = slot.textContent ? `${slot.textContent}, ${key}` : key;
+                });
+                
+                dictData.forEach((value, key) => {
+                    const hash = key % 10;
+                    const slot = dictTable.children[hash].querySelector('.slot-value');
+                    slot.textContent = slot.textContent ? `${slot.textContent}, ${key}` : key;
+                });
+            }
+            
+            // Highlight a slot
+            function highlightSlot(slot, animation = 'highlight') {
+                slot.classList.add(animation);
+                setTimeout(() => {
+                    slot.classList.remove(animation);
+                }, 1500);
+            }
+            
+            // Event listeners
+            addBtn.addEventListener('click', addItem);
+            testBtn.addEventListener('click', testMembership);
+            resetBtn.addEventListener('click', resetData);
+            
+            // Initialize with some data
+            setData.add(10);
+            setData.add(25);
+            setData.add(42);
+            dictData.set(10, "Alice");
+            dictData.set(25, "Bob");
+            dictData.set(42, "Charlie");
+            updateVisualization();
+        });
+    </script>
+</body>
+</html>

@@ -1,15 +1,22 @@
 Prime Number
+
 Sieve of Eratosthene
+
+
 Fibonacci series
+
 Pascal Triangle
 GCD using Euclidean
 LCM using GCD
 Decimal to Binary
 Fast Exponentiation (Binary Exponentiation)
 Modular arithmetic
+
+
 Matrix Rotation
 Segment Tree
 Hashing
+
 
 
 

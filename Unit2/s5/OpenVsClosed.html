@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Table Collision Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .info-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            max-width: 800px;
+            margin: 0 auto 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .visualization-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .visualization-container {
+                flex-direction: column;
+            }
+        }
+        
+        .method {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .method-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        
+        .hash-table {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .slot {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            flex-direction: column;
+            padding: 5px;
+        }
+        
+        .slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .slot-index {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .slot-value {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+        
+        .duplicate-indicator {
+            font-size: 0.7rem;
+            color: #ffeb3b;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 5px;
+            border-radius: 10px;
+        }
+        
+        .chain {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 30px;
+            width: 100%;
+        }
+        
+        .chain-item {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chain-item.duplicate {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        
+        .settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(236, 240, 241, 0.8);
+            width: 80px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        select {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(236, 240, 241, 0.8);
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Animation classes */
+        @keyframes highlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 255, 0, 0.8); }
+            100% { transform: scale(1); }
+        }
+        
+        .highlight {
+            animation: highlight 0.8s ease;
+        }
+        
+        @keyframes insert {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .insert-animation {
+            animation: insert 0.5s ease;
+        }
+        
+        @keyframes collision {
+            0% { background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%); }
+            50% { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+            100% { background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%); }
+        }
+        
+        .collision-animation {
+            animation: collision 1s ease;
+        }
+        
+        .probe-animation {
+            animation: highlight 0.5s ease;
+        }
+        
+        @keyframes duplicate {
+            0% { background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%); }
+            50% { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+            100% { background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%); }
+        }
+        
+        .duplicate-animation {
+            animation: duplicate 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hash Table Collision Resolution</h1>
+            <div class="subtitle">Visualizing Open vs. Closed Addressing</div>
+            <div class="info-text">
+                This visualization shows how hash tables handle collisions. Open addressing finds the next available slot, 
+                while closed addressing uses chaining. Note how each approach handles duplicate values differently.
+            </div>
+        </header>
+        
+        <div class="settings">
+            <div class="setting-group">
+                <span>Duplicate Handling:</span>
+                <select id="duplicate-handling">
+                    <option value="allow">Allow Duplicates</option>
+                    <option value="prevent">Prevent Duplicates</option>
+                    <option value="replace">Replace Values</option>
+                </select>
+                <div class="tooltip">ℹ️
+                    <span class="tooltiptext">Control how the hash table handles duplicate values</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="visualization-container">
+            <div class="method">
+                <div class="method-title">Open Addressing (Linear Probing)</div>
+                <div class="hash-table" id="open-table">
+                    <!-- Slots will be generated by JavaScript -->
+                </div>
+                <div class="method-title">Probes: <span id="open-probes">0</span></div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">Closed Addressing (Chaining)</div>
+                <div class="hash-table" id="closed-table">
+                    <!-- Slots will be generated by JavaScript -->
+                </div>
+                <div class="method-title">Probes: <span id="closed-probes">0</span></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="input-group">
+                <input type="number" id="value-input" placeholder="Value" min="1" max="99">
+                <button id="insert-btn">Insert</button>
+                <button id="search-btn">Search</button>
+            </div>
+            <button class="action-btn" id="random-btn">Random</button>
+            <button class="reset-btn" id="reset-btn">Reset</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div>Items</div>
+                <div class="stat-value" id="items-count">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Collisions</div>
+                <div class="stat-value" id="collisions-count">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Load Factor</div>
+                <div class="stat-value" id="load-factor">0%</div>
+            </div>
+            <div class="stat-item">
+                <div>Duplicates</div>
+                <div class="stat-value" id="duplicates-count">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration
+            const TABLE_SIZE = 10;
+            let openTable = Array(TABLE_SIZE).fill(null);
+            let closedTable = Array(TABLE_SIZE).fill(null).map(() => []);
+            let collisions = 0;
+            let itemsCount = 0;
+            let openProbes = 0;
+            let closedProbes = 0;
+            let duplicatesCount = 0;
+            let duplicateHandling = 'allow'; // 'allow', 'prevent', 'replace'
+            
+            // DOM elements
+            const openTableEl = document.getElementById('open-table');
+            const closedTableEl = document.getElementById('closed-table');
+            const valueInput = document.getElementById('value-input');
+            const insertBtn = document.getElementById('insert-btn');
+            const searchBtn = document.getElementById('search-btn');
+            const randomBtn = document.getElementById('random-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const itemsCountEl = document.getElementById('items-count');
+            const collisionsCountEl = document.getElementById('collisions-count');
+            const loadFactorEl = document.getElementById('load-factor');
+            const openProbesEl = document.getElementById('open-probes');
+            const closedProbesEl = document.getElementById('closed-probes');
+            const duplicatesCountEl = document.getElementById('duplicates-count');
+            const duplicateHandlingSelect = document.getElementById('duplicate-handling');
+            
+            // Initialize the tables
+            function initTables() {
+                openTableEl.innerHTML = '';
+                closedTableEl.innerHTML = '';
+                
+                for (let i = 0; i < TABLE_SIZE; i++) {
+                    // Open addressing table
+                    const openSlot = document.createElement('div');
+                    openSlot.className = 'slot';
+                    openSlot.innerHTML = `
+                        <div class="slot-index">${i}</div>
+                        <div class="slot-value"></div>
+                    `;
+                    openTableEl.appendChild(openSlot);
+                    
+                    // Closed addressing table
+                    const closedSlot = document.createElement('div');
+                    closedSlot.className = 'slot';
+                    closedSlot.innerHTML = `
+                        <div class="slot-index">${i}</div>
+                        <div class="slot-value"></div>
+                        <div class="chain"></div>
+                    `;
+                    closedTableEl.appendChild(closedSlot);
+                }
+            }
+            
+            // Hash function
+            function hash(value) {
+                return value % TABLE_SIZE;
+            }
+            
+            // Check if value exists in open table
+            function existsInOpen(value) {
+                return openTable.includes(value);
+            }
+            
+            // Check if value exists in closed table
+            function existsInClosed(value) {
+                for (let chain of closedTable) {
+                    if (chain.includes(value)) return true;
+                }
+                return false;
+            }
+            
+            // Update statistics
+            function updateStats() {
+                itemsCountEl.textContent = itemsCount;
+                collisionsCountEl.textContent = collisions;
+                const loadFactor = (itemsCount / (TABLE_SIZE * 2)) * 100;
+                loadFactorEl.textContent = `${Math.round(loadFactor)}%`;
+                openProbesEl.textContent = openProbes;
+                closedProbesEl.textContent = closedProbes;
+                duplicatesCountEl.textContent = duplicatesCount;
+            }
+            
+            // Reset tables
+            function resetTables() {
+                openTable = Array(TABLE_SIZE).fill(null);
+                closedTable = Array(TABLE_SIZE).fill(null).map(() => []);
+                collisions = 0;
+                itemsCount = 0;
+                openProbes = 0;
+                closedProbes = 0;
+                duplicatesCount = 0;
+                initTables();
+                updateStats();
+            }
+            
+            // Insert value using open addressing
+            function insertOpen(value) {
+                // Check for duplicates based on handling mode
+                if (duplicateHandling === 'prevent' && existsInOpen(value)) {
+                    alert(`Value ${value} already exists in open addressing!`);
+                    highlightDuplicateOpen(value);
+                    return false;
+                }
+                
+                let index = hash(value);
+                let probes = 0;
+                let collision = false;
+                let isDuplicate = false;
+                
+                // Check if this is a duplicate for replacement
+                if (duplicateHandling === 'replace') {
+                    for (let i = 0; i < TABLE_SIZE; i++) {
+                        if (openTable[i] === value) {
+                            openTable[i] = value; // Replace the value
+                            highlightSlot(i, 'open', 'duplicate-animation');
+                            alert(`Replaced existing value ${value} at index ${i}`);
+                            return true;
+                        }
+                    }
+                }
+                
+                // Linear probing
+                while (openTable[index] !== null) {
+                    // If we're allowing duplicates but find the same value
+                    if (openTable[index] === value && duplicateHandling === 'allow') {
+                        isDuplicate = true;
+                        duplicatesCount++;
+                        break;
+                    }
+                    
+                    collision = true;
+                    highlightSlot(index, 'open', 'collision-animation');
+                    index = (index + 1) % TABLE_SIZE;
+                    probes++;
+                    
+                    if (probes >= TABLE_SIZE) {
+                        alert('Open addressing table is full!');
+                        return false;
+                    }
+                }
+                
+                if (collision && !isDuplicate) {
+                    collisions++;
+                }
+                
+                openTable[index] = value;
+                
+                if (!isDuplicate) {
+                    itemsCount++;
+                }
+                
+                openProbes += probes;
+                
+                // Update visualization
+                const slot = openTableEl.children[index];
+                const valueEl = slot.querySelector('.slot-value');
+                valueEl.textContent = value;
+                
+                // Add duplicate indicator if needed
+                if (isDuplicate) {
+                    let indicator = slot.querySelector('.duplicate-indicator');
+                    if (!indicator) {
+                        indicator = document.createElement('div');
+                        indicator.className = 'duplicate-indicator';
+                        slot.appendChild(indicator);
+                    }
+                    indicator.textContent = 'Duplicate';
+                }
+                
+                highlightSlot(index, 'open', isDuplicate ? 'duplicate-animation' : 'insert-animation');
+                updateStats();
+                return true;
+            }
+            
+            // Insert value using closed addressing
+            function insertClosed(value) {
+                const index = hash(value);
+                let collision = false;
+                let isDuplicate = false;
+                
+                // Check for duplicates based on handling mode
+                if (duplicateHandling === 'prevent' && existsInClosed(value)) {
+                    alert(`Value ${value} already exists in closed addressing!`);
+                    highlightDuplicateClosed(value);
+                    return false;
+                }
+                
+                // Check if this is a duplicate for replacement in closed addressing
+                if (duplicateHandling === 'replace') {
+                    for (let i = 0; i < closedTable[index].length; i++) {
+                        if (closedTable[index][i] === value) {
+                            closedTable[index][i] = value; // Replace the value
+                            updateClosedVisualization();
+                            alert(`Replaced existing value ${value} in chain at index ${index}`);
+                            return true;
+                        }
+                    }
+                }
+                
+                if (closedTable[index].length > 0) {
+                    // Check if this is a duplicate in the same chain
+                    if (closedTable[index].includes(value) && duplicateHandling === 'allow') {
+                        isDuplicate = true;
+                        duplicatesCount++;
+                    } else {
+                        collision = true;
+                        collisions++;
+                    }
+                    highlightSlot(index, 'closed', 'collision-animation');
+                }
+                
+                closedTable[index].push(value);
+                
+                if (!isDuplicate) {
+                    itemsCount++;
+                }
+                
+                closedProbes += closedTable[index].length - 1;
+                
+                // Update visualization
+                updateClosedVisualization();
+                
+                highlightSlot(index, 'closed', isDuplicate ? 'duplicate-animation' : 'insert-animation');
+                updateStats();
+                return true;
+            }
+            
+            // Update closed addressing visualization
+            function updateClosedVisualization() {
+                for (let i = 0; i < TABLE_SIZE; i++) {
+                    const slot = closedTableEl.children[i];
+                    const valueEl = slot.querySelector('.slot-value');
+                    const chainEl = slot.querySelector('.chain');
+                    
+                    chainEl.innerHTML = '';
+                    
+                    if (closedTable[i].length > 0) {
+                        valueEl.textContent = closedTable[i][0];
+                        
+                        // Add chain items for additional values
+                        for (let j = 1; j < closedTable[i].length; j++) {
+                            const chainItem = document.createElement('div');
+                            chainItem.className = 'chain-item';
+                            chainItem.textContent = closedTable[i][j];
+                            
+                            // Mark duplicates if needed
+                            if (j > 0 && closedTable[i][j] === closedTable[i][0]) {
+                                chainItem.classList.add('duplicate');
+                            } else if (j > 1 && closedTable[i][j] === closedTable[i][j-1]) {
+                                chainItem.classList.add('duplicate');
+                            }
+                            
+                            chainEl.appendChild(chainItem);
+                        }
+                    } else {
+                        valueEl.textContent = '';
+                    }
+                }
+            }
+            
+            // Highlight a duplicate in open addressing
+            function highlightDuplicateOpen(value) {
+                const index = openTable.indexOf(value);
+                if (index !== -1) {
+                    highlightSlot(index, 'open', 'duplicate-animation');
+                }
+            }
+            
+            // Highlight a duplicate in closed addressing
+            function highlightDuplicateClosed(value) {
+                for (let i = 0; i < TABLE_SIZE; i++) {
+                    if (closedTable[i].includes(value)) {
+                        highlightSlot(i, 'closed', 'duplicate-animation');
+                        
+                        // Also highlight the specific chain item if it's not the first one
+                        const slot = closedTableEl.children[i];
+                        if (closedTable[i][0] === value) {
+                            const valueEl = slot.querySelector('.slot-value');
+                            valueEl.classList.add('highlight');
+                            setTimeout(() => valueEl.classList.remove('highlight'), 1000);
+                        } else {
+                            const chainItems = slot.querySelectorAll('.chain-item');
+                            for (let j = 0; j < chainItems.length; j++) {
+                                if (closedTable[i][j+1] === value) {
+                                    chainItems[j].classList.add('highlight');
+                                    setTimeout(() => chainItems[j].classList.remove('highlight'), 1000);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            // Search value in open addressing
+            function searchOpen(value) {
+                let index = hash(value);
+                let originalIndex = index;
+                let probes = 0;
+                
+                while (openTable[index] !== value && openTable[index] !== null) {
+                    highlightSlot(index, 'open', 'probe-animation');
+                    index = (index + 1) % TABLE_SIZE;
+                    probes++;
+                    
+                    if (index === originalIndex || probes >= TABLE_SIZE) {
+                        alert(`Value ${value} not found in open addressing!`);
+                        return;
+                    }
+                }
+                
+                if (openTable[index] === value) {
+                    highlightSlot(index, 'open', 'highlight');
+                    alert(`Found ${value} at index ${index} in open addressing after ${probes} probes!`);
+                } else {
+                    alert(`Value ${value} not found in open addressing!`);
+                }
+            }
+            
+            // Search value in closed addressing
+            function searchClosed(value) {
+                const index = hash(value);
+                let found = false;
+                let probes = 0;
+                
+                highlightSlot(index, 'closed', 'probe-animation');
+                
+                for (let i = 0; i < closedTable[index].length; i++) {
+                    probes++;
+                    if (closedTable[index][i] === value) {
+                        found = true;
+                        
+                        // Highlight the found item
+                        const slot = closedTableEl.children[index];
+                        if (i === 0) {
+                            const valueEl = slot.querySelector('.slot-value');
+                            valueEl.classList.add('highlight');
+                            setTimeout(() => valueEl.classList.remove('highlight'), 1000);
+                        } else {
+                            const chainItems = slot.querySelectorAll('.chain-item');
+                            if (chainItems.length > i-1) {
+                                chainItems[i-1].classList.add('highlight');
+                                setTimeout(() => chainItems[i-1].classList.remove('highlight'), 1000);
+                            }
+                        }
+                        
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    alert(`Found ${value} in chain at index ${index} after ${probes} probes!`);
+                } else {
+                    alert(`Value ${value} not found in closed addressing!`);
+                }
+            }
+            
+            // Highlight a slot
+            function highlightSlot(index, tableType, animationClass) {
+                const tableEl = tableType === 'open' ? openTableEl : closedTableEl;
+                const slot = tableEl.children[index];
+                
+                slot.classList.add(animationClass);
+                setTimeout(() => {
+                    slot.classList.remove(animationClass);
+                }, 1000);
+            }
+            
+            // Insert a value
+            function insertValue() {
+                const value = parseInt(valueInput.value);
+                if (isNaN(value) || value < 1 || value > 99) {
+                    alert('Please enter a valid number between 1 and 99');
+                    return;
+                }
+                
+                const openSuccess = insertOpen(value);
+                const closedSuccess = insertClosed(value);
+                
+                valueInput.value = '';
+                valueInput.focus();
+            }
+            
+            // Search for a value
+            function searchValue() {
+                const value = parseInt(valueInput.value);
+                if (isNaN(value) || value < 1 || value > 99) {
+                    alert('Please enter a valid number between 1 and 99');
+                    return;
+                }
+                
+                searchOpen(value);
+                searchClosed(value);
+                valueInput.value = '';
+                valueInput.focus();
+            }
+            
+            // Generate random value
+            function generateRandom() {
+                const randomValue = Math.floor(Math.random() * 99) + 1;
+                valueInput.value = randomValue;
+                insertValue();
+            }
+            
+            // Event listeners
+            insertBtn.addEventListener('click', insertValue);
+            searchBtn.addEventListener('click', searchValue);
+            randomBtn.addEventListener('click', generateRandom);
+            resetBtn.addEventListener('click', resetTables);
+            duplicateHandlingSelect.addEventListener('change', function() {
+                duplicateHandling = this.value;
+            });
+            
+            // Initialize the tables
+            initTables();
+        });
+    </script>
+</body>
+</html>

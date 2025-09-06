@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Hash Algorithm Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .explanation {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .visualization {
+            flex: 2;
+            min-width: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .formula {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        input {
+            padding: 12px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .hash-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .string-display {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .char {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .char.active {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            transform: scale(1.1);
+            color: #000;
+        }
+        
+        .step-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.1rem;
+        }
+        
+        .complexity {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .complexity-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .visualization, .explanation {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rolling Hash Algorithm Visualizer</h1>
+            <p class="subtitle">Understand how rolling hashes work for efficient string matching</p>
+        </header>
+        
+        <div class="content">
+            <div class="explanation">
+                <h2>What is a Rolling Hash?</h2>
+                <p>A rolling hash allows you to compute a hash value for a sliding window over a string in constant time per window, after an initial linear time computation.</p>
+                
+                <div class="formula">
+                    H = (s[0]·p^(m-1) + s[1]·p^(m-2) + ... + s[m-1]·p^0) % M
+                </div>
+                
+                <p>Where:</p>
+                <ul>
+                    <li><strong>p</strong> = base (prime number, e.g., 31 or 53)</li>
+                    <li><strong>M</strong> = large prime modulus (e.g., 1e9+7)</li>
+                    <li><strong>s</strong> = input string</li>
+                    <li><strong>m</strong> = length of the substring</li>
+                </ul>
+                
+                <h2>Why Use Rolling Hash?</h2>
+                <p>Rolling hashes enable efficient substring search by allowing O(1) hash updates when sliding the window, compared to O(m) for recalculating from scratch.</p>
+                
+                <h2>Collision Handling</h2>
+                <p>Since different strings might have the same hash value (collision), it's important to verify matches by direct comparison when a hash match is found.</p>
+            </div>
+            
+            <div class="visualization">
+                <h2>Algorithm Visualization</h2>
+                
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="textInput">Text to Search:</label>
+                        <input type="text" id="textInput" value="abcabcabc">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="patternInput">Pattern to Find:</label>
+                        <input type="text" id="patternInput" value="abc">
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="btnStep">Step Forward</button>
+                    <button id="btnReset">Reset</button>
+                    <button id="btnRun">Run Full Simulation</button>
+                </div>
+                
+                <div class="step-info">
+                    <p>Current Step: <span id="currentStep">Initialization</span></p>
+                    <p>Current Hash: <span id="currentHash">-</span></p>
+                    <p>Target Hash: <span id="targetHash">-</span></p>
+                </div>
+                
+                <div class="string-display" id="stringDisplay">
+                    <!-- Characters will be inserted here by JavaScript -->
+                </div>
+                
+                <div class="hash-display" id="calculationDisplay">
+                    Hash calculation will appear here
+                </div>
+                
+                <div class="complexity">
+                    <div class="complexity-item">
+                        <h3>Naive Approach</h3>
+                        <p>O(n·m) time</p>
+                    </div>
+                    <div class="complexity-item">
+                        <h3>Rabin-Karp</h3>
+                        <p>O(n + m) expected time</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Rolling Hash Algorithm Visualizer - Created to help understand the Rabin-Karp string searching algorithm</p>
+            <p>✅ Takeaway: Rabin–Karp with rolling hash = Efficient substring search</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const textInput = document.getElementById('textInput');
+            const patternInput = document.getElementById('patternInput');
+            const btnStep = document.getElementById('btnStep');
+            const btnReset = document.getElementById('btnReset');
+            const btnRun = document.getElementById('btnRun');
+            const currentStep = document.getElementById('currentStep');
+            const currentHash = document.getElementById('currentHash');
+            const targetHash = document.getElementById('targetHash');
+            const stringDisplay = document.getElementById('stringDisplay');
+            const calculationDisplay = document.getElementById('calculationDisplay');
+            
+            // Algorithm parameters
+            const p = 31; // base
+            const M = 1e9 + 7; // modulus
+            
+            // State variables
+            let currentPosition = 0;
+            let patternHash = 0;
+            let currentWindowHash = 0;
+            let text = '';
+            let pattern = '';
+            let highestPower = 1;
+            let animationInterval = null;
+            
+            // Initialize the visualization
+            function init() {
+                // Clear any running animation
+                if (animationInterval) {
+                    clearInterval(animationInterval);
+                    animationInterval = null;
+                }
+                
+                // Reset state
+                currentPosition = 0;
+                text = textInput.value;
+                pattern = patternInput.value;
+                
+                // Calculate pattern hash
+                patternHash = calculateHash(pattern);
+                targetHash.textContent = patternHash;
+                
+                // Calculate the highest power needed
+                highestPower = 1;
+                for (let i = 0; i < pattern.length - 1; i++) {
+                    highestPower = (highestPower * p) % M;
+                }
+                
+                // Initialize the current window hash
+                if (text.length >= pattern.length) {
+                    currentWindowHash = calculateHash(text.substring(0, pattern.length));
+                } else {
+                    currentWindowHash = 0;
+                }
+                
+                currentHash.textContent = currentWindowHash;
+                
+                // Render the text
+                renderText();
+                
+                // Update step info
+                currentStep.textContent = "Initialization Complete";
+                
+                // Update calculation display
+                updateCalculationDisplay();
+            }
+            
+            // Calculate initial hash for a string
+            function calculateHash(s) {
+                let hash = 0;
+                let power = 1;
+                
+                for (let i = s.length - 1; i >= 0; i--) {
+                    hash = (hash + (s.charCodeAt(i) * power) % M) % M;
+                    power = (power * p) % M;
+                }
+                
+                return hash;
+            }
+            
+            // Render the text with visual indicators
+            function renderText() {
+                stringDisplay.innerHTML = '';
+                
+                for (let i = 0; i < text.length; i++) {
+                    const charElem = document.createElement('div');
+                    charElem.className = 'char';
+                    
+                    if (i >= currentPosition && i < currentPosition + pattern.length) {
+                        charElem.classList.add('active');
+                    }
+                    
+                    charElem.textContent = text[i];
+                    stringDisplay.appendChild(charElem);
+                }
+            }
+            
+            // Update the calculation display
+            function updateCalculationDisplay() {
+                if (currentPosition + pattern.length > text.length) {
+                    calculationDisplay.textContent = "Pattern window is beyond text length";
+                    return;
+                }
+                
+                const currentWindow = text.substring(currentPosition, currentPosition + pattern.length);
+                let calculation = `H("${currentWindow}") = `;
+                
+                for (let i = 0; i < pattern.length; i++) {
+                    calculation += `${currentWindow[i].charCodeAt(0)} × ${p}^${pattern.length - 1 - i}`;
+                    if (i < pattern.length - 1) {
+                        calculation += " + ";
+                    }
+                }
+                
+                calculation += ` mod ${M} = ${currentWindowHash}`;
+                calculationDisplay.textContent = calculation;
+            }
+            
+            // Perform one step of the algorithm
+            function step() {
+                if (currentPosition + pattern.length > text.length) {
+                    currentStep.textContent = "Algorithm finished - pattern not found";
+                    return;
+                }
+                
+                // Check for hash match
+                if (currentWindowHash === patternHash) {
+                    currentStep.textContent = `Hash match at position ${currentPosition}! Verifying...`;
+                    
+                    // In a real implementation, we would verify the actual substring here
+                    // For visualization, we'll assume it's a match
+                    setTimeout(() => {
+                        currentStep.textContent = `Pattern found at position ${currentPosition}!`;
+                    }, 1000);
+                } else {
+                    currentStep.textContent = `No match at position ${currentPosition}. Moving to next position.`;
+                }
+                
+                // Move to the next position if not at the end
+                if (currentPosition + pattern.length < text.length) {
+                    // Calculate the next rolling hash
+                    const oldChar = text.charCodeAt(currentPosition);
+                    const newChar = text.charCodeAt(currentPosition + pattern.length);
+                    
+                    // The rolling hash update formula
+                    currentWindowHash = (currentWindowHash - (oldChar * highestPower) % M + M) % M;
+                    currentWindowHash = (currentWindowHash * p) % M;
+                    currentWindowHash = (currentWindowHash + newChar) % M;
+                    
+                    currentPosition++;
+                    currentHash.textContent = currentWindowHash;
+                    
+                    renderText();
+                    updateCalculationDisplay();
+                } else {
+                    currentStep.textContent = "Algorithm finished - pattern not found";
+                }
+            }
+            
+            // Run the full algorithm with animation
+            function runFull() {
+                // Clear any existing interval
+                if (animationInterval) {
+                    clearInterval(animationInterval);
+                }
+                
+                // Reset first
+                init();
+                
+                // Then run with delays
+                animationInterval = setInterval(() => {
+                    if (currentPosition + pattern.length > text.length) {
+                        clearInterval(animationInterval);
+                        animationInterval = null;
+                        return;
+                    }
+                    
+                    step();
+                }, 1500);
+            }
+            
+            // Event listeners
+            btnStep.addEventListener('click', step);
+            btnReset.addEventListener('click', init);
+            btnRun.addEventListener('click', runFull);
+            
+            // Initialize on load
+            init();
+        });
+    </script>
+</body>
+</html>

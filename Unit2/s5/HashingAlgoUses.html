@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Hashing & Rabin-Karp Algorithm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .algorithm-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 200px;
+            font-weight: bold;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .visualization {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .string-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .char-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .text-char {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .pattern-char {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .current-window {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .hash-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #2c3e50;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fc;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .anagram-group {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f7ee;
+            border-radius: 10px;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .anagram-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .anagram-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .anagram-word {
+            padding: 8px 15px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .prime-value {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #3498db;
+            color: white;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        
+        .highlight {
+            animation: highlight 0.8s ease;
+        }
+        
+        @keyframes highlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 255, 0, 0.6); }
+            100% { transform: scale(1); }
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            input {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>String Hashing & Rabin-Karp Algorithm</h1>
+            <p class="subtitle">Visualizing rolling hash polynomial and anagram detection</p>
+        </header>
+        
+        <div class="algorithm-section">
+            <h2 class="section-title">Rabin-Karp Algorithm (strStr Implementation)</h2>
+            
+            <div class="input-group">
+                <input type="text" id="text-input" placeholder="Text" value="abracadabra">
+                <input type="text" id="pattern-input" placeholder="Pattern" value="cad">
+                <button id="find-btn">Find Pattern</button>
+                <button class="reset-btn" id="reset-rk">Reset</button>
+            </div>
+            
+            <div class="visualization">
+                <div class="string-display" id="text-display">
+                    <!-- Text will be generated by JavaScript -->
+                </div>
+                
+                <div class="hash-value" id="text-hash">
+                    Text Hash: 
+                </div>
+                
+                <div class="string-display" id="pattern-display">
+                    <!-- Pattern will be generated by JavaScript -->
+                </div>
+                
+                <div class="hash-value" id="pattern-hash">
+                    Pattern Hash: 
+                </div>
+                
+                <div class="explanation" id="rk-explanation">
+                    <p>The Rabin-Karp algorithm uses a rolling hash function to efficiently find a pattern in a text. It computes a hash value for the pattern and for each possible substring of the text, comparing them to find matches.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="algorithm-section">
+            <h2 class="section-title">Group Anagrams (Prime Product Hashing)</h2>
+            
+            <div class="input-group">
+                <input type="text" id="words-input" placeholder="Words (comma separated)" value="eat,tea,tan,ate,nat,bat">
+                <button id="group-btn">Group Anagrams</button>
+                <button class="reset-btn" id="reset-anagram">Reset</button>
+            </div>
+            
+            <div class="visualization" id="anagram-visualization">
+                <div class="explanation">
+                    <p>Anagrams can be grouped by using a hash function that produces the same value for words that are anagrams of each other. Two common approaches:</p>
+                    <ul>
+                        <li><strong>Sorting:</strong> Sort the characters of each word and use the sorted string as a key</li>
+                        <li><strong>Prime Product:</strong> Assign a prime number to each letter and multiply them together to get a unique product for each set of letters</li>
+                    </ul>
+                </div>
+                
+                <div id="anagram-groups">
+                    <!-- Anagram groups will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="comparisons">0</div>
+                <div>Comparisons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="matches">0</div>
+                <div>Matches Found</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="anagram-count">0</div>
+                <div>Anagram Groups</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const textInput = document.getElementById('text-input');
+            const patternInput = document.getElementById('pattern-input');
+            const findBtn = document.getElementById('find-btn');
+            const resetRkBtn = document.getElementById('reset-rk');
+            const wordsInput = document.getElementById('words-input');
+            const groupBtn = document.getElementById('group-btn');
+            const resetAnagramBtn = document.getElementById('reset-anagram');
+            const textDisplay = document.getElementById('text-display');
+            const patternDisplay = document.getElementById('pattern-display');
+            const textHash = document.getElementById('text-hash');
+            const patternHash = document.getElementById('pattern-hash');
+            const rkExplanation = document.getElementById('rk-explanation');
+            const anagramGroups = document.getElementById('anagram-groups');
+            const comparisonsEl = document.getElementById('comparisons');
+            const matchesEl = document.getElementById('matches');
+            const anagramCountEl = document.getElementById('anagram-count');
+            
+            // Prime numbers for each letter (a-z)
+            const primes = {
+                'a': 2, 'b': 3, 'c': 5, 'd': 7, 'e': 11, 'f': 13, 'g': 17, 
+                'h': 19, 'i': 23, 'j': 29, 'k': 31, 'l': 37, 'm': 41, 'n': 43, 
+                'o': 47, 'p': 53, 'q': 59, 'r': 61, 's': 67, 't': 71, 'u': 73, 
+                'v': 79, 'w': 83, 'x': 89, 'y': 97, 'z': 101
+            };
+            
+            // Initialize
+            updateTextDisplay();
+            updatePatternDisplay();
+            
+            // Rabin-Karp algorithm visualization
+            findBtn.addEventListener('click', findPattern);
+            resetRkBtn.addEventListener('click', resetRabinKarp);
+            
+            // Anagram grouping
+            groupBtn.addEventListener('click', groupAnagrams);
+            resetAnagramBtn.addEventListener('click', resetAnagram);
+            
+            // Update text display
+            function updateTextDisplay() {
+                textDisplay.innerHTML = '';
+                const text = textInput.value;
+                
+                for (let i = 0; i < text.length; i++) {
+                    const charBox = document.createElement('div');
+                    charBox.className = 'char-box text-char';
+                    charBox.textContent = text[i];
+                    charBox.dataset.index = i;
+                    textDisplay.appendChild(charBox);
+                }
+            }
+            
+            // Update pattern display
+            function updatePatternDisplay() {
+                patternDisplay.innerHTML = '';
+                const pattern = patternInput.value;
+                
+                for (let i = 0; i < pattern.length; i++) {
+                    const charBox = document.createElement('div');
+                    charBox.className = 'char-box pattern-char';
+                    charBox.textContent = pattern[i];
+                    patternDisplay.appendChild(charBox);
+                }
+                
+                // Update pattern hash
+                const hash = simpleHash(pattern);
+                patternHash.textContent = `Pattern Hash: ${hash}`;
+            }
+            
+            // Simple hash function for demonstration
+            function simpleHash(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = (hash * 31 + str.charCodeAt(i)) % 1000000007;
+                }
+                return hash;
+            }
+            
+            // Find pattern using Rabin-Karp algorithm
+            function findPattern() {
+                const text = textInput.value;
+                const pattern = patternInput.value;
+                
+                if (!text || !pattern) {
+                    alert('Please enter both text and pattern');
+                    return;
+                }
+                
+                if (pattern.length > text.length) {
+                    alert('Pattern cannot be longer than text');
+                    return;
+                }
+                
+                updateTextDisplay();
+                updatePatternDisplay();
+                
+                const n = text.length;
+                const m = pattern.length;
+                const patternHashValue = simpleHash(pattern);
+                let textHashValue = simpleHash(text.substring(0, m));
+                
+                let comparisons = 0;
+                let matches = 0;
+                
+                // Highlight initial window
+                highlightWindow(0, m);
+                textHash.textContent = `Text Hash: ${textHashValue}`;
+                
+                // Simulate algorithm steps with delays
+                let step = 0;
+                const interval = setInterval(() => {
+                    if (step > n - m) {
+                        clearInterval(interval);
+                        rkExplanation.innerHTML = `<p>Pattern found at positions: ${matches > 0 ? 'see above' : 'none'}. Total comparisons: ${comparisons}.</p>`;
+                        comparisonsEl.textContent = comparisons;
+                        matchesEl.textContent = matches;
+                        return;
+                    }
+                    
+                    // Remove previous highlighting
+                    removeHighlights();
+                    
+                    // Highlight current window
+                    highlightWindow(step, m);
+                    
+                    // Update hash display
+                    textHashValue = simpleHash(text.substring(step, step + m));
+                    textHash.textContent = `Text Hash: ${textHashValue}`;
+                    
+                    comparisons++;
+                    
+                    // Check for match
+                    if (textHashValue === patternHashValue) {
+                        // Verify actual match (to handle collisions)
+                        let actualMatch = true;
+                        for (let i = 0; i < m; i++) {
+                            if (text[step + i] !== pattern[i]) {
+                                actualMatch = false;
+                                break;
+                            }
+                        }
+                        
+                        if (actualMatch) {
+                            matches++;
+                            rkExplanation.innerHTML = `<p>Hash match found at position ${step}! Verifying characters... It's a match!</p>`;
+                            
+                            // Pause to show the match
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                findPattern(); // Continue
+                            }, 1500);
+                            return;
+                        } else {
+                            rkExplanation.innerHTML = `<p>Hash collision at position ${step}. Characters don't match, so it's a false positive.</p>`;
+                        }
+                    } else {
+                        rkExplanation.innerHTML = `<p>Sliding window to position ${step + 1}. Hashes don't match.</p>`;
+                    }
+                    
+                    step++;
+                }, 1000);
+            }
+            
+            // Highlight a window in the text
+            function highlightWindow(start, length) {
+                for (let i = start; i < start + length; i++) {
+                    const charBox = textDisplay.querySelector(`.char-box[data-index="${i}"]`);
+                    if (charBox) {
+                        charBox.classList.add('current-window');
+                    }
+                }
+            }
+            
+            // Remove highlighting from text
+            function removeHighlights() {
+                const highlighted = textDisplay.querySelectorAll('.current-window');
+                highlighted.forEach(el => {
+                    el.classList.remove('current-window');
+                });
+            }
+            
+            // Reset Rabin-Karp visualization
+            function resetRabinKarp() {
+                textInput.value = 'abracadabra';
+                patternInput.value = 'cad';
+                updateTextDisplay();
+                updatePatternDisplay();
+                textHash.textContent = 'Text Hash: ';
+                rkExplanation.innerHTML = '<p>The Rabin-Karp algorithm uses a rolling hash function to efficiently find a pattern in a text. It computes a hash value for the pattern and for each possible substring of the text, comparing them to find matches.</p>';
+                comparisonsEl.textContent = '0';
+                matchesEl.textContent = '0';
+            }
+            
+            // Group anagrams
+            function groupAnagrams() {
+                const words = wordsInput.value.split(',').map(word => word.trim());
+                anagramGroups.innerHTML = '';
+                
+                // Group by sorted key
+                const groupsSorted = {};
+                // Group by prime product
+                const groupsPrime = {};
+                
+                words.forEach(word => {
+                    // Using sorted key
+                    const sortedKey = word.split('').sort().join('');
+                    if (!groupsSorted[sortedKey]) {
+                        groupsSorted[sortedKey] = [];
+                    }
+                    groupsSorted[sortedKey].push(word);
+                    
+                    // Using prime product
+                    let product = 1;
+                    for (let char of word.toLowerCase()) {
+                        if (primes[char]) {
+                            product *= primes[char];
+                        }
+                    }
+                    
+                    if (!groupsPrime[product]) {
+                        groupsPrime[product] = [];
+                    }
+                    groupsPrime[product].push(word);
+                });
+                
+                // Display results
+                anagramCountEl.textContent = Object.keys(groupsSorted).length;
+                
+                // Show sorted approach
+                const sortedGroup = document.createElement('div');
+                sortedGroup.className = 'anagram-group';
+                sortedGroup.innerHTML = '<div class="anagram-title">Grouping by Sorted Key:</div>';
+                
+                const sortedWords = document.createElement('div');
+                sortedWords.className = 'anagram-words';
+                
+                for (const key in groupsSorted) {
+                    const group = groupsSorted[key];
+                    if (group.length > 1) {
+                        const wordEl = document.createElement('div');
+                        wordEl.className = 'anagram-word';
+                        wordEl.textContent = `[${group.join(', ')}]`;
+                        sortedWords.appendChild(wordEl);
+                    }
+                }
+                
+                sortedGroup.appendChild(sortedWords);
+                anagramGroups.appendChild(sortedGroup);
+                
+                // Show prime product approach
+                const primeGroup = document.createElement('div');
+                primeGroup.className = 'anagram-group';
+                primeGroup.innerHTML = '<div class="anagram-title">Grouping by Prime Product:</div>';
+                
+                const primeWords = document.createElement('div');
+                primeWords.className = 'anagram-words';
+                
+                for (const key in groupsPrime) {
+                    const group = groupsPrime[key];
+                    if (group.length > 1) {
+                        const wordEl = document.createElement('div');
+                        wordEl.className = 'anagram-word';
+                        
+                        // Calculate prime product visualization
+                        let productVisualization = '';
+                        const firstWord = group[0];
+                        for (let char of firstWord) {
+                            const lowerChar = char.toLowerCase();
+                            if (primes[lowerChar]) {
+                                productVisualization += `<span class="prime-value">${primes[lowerChar]}</span>`;
+                            }
+                        }
+                        
+                        wordEl.innerHTML = `Product: ${productVisualization} = ${key}<br>[${group.join(', ')}]`;
+                        primeWords.appendChild(wordEl);
+                    }
+                }
+                
+                primeGroup.appendChild(primeWords);
+                anagramGroups.appendChild(primeGroup);
+            }
+            
+            // Reset anagram grouping
+            function resetAnagram() {
+                wordsInput.value = 'eat,tea,tan,ate,nat,bat';
+                anagramGroups.innerHTML = '';
+                anagramCountEl.textContent = '0';
+            }
+            
+            // Event listeners for input changes
+            textInput.addEventListener('input', updateTextDisplay);
+            patternInput.addEventListener('input', updatePatternDisplay);
+        });
+    </script>
+</body>
+</html>
