@@ -14,7 +14,7 @@ for row in matrix:
 matrix[0][1] = 5
 
 # Update the element at row 3, column 3?
-matrix[][] = 9
+matrix[2][2] = 9
 
 print("\nMatrix After Updates:")
 for row in matrix:
