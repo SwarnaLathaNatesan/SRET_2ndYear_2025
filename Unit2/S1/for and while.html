@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Loop Learning</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #38b2ac;
+            --accent: #f56565;
+            --light: #f8fafc;
+            --dark: #2d3748;
+            --for-color: #4299e1;
+            --while-color: #48bb78;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .for-header {
+            background: var(--for-color);
+        }
+        
+        .while-header {
+            background: var(--while-color);
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .example {
+            background: #f8fafc;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .code {
+            font-family: 'Courier New', Courier, monospace;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .interactive {
+            background: #f0f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+        }
+        
+        .visualization {
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .popcorn-bowl {
+            width: 180px;
+            height: 90px;
+            background: #e2e8f0;
+            border-radius: 0 0 90px 90px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .popcorn-img {
+            width: 30px;
+            height: 40px;
+            margin: 2px;
+            transition: all 0.5s ease;
+        }
+        
+        .pizza-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .pizza-slice {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 30px 50px 30px;
+            border-color: transparent transparent #fbd38d transparent;
+            position: relative;
+        }
+        
+        .olive {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #2d3748;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+        }
+        
+        .comparison {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            width: 100px;
+        }
+        
+        .nested-code {
+            background: #4a5568;
+            margin-left: 20px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .eating-animation {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZkMzNjIiBkPSJNNDQ2LjUgMjA3LjVjLTM4LjggMTQ2LjUtMjAzLjcgMTQ2LjUtMjQyLjUgMC0xMi40LTQ2LjcgMTguNC04Ni41IDQ4LjUtMTE3LjYgMzAuMS0zMS4xIDg3LjItNDAuNCAxMjEuMy0yOC45czY2LjMgMzcuNiA3Mi41IDE0Ni41eiIvPjxwYXRoIGZpbGw9IiNlYWE0MzMiIGQ9Ik0yMDQgMTg2LjVjMzQuMS0xMS41IDkxLjItMi4yIDEyMS4zIDI4LjkgMzAgMzEuMSA2MC45IDcwLjkgNDguNSAxMTcuNi0xMi40IDQ2LjctNDcuNiA3gtMTAwLjggODQuNy01My4yIDYuNy05Ni41LTE1LjktMTE0LjQtNjMuNy0xNy45LTQ3LjgtNy4xLTEwOS43IDI1LjgtMTM0LjQgMzIuOS0yNC43IDgwLTMzLjMgMTE5LjYtMzIuM3oiLz48L3N2Zz4=') center/cover no-repeat;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        @keyframes eat {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+        
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-redo-alt"></i> Loop Learning: For vs. While</h1>
+            <p class="subtitle">Understanding loops with fun, interactive examples</p>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-header for-header">
+                    <i class="fas fa-pizza-slice"></i> For Loop
+                </div>
+                <div class="card-body">
+                    <h2>When you know how many iterations you need</h2>
+                    <p>A <strong>for loop</strong> is used when you know exactly how many times you want to execute a block of code.</p>
+                    
+                    <div class="example">
+                        <h3>🍕 Pizza Party Example</h3>
+                        <p>You have 6 pizza slices and want to add exactly 3 olive pieces to each slice (using a nested loop).</p>
+                    </div>
+                    
+                    <div class="code">
+// For loop structure with nested loop<br>
+for (let slice = 0; slice < 6; slice++) {<br>
+&nbsp;&nbsp;console.log("Preparing slice " + slice);<br>
+&nbsp;&nbsp;<span class="nested-code">// Inner loop for olives<br>
+&nbsp;&nbsp;for (let olive = 0; olive < 3; olive++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log("  Adding olive " + olive);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;addOlive(slice, olive);<br>
+&nbsp;&nbsp;}</span><br>
+}
+                    </div>
+                    
+                    <div class="interactive">
+                        <h3>Try it: Pizza Preparation</h3>
+                        <div class="control-group">
+                            <button class="btn" id="pizzaBtn"><i class="fas fa-play"></i> Prepare Pizza Slices</button>
+                            <button class="btn" id="resetPizzaBtn"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                        
+                        <div class="visualization" id="pizzaViz">
+                            <div class="counter">Slices: 0/6, Olives: 0/3</div>
+                            <div class="pizza-container">
+                                <div class="pizza-slice" id="slice0"></div>
+                                <div class="pizza-slice" id="slice1"></div>
+                                <div class="pizza-slice" id="slice2"></div>
+                                <div class="pizza-slice" id="slice3"></div>
+                                <div class="pizza-slice" id="slice4"></div>
+                                <div class="pizza-slice" id="slice5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header while-header">
+                    <i class="fas fa-film"></i> While Loop
+                </div>
+                <div class="card-body">
+                    <h2>When you need to loop until a condition changes</h2>
+                    <p>A <strong>while loop</strong> is used when you want to repeat something until a condition is no longer true.</p>
+                    
+                    <div class="example">
+                        <h3>🍿 Movie Night Example</h3>
+                        <p>You have a bowl of popcorn. You'll keep eating until the bowl is empty.</p>
+                    </div>
+                    
+                    <div class="code">
+// While loop structure<br>
+let popcornCount = 20; // Starting amount<br>
+while (popcornCount > 0) {<br>
+&nbsp;&nbsp;eatPopcorn();<br>
+&nbsp;&nbsp;popcornCount--;<br>
+&nbsp;&nbsp;console.log("Popcorn left: " + popcornCount);<br>
+}
+                    </div>
+                    
+                    <div class="interactive">
+                        <h3>Try it: Movie Time</h3>
+                        <div class="input-group">
+                            <label for="popcornAmount">Number of popcorn pieces:</label>
+                            <input type="number" id="popcornAmount" min="5" max="30" value="20">
+                        </div>
+                        <div class="control-group">
+                            <button class="btn" id="popcornBtn"><i class="fas fa-play"></i> Start Eating Popcorn</button>
+                            <button class="btn" id="resetBtn"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                        
+                        <div class="visualization" id="popcornViz">
+                            <div class="counter">Pieces: 20</div>
+                            <div class="popcorn-bowl" id="popcornBowl">
+                                <!-- Popcorn will be added dynamically -->
+                            </div>
+                            <div class="eating-animation" id="eatingAnimation"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison">
+            <h2><i class="fas fa-balance-scale"></i> For Loop vs. While Loop</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>For Loop</th>
+                        <th>While Loop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>When to use</td>
+                        <td>When iterations are known in advance</td>
+                        <td>When termination depends on a condition</td>
+                    </tr>
+                    <tr>
+                        <td>Initialization</td>
+                        <td>Done in the loop structure</td>
+                        <td>Done before the loop</td>
+                    </tr>
+                    <tr>
+                        <td>Condition checking</td>
+                        <td>Before each iteration</td>
+                        <td>Before each iteration</td>
+                    </tr>
+                    <tr>
+                        <td>Increment/Update</td>
+                        <td>Done in the loop structure</td>
+                        <td>Done inside the loop body</td>
+                    </tr>
+                    <tr>
+                        <td>Risk of infinite loop</td>
+                        <td>Lower (if condition is properly set)</td>
+                        <td>Higher (if condition never becomes false)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="example">
+                <h3>Remember this!</h3>
+                <p><strong>For loops</strong> are like counting: "Do this 10 times."</p>
+                <p><strong>While loops</strong> are like waiting: "Keep doing this until something happens."</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created for educational purposes - Programming Loops Explained</p>
+        </footer>
+    </div>
+
+    <script>
+        // Generate popcorn images
+        function generatePopcorn(amount) {
+            const bowl = document.getElementById('popcornBowl');
+            bowl.innerHTML = '';
+            
+            for (let i = 0; i < amount; i++) {
+                const popcorn = document.createElement('div');
+                popcorn.className = 'popcorn-img';
+                popcorn.innerHTML = '🍿';
+                popcorn.style.fontSize = '24px';
+                popcorn.style.textAlign = 'center';
+                popcorn.style.lineHeight = '40px';
+                popcorn.dataset.id = i;
+                bowl.appendChild(popcorn);
+            }
+            
+            document.querySelector('#popcornViz .counter').textContent = 'Pieces: ' + amount;
+        }
+        
+        // Initialize with default popcorn amount
+        generatePopcorn(20);
+        
+        // Reset pizza slices
+        function resetPizza() {
+            const slices = document.querySelectorAll('.pizza-slice');
+            slices.forEach(slice => {
+                slice.innerHTML = '';
+            });
+            document.querySelector('#pizzaViz .counter').textContent = 'Slices: 0/6, Olives: 0/3';
+        }
+        
+        // For Loop Example with nested loop
+        document.getElementById('pizzaBtn').addEventListener('click', function() {
+            const slices = document.querySelectorAll('.pizza-slice');
+            const counter = document.querySelector('#pizzaViz .counter');
+            
+            // Reset all slices
+            resetPizza();
+            
+            // Positions for olives on each slice
+            const olivePositions = [
+                [{top: '20px', left: '15px'}, {top: '30px', left: '10px'}, {top: '40px', left: '20px'}],
+                [{top: '15px', left: '5px'}, {top: '35px', left: '15px'}, {top: '25px', left: '25px'}],
+                [{top: '10px', left: '10px'}, {top: '30px', left: '5px'}, {top: '40px', left: '15px'}],
+                [{top: '20px', left: '20px'}, {top: '30px', left: '10px'}, {top: '40px', left: '5px'}],
+                [{top: '15px', left: '15px'}, {top: '25px', left: '5px'}, {top: '35px', left: '20px'}],
+                [{top: '10px', left: '5px'}, {top: '30px', left: '15px'}, {top: '40px', left: '10px'}]
+            ];
+            
+            // Simulate for loop with delay between iterations
+            let sliceCount = 0;
+            
+            const processSlice = () => {
+                if (sliceCount >= slices.length) return;
+                
+                const currentSlice = document.getElementById('slice' + sliceCount);
+                counter.textContent = `Slices: ${sliceCount + 1}/6, Olives: 0/3`;
+                
+                let oliveCount = 0;
+                
+                const addOlive = () => {
+                    if (oliveCount >= 3) {
+                        sliceCount++;
+                        setTimeout(processSlice, 500);
+                        return;
+                    }
+                    
+                    const olive = document.createElement('div');
+                    olive.className = 'olive';
+                    olive.style.top = olivePositions[sliceCount][oliveCount].top;
+                    olive.style.left = olivePositions[sliceCount][oliveCount].left;
+                    olive.style.opacity = '0';
+                    
+                    currentSlice.appendChild(olive);
+                    
+                    // Animate olive appearance
+                    setTimeout(() => {
+                        olive.style.opacity = '1';
+                    }, 10);
+                    
+                    oliveCount++;
+                    counter.textContent = `Slices: ${sliceCount + 1}/6, Olives: ${oliveCount}/3`;
+                    
+                    setTimeout(addOlive, 500);
+                };
+                
+                addOlive();
+            };
+            
+            processSlice();
+        });
+        
+        // Reset pizza button
+        document.getElementById('resetPizzaBtn').addEventListener('click', resetPizza);
+        
+        // While Loop Example
+        document.getElementById('popcornBtn').addEventListener('click', function() {
+            const amount = parseInt(document.getElementById('popcornAmount').value) || 20;
+            const counter = document.querySelector('#popcornViz .counter');
+            const eatingAnimation = document.getElementById('eatingAnimation');
+            let remainingPieces = amount;
+            
+            // Reset bowl
+            generatePopcorn(amount);
+            const popcornPieces = document.querySelectorAll('.popcorn-img');
+            
+            // Function to show eating animation at a specific position
+            const showEatingAnimation = (x, y) => {
+                eatingAnimation.style.left = `${x}px`;
+                eatingAnimation.style.top = `${y}px`;
+                eatingAnimation.style.animation = 'none';
+                eatingAnimation.offsetHeight; // Trigger reflow
+                eatingAnimation.style.animation = 'eat 0.5s forwards';
+            };
+            
+            // Simulate while loop with delay between iterations
+            const eating = setInterval(() => {
+                if (remainingPieces > 0) {
+                    // Get all visible popcorn pieces
+                    const visiblePieces = Array.from(popcornPieces).filter(p => p.style.opacity !== '0');
+                    
+                    if (visiblePieces.length > 0) {
+                        // Select a random piece to remove
+                        const randomIndex = Math.floor(Math.random() * visiblePieces.length);
+                        const popcorn = visiblePieces[randomIndex];
+                        
+                        // Get position for eating animation
+                        const rect = popcorn.getBoundingClientRect();
+                        const bowlRect = document.getElementById('popcornBowl').getBoundingClientRect();
+                        
+                        const x = rect.left - bowlRect.left + rect.width/2 - 20;
+                        const y = rect.top - bowlRect.top + rect.height/2 - 20;
+                        
+                        // Show eating animation
+                        showEatingAnimation(x, y);
+                        
+                        // Remove the popcorn piece with animation
+                        popcorn.style.opacity = '0';
+                        popcorn.style.transform = 'scale(0) rotate(30deg)';
+                        
+                        remainingPieces--;
+                        counter.textContent = 'Pieces: ' + remainingPieces;
+                    } else {
+                        clearInterval(eating);
+                    }
+                } else {
+                    clearInterval(eating);
+                }
+            }, 600);
+        });
+        
+        // Reset button for popcorn
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            const amount = parseInt(document.getElementById('popcornAmount').value) || 20;
+            generatePopcorn(amount);
+        });
+        
+        // Update popcorn amount when input changes
+        document.getElementById('popcornAmount').addEventListener('change', function() {
+            const amount = parseInt(this.value) || 20;
+            // Limit between 5 and 30
+            this.value = Math.min(30, Math.max(5, amount));
+            generatePopcorn(this.value);
+        });
+    </script>
+</body>
+</html>

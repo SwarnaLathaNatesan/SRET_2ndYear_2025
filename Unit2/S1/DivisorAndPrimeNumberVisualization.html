@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisor and Prime Visualization</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #3498db, #2ecc71, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        input {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            width: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Glossy Candy Crush-style buttons */
+        .glossy-btn {
+            position: relative;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+        
+        .glossy-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .glossy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            border-radius: 12px 12px 0 0;
+        }
+        
+        #startBtn {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+        }
+        
+        #pauseBtn {
+            background: linear-gradient(to bottom, #e67e22, #d35400);
+        }
+        
+        #resumeBtn {
+            background: linear-gradient(to bottom, #2ecc71, #27ae60);
+        }
+        
+        #resetBtn {
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
+        }
+        
+        .glossy-btn:disabled {
+            background: linear-gradient(to bottom, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .glossy-btn:disabled::before {
+            display: none;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            border: 2px solid white;
+        }
+        
+        .animation-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .sqrt-info {
+            margin: 15px 0;
+            font-size: 1.2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .numbers-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+        
+        .number-box {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .divisor {
+            background: #2ecc71;
+            border-color: #27ae60;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #2ecc71;
+        }
+        
+        .prime {
+            background: #e74c3c;
+            border-color: #c0392b;
+            transform: scale(1.1);
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 15px #e74c3c;
+        }
+        
+        .checked {
+            background: #3498db;
+            border-color: #2980b9;
+            box-shadow: 0 0 15px #3498db;
+        }
+        
+        .complementary {
+            background: #9b59b6;
+            border-color: #8e44ad;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #9b59b6;
+        }
+        
+        /* Glitter effect */
+        .glitter::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 10.5%);
+            background-size: 20px 20px;
+            background-position: 0 0;
+            animation: glitter 1.5s linear infinite;
+            pointer-events: none;
+        }
+        
+        .sqrt-line {
+            width: 100%;
+            border-top: 3px dashed #e74c3c;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .sqrt-line::after {
+            content: "√n";
+            position: absolute;
+            top: -25px;
+            right: 0;
+            background: #e74c3c;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .explanation {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .explanation h2 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #3498db;
+        }
+        
+        .explanation p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        #status {
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            min-height: 60px;
+            font-size: 1.2rem;
+            color: #f1c40f;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px #e74c3c; }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px #e74c3c; }
+            100% { transform: scale(1); box-shadow: 0 0 10px #e74c3c; }
+        }
+        
+        @keyframes glitter {
+            0% { transform: rotate(0deg) translate(-10px, -10px); }
+            100% { transform: rotate(360deg) translate(-10px, -10px); }
+        }
+        
+        /* Sparkle elements */
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: sparkle 2s linear forwards;
+        }
+        
+        @keyframes sparkle {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0.2);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .number-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            input, .glossy-btn {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Divisor and Prime Number Visualization</h1>
+        
+        <div class="input-section">
+            <input type="number" id="numberInput" min="2" max="100" value="24">
+            <button id="startBtn" class="glossy-btn">Start Animation</button>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: rgba(255, 255, 255, 0.2);"></div>
+                <span>Not checked</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3498db;"></div>
+                <span>Checked</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2ecc71;"></div>
+                <span>Divisor</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9b59b6;"></div>
+                <span>Complementary Divisor</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e74c3c;"></div>
+                <span>Prime (no divisors)</span>
+            </div>
+        </div>
+        
+        <div class="animation-area">
+            <div id="status">Enter a number (2-100) and click "Start Animation"</div>
+            
+            <div class="sqrt-info">
+                We only need to check divisors up to √<span id="sqrtValue">n</span>
+            </div>
+            
+            <div class="sqrt-line"></div>
+            
+            <div class="numbers-container" id="numbersContainer"></div>
+            
+            <div class="controls">
+                <button id="pauseBtn" class="glossy-btn" disabled>Pause</button>
+                <button id="resumeBtn" class="glossy-btn" disabled>Resume</button>
+                <button id="resetBtn" class="glossy-btn">Reset</button>
+                <div class="speed-control">
+                    <label for="speed">Speed:</label>
+                    <input type="range" id="speed" min="1" max="10" value="5">
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h2>How It Works</h2>
+            <p>This visualization demonstrates how to find divisors of a number efficiently.</p>
+            <p><strong>Key insights:</strong></p>
+            <ul>
+                <li>We only need to check divisors up to the square root of the number (√n)</li>
+                <li>For each divisor found below √n, there's a complementary divisor above √n</li>
+                <li>If no divisors are found other than 1 and the number itself, the number is prime</li>
+                <li>This method is much more efficient than checking all numbers up to n</li>
+            </ul>
+            <p>Try different numbers to see how divisors are found and how prime numbers are identified!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const numberInput = document.getElementById('numberInput');
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resumeBtn = document.getElementById('resumeBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const speedControl = document.getElementById('speed');
+            const numbersContainer = document.getElementById('numbersContainer');
+            const statusText = document.getElementById('status');
+            const sqrtValue = document.getElementById('sqrtValue');
+            
+            let animationId = null;
+            let currentNumber = 0;
+            let divisors = [];
+            let complementaryDivisors = [];
+            let currentDivisor = 0;
+            let sqrt = 0;
+            let isPaused = false;
+            
+            function createSparkle(x, y) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                
+                // Random direction and distance
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                sparkle.style.setProperty('--tx', `${tx}px`);
+                sparkle.style.setProperty('--ty', `${ty}px`);
+                sparkle.style.left = `${x}px`;
+                sparkle.style.top = `${y}px`;
+                
+                document.body.appendChild(sparkle);
+                
+                // Remove sparkle after animation completes
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }
+            
+            function initializeAnimation() {
+                // Clear previous animation
+                if (animationId) {
+                    clearTimeout(animationId);
+                    animationId = null;
+                }
+                
+                numbersContainer.innerHTML = '';
+                divisors = [];
+                complementaryDivisors = [];
+                currentDivisor = 0;
+                
+                // Get the input number
+                currentNumber = parseInt(numberInput.value);
+                if (isNaN(currentNumber) || currentNumber < 2 || currentNumber > 100) {
+                    statusText.textContent = 'Please enter a number between 2 and 100';
+                    return;
+                }
+                
+                // Create some random sparkles
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        createSparkle(x, y);
+                    }, i * 100);
+                }
+                
+                // Calculate square root
+                sqrt = Math.floor(Math.sqrt(currentNumber));
+                sqrtValue.textContent = currentNumber;
+                statusText.textContent = `Finding divisors of ${currentNumber}. We only need to check up to √${currentNumber} = ${sqrt} (rounded down).`;
+                
+                // Create number boxes
+                for (let i = 1; i <= currentNumber; i++) {
+                    const box = document.createElement('div');
+                    box.className = 'number-box';
+                    box.id = `num-${i}`;
+                    box.textContent = i;
+                    numbersContainer.appendChild(box);
+                }
+                
+                // Enable/disable buttons
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                resumeBtn.disabled = true;
+                resetBtn.disabled = false;
+                
+                isPaused = false;
+                
+                // Start with 1 as a divisor and the number itself as complementary
+                divisors.push(1);
+                complementaryDivisors.push(currentNumber);
+                
+                const num1Box = document.getElementById('num-1');
+                num1Box.classList.add('divisor');
+                addGlitterEffect(num1Box);
+                
+                const compBox = document.getElementById(`num-${currentNumber}`);
+                compBox.classList.add('complementary');
+                addGlitterEffect(compBox);
+                
+                statusText.textContent = `1 is always a divisor. Its complementary divisor is ${currentNumber}.`;
+                
+                // Continue with the animation after a brief pause
+                setTimeout(() => {
+                    currentDivisor = 1;
+                    animateDivisorCheck();
+                }, 1500);
+            }
+            
+            function animateDivisorCheck() {
+                if (isPaused) return;
+                
+                currentDivisor++;
+                
+                // If we've passed the square root, complete the animation
+                if (currentDivisor > sqrt) {
+                    completeAnimation();
+                    return;
+                }
+                
+                // Highlight the current divisor being checked
+                const currentBox = document.getElementById(`num-${currentDivisor}`);
+                currentBox.classList.add('checked');
+                addGlitterEffect(currentBox);
+                
+                statusText.textContent = `Checking if ${currentDivisor} is a divisor of ${currentNumber}...`;
+                
+                // Calculate speed (inverse of the slider value)
+                const speed = 1100 - (speedControl.value * 100);
+                
+                // Check if currentDivisor is a divisor after a delay
+                animationId = setTimeout(() => {
+                    if (currentNumber % currentDivisor === 0) {
+                        // It's a divisor
+                        currentBox.classList.remove('checked');
+                        currentBox.classList.add('divisor');
+                        divisors.push(currentDivisor);
+                        
+                        // Find and highlight the complementary divisor
+                        const complementary = currentNumber / currentDivisor;
+                        
+                        statusText.textContent = `${currentDivisor} is a divisor! Its complementary divisor is ${complementary}.`;
+                        
+                        const compBox = document.getElementById(`num-${complementary}`);
+                        compBox.classList.add('complementary');
+                        addGlitterEffect(compBox);
+                        
+                        // Avoid duplicates in our list
+                        if (complementary !== currentDivisor) {
+                            complementaryDivisors.push(complementary);
+                        }
+                    } else {
+                        statusText.textContent = `${currentDivisor} is not a divisor of ${currentNumber}.`;
+                    }
+                    
+                    // Continue with next divisor
+                    animationId = setTimeout(animateDivisorCheck, speed/2);
+                }, speed);
+            }
+            
+            function completeAnimation() {
+                // Check if the number is prime (only divisors are 1 and itself)
+                if (divisors.length === 1 && complementaryDivisors.length === 1) {
+                    statusText.textContent = `${currentNumber} is a prime number! It has no divisors other than 1 and itself.`;
+                    const primeBox = document.getElementById(`num-${currentNumber}`);
+                    primeBox.classList.add('prime');
+                    addGlitterEffect(primeBox);
+                    
+                    const num1Box = document.getElementById('num-1');
+                    num1Box.classList.add('prime');
+                    addGlitterEffect(num1Box);
+                } else {
+                    statusText.textContent = `All divisors found! The divisors are highlighted above.`;
+                }
+                
+                // Create celebration sparkles
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        createSparkle(x, y);
+                    }, i * 100);
+                }
+                
+                // Reset button states
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = true;
+            }
+            
+            function pauseAnimation() {
+                if (animationId) {
+                    clearTimeout(animationId);
+                    animationId = null;
+                }
+                isPaused = true;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = false;
+                statusText.textContent = 'Animation paused. Click "Resume" to continue.';
+            }
+            
+            function resumeAnimation() {
+                isPaused = false;
+                pauseBtn.disabled = false;
+                resumeBtn.disabled = true;
+                statusText.textContent = 'Resuming animation...';
+                animateDivisorCheck();
+            }
+            
+            function resetAnimation() {
+                if (animationId) {
+                    clearTimeout(animationId);
+                    animationId = null;
+                }
+                
+                numbersContainer.innerHTML = '';
+                divisors = [];
+                complementaryDivisors = [];
+                currentDivisor = 0;
+                
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = true;
+                resetBtn.disabled = true;
+                
+                statusText.textContent = 'Enter a number (2-100) and click "Start Animation"';
+                sqrtValue.textContent = 'n';
+            }
+            
+            function addGlitterEffect(element) {
+                element.classList.add('glitter');
+                setTimeout(() => {
+                    element.classList.remove('glitter');
+                }, 1500);
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', initializeAnimation);
+            pauseBtn.addEventListener('click', pauseAnimation);
+            resumeBtn.addEventListener('click', resumeAnimation);
+            resetBtn.addEventListener('click', resetAnimation);
+            
+            // Speed control
+            speedControl.addEventListener('input', function() {
+                if (animationId) {
+                    // Restart animation with new speed
+                    pauseAnimation();
+                    resumeAnimation();
+                }
+            });
+            
+            // Add sparkles on mouse movement
+            document.addEventListener('mousemove', (e) => {
+                if (Math.random() > 0.97) {
+                    createSparkle(e.clientX, e.clientY);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
