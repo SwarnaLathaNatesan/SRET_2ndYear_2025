@@ -7,9 +7,8 @@ LCM using GCD
 Decimal to Binary
 Fast Exponentiation (Binary Exponentiation)
 Modular arithmetic
-github
-
 Matrix Rotation
+
 Segment Tree
 
 Hashing
