@@ -8,9 +8,16 @@ Decimal to Binary
 Fast Exponentiation (Binary Exponentiation)
 Modular arithmetic
 Matrix Rotation
+All diff types of input
+
+
+
+
+
+
+
 
 Segment Tree
-
 Hashing
 
 
