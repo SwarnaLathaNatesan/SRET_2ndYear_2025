@@ -418,19 +418,19 @@
             <div class="card">
                 <h2 class="card-title"><i class="fas fa-code"></i> Solution Code</h2>
                 <div class="code-container">
-                    <pre><span class="keyword">def</span> <span class="function">myPow</span>(x, n):
+                    <pre><span class="keyword">def</span> <span class="function">myPow</span>(base, n):
     <span class="keyword">if</span> n == <span class="number">0</span>:
         <span class="keyword">return</span> <span class="number">1</span>
     
     <span class="keyword">if</span> n < <span class="number">0</span>:
-        x = <span class="number">1</span> / x
+        base = <span class="number">1</span> / base
         n = -n
     
     result = <span class="number">1</span>
     <span class="keyword">while</span> n > <span class="number">0</span>:
         <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:
-            result = result * x
-        x = x * x
+            result = result * base
+        base = base * base
         n = n // <span class="number">2</span>
     
     <span class="keyword">return</span> result</pre>
@@ -708,7 +708,7 @@
         });
         
         // Pow function implementation
-        function myPow(x, n) {
+        function myPow(base, n) {
             if (n === 0) return 1;
             
             if (n < 0) {
