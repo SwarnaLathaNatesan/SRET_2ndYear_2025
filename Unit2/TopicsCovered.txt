@@ -2,7 +2,7 @@ Prime Number
 Sieve of Eratosthene
 Fibonacci series
 Pascal Triangle
-GCD using Euclidean
+GCD using Euclidean(replace a, b with  b, a%b)
 LCM using GCD
 Decimal to Binary
 Fast Exponentiation (Binary Exponentiation)
