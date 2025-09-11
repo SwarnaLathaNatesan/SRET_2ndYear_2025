@@ -8,6 +8,13 @@ students = {
 print("Students in dictionary:")
 print(students)
 
+students["E10"] = "Swarna"
+#Mr/Ms Swarna
+print("after update Students in dictionary:")
+print(students)
+
+print(hash("E10"))
+
 # Searching for a student by ID
 search_id = "E0224019"
 if search_id in students:
