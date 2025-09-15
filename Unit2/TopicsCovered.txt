@@ -6,8 +6,9 @@ GCD using Euclidean(replace a, b with  b, a%b)
 LCM using GCD
 Decimal to Binary
 Fast Exponentiation (Binary Exponentiation)
-Modular arithmetic
+Modular arithmetic - (a*b)%m  = ((a%m) * (b*m))%m
 Matrix Rotation
+Basic python programming
 All diff types of input
 
 
@@ -16,29 +17,8 @@ All diff types of input
 
 
 
-
-Segment Tree
+For CA2
 Hashing
 
 
-
-
-A - Attention in class
-B - More recall is required. Need cheat sheet
-c - More visualization is required for understanding
-D - all of this 
-E - other Reasons
-
-
-Prime Number
-Modular arithmetic (a * b) % c 
-((a %c) * (b%c) ) %c
-
-
-
-(Binary to Decimal)
-Matrix 
-Segment tree
-Hashing
-basics - Data Patterns
 
