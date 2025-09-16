@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Slicing Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #ffd700;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(26, 42, 108, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .visualization-section {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(26, 42, 108, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #ffd700;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .input-container {
+            background: #0a1026;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #5a6aac;
+            background: #1a2a6c;
+            color: white;
+            font-size: 16px;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #ffd700;
+            color: #1a2a6c;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slicing-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .slicing-option {
+            background: #0a1026;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #5a6aac;
+        }
+        
+        .slicing-option:hover {
+            border-color: #ffd700;
+            transform: translateY(-3px);
+        }
+        
+        .slicing-option.active {
+            border-color: #ffd700;
+            background: rgba(253, 187, 45, 0.2);
+        }
+        
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+        
+        .option-desc {
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        .visualization-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .string-display {
+            background: #0a1026;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            letter-spacing: 2px;
+            flex-wrap: wrap;
+        }
+        
+        .char-box {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            background: #4a5a9c;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .char-box.highlight {
+            background: #fdbb2d;
+            color: #1a2a6c;
+            transform: scale(1.1);
+        }
+        
+        .char-box.index {
+            background: #4ecdc4;
+            color: #1a2a6c;
+            font-size: 12px;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .explanation-box {
+            background: rgba(10, 16, 38, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 120px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .explanation-text {
+            font-size: 18px;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .result-box {
+            background: rgba(10, 16, 38, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .result-text {
+            font-size: 20px;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .floral-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50L100 0H0L50 50Z' fill='%23ffd700' fill-opacity='0.2'/%3E%3C/svg%3E");
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .slicing-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floral-pattern"></div>
+    
+    <div class="container">
+        <header>
+            <h1>String Slicing Visualization</h1>
+            <p class="subtitle">Explore different string slicing operations with this interactive visualization tool</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">Input & Options</h2>
+                
+                <div class="input-container">
+                    <div class="input-group">
+                        <label for="inputString">Enter a String:</label>
+                        <input type="text" id="inputString" value="Hello World" placeholder="Enter a string">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="startIndex">Start Index:</label>
+                        <input type="number" id="startIndex" value="0" min="-12" max="11">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="endIndex">End Index:</label>
+                        <input type="number" id="endIndex" value="5" min="-12" max="11">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="stepValue">Step Value:</label>
+                        <input type="number" id="stepValue" value="1" min="-5" max="5">
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="applyBtn">
+                        <i class="fas fa-play"></i> Apply Slicing
+                    </button>
+                </div>
+                
+                <h3 class="option-title">Slicing Patterns:</h3>
+                <div class="slicing-options">
+                    <div class="slicing-option active" data-pattern="basic">
+                        <div class="option-title">Basic Slicing</div>
+                        <div class="option-desc">s[start:end]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="omit-start">
+                        <div class="option-title">Omit Start</div>
+                        <div class="option-desc">s[:end]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="omit-end">
+                        <div class="option-title">Omit End</div>
+                        <div class="option-desc">s[start:]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="negative">
+                        <div class="option-title">Negative Indices</div>
+                        <div class="option-desc">s[-start:-end]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="step">
+                        <div class="option-title">With Step</div>
+                        <div class="option-desc">s[start:end:step]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="reverse">
+                        <div class="option-title">Reverse String</div>
+                        <div class="option-desc">s[::-1]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="reverse-with-end">
+                        <div class="option-title">Reverse with End</div>
+                        <div class="option-desc">s[:5:-1]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="reverse-part">
+                        <div class="option-title">Reverse Part</div>
+                        <div class="option-desc">s[1:][::-1]</div>
+                    </div>
+                    
+                    <div class="slicing-option" data-pattern="every-second">
+                        <div class="option-title">Every Second Char</div>
+                        <div class="option-desc">s[::2]</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="visualization-section">
+                <h2 class="section-title">Visualization</h2>
+                
+                <div class="visualization-container">
+                    <div class="string-display" id="stringDisplay">
+                        <!-- String characters will be inserted here by JavaScript -->
+                    </div>
+                    
+                    <div class="explanation-box">
+                        <p class="explanation-text" id="explanation">
+                            Enter a string and select a slicing pattern to see the visualization.
+                        </p>
+                    </div>
+                    
+                    <div class="result-box">
+                        <p class="result-text" id="resultText">
+                            Result will appear here
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const inputString = document.getElementById('inputString');
+        const startIndex = document.getElementById('startIndex');
+        const endIndex = document.getElementById('endIndex');
+        const stepValue = document.getElementById('stepValue');
+        const stringDisplay = document.getElementById('stringDisplay');
+        const explanationText = document.getElementById('explanation');
+        const resultText = document.getElementById('resultText');
+        const applyBtn = document.getElementById('applyBtn');
+        const slicingOptions = document.querySelectorAll('.slicing-option');
+        
+        // Current active pattern
+        let activePattern = 'basic';
+        
+        // Initialize the visualization
+        updateStringDisplay();
+        
+        // Event listeners
+        inputString.addEventListener('input', updateStringDisplay);
+        startIndex.addEventListener('input', updateStringDisplay);
+        endIndex.addEventListener('input', updateStringDisplay);
+        stepValue.addEventListener('input', updateStringDisplay);
+        
+        applyBtn.addEventListener('click', applySlicing);
+        
+        slicingOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                slicingOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                activePattern = option.dataset.pattern;
+                updateStringDisplay();
+            });
+        });
+        
+        // Update the string display based on current input
+        function updateStringDisplay() {
+            const str = inputString.value || 'Hello World';
+            const start = parseInt(startIndex.value);
+            const end = parseInt(endIndex.value);
+            const step = parseInt(stepValue.value);
+            
+            // Update min/max values for indices based on string length
+            const len = str.length;
+            startIndex.min = -len;
+            startIndex.max = len - 1;
+            endIndex.min = -len;
+            endIndex.max = len - 1;
+            
+            // Clear the display
+            stringDisplay.innerHTML = '';
+            
+            // Add index row
+            const indexRow = document.createElement('div');
+            indexRow.style.width = '100%';
+            indexRow.style.marginBottom = '10px';
+            indexRow.style.textAlign = 'center';
+            
+            for (let i = 0; i < len; i++) {
+                const indexBox = document.createElement('div');
+                indexBox.className = 'char-box index';
+                indexBox.textContent = i;
+                indexBox.style.display = 'inline-flex';
+                indexRow.appendChild(indexBox);
+            }
+            
+            stringDisplay.appendChild(indexRow);
+            
+            // Add negative index row
+            const negIndexRow = document.createElement('div');
+            negIndexRow.style.width = '100%';
+            negIndexRow.style.marginBottom = '20px';
+            negIndexRow.style.textAlign = 'center';
+            
+            for (let i = 0; i < len; i++) {
+                const indexBox = document.createElement('div');
+                indexBox.className = 'char-box index';
+                indexBox.textContent = i - len;
+                indexBox.style.display = 'inline-flex';
+                negIndexRow.appendChild(indexBox);
+            }
+            
+            stringDisplay.appendChild(negIndexRow);
+            
+            // Add character row
+            const charRow = document.createElement('div');
+            charRow.style.width = '100%';
+            charRow.style.textAlign = 'center';
+            
+            for (let i = 0; i < len; i++) {
+                const charBox = document.createElement('div');
+                charBox.className = 'char-box';
+                charBox.textContent = str[i];
+                charBox.style.display = 'inline-flex';
+                charRow.appendChild(charBox);
+            }
+            
+            stringDisplay.appendChild(charRow);
+            
+            // Update explanation
+            updateExplanation(str, start, end, step);
+        }
+        
+        // Update explanation text based on selected pattern
+        function updateExplanation(str, start, end, step) {
+            const len = str.length;
+            
+            switch(activePattern) {
+                case 'basic':
+                    explanationText.innerHTML = `Basic slicing: <code>s[${start}:${end}]</code>`;
+                    break;
+                case 'omit-start':
+                    explanationText.innerHTML = `Omit start index: <code>s[:${end}]</code> (from beginning to index ${end})`;
+                    break;
+                case 'omit-end':
+                    explanationText.innerHTML = `Omit end index: <code>s[${start}:]</code> (from index ${start} to end)`;
+                    break;
+                case 'negative':
+                    explanationText.innerHTML = `Negative indices: <code>s[${start}:${end}]</code>`;
+                    break;
+                case 'step':
+                    explanationText.innerHTML = `With step value: <code>s[${start}:${end}:${step}]</code>`;
+                    break;
+                case 'reverse':
+                    explanationText.innerHTML = `Reverse string: <code>s[::-1]</code>`;
+                    break;
+                case 'reverse-with-end':
+                    explanationText.innerHTML = `Reverse with end: <code>s[:5:-1]</code><br>Reverse the string starting from the end until index 5`;
+                    break;
+                case 'reverse-part':
+                    explanationText.innerHTML = `Reverse part of string: <code>s[1:][::-1]</code><br>First take substring from index 1 to end, then reverse it`;
+                    break;
+                case 'every-second':
+                    explanationText.innerHTML = `Every second character: <code>s[::2]</code>`;
+                    break;
+            }
+        }
+        
+        // Apply the slicing operation based on selected pattern
+        function applySlicing() {
+            const str = inputString.value || 'Hello World';
+            const start = parseInt(startIndex.value);
+            const end = parseInt(endIndex.value);
+            const step = parseInt(stepValue.value);
+            let result, operation;
+            
+            switch(activePattern) {
+                case 'basic':
+                    result = str.slice(start, end);
+                    operation = `s.slice(${start}, ${end})`;
+                    break;
+                case 'omit-start':
+                    result = str.slice(0, end);
+                    operation = `s.slice(0, ${end})`;
+                    break;
+                case 'omit-end':
+                    result = str.slice(start);
+                    operation = `s.slice(${start})`;
+                    break;
+                case 'negative':
+                    // Handle negative indices properly
+                    const negStart = start < 0 ? Math.max(0, str.length + start) : start;
+                    const negEnd = end < 0 ? Math.max(0, str.length + end) : end;
+                    result = str.slice(negStart, negEnd);
+                    operation = `s.slice(${start}, ${end})`;
+                    break;
+                case 'step':
+                    // For step slicing, we need to handle it manually
+                    let sliced = '';
+                    if (step > 0) {
+                        const actualStart = start < 0 ? Math.max(0, str.length + start) : Math.max(0, start);
+                        const actualEnd = end < 0 ? Math.max(0, str.length + end) : (end === 0 ? 0 : Math.min(str.length, end));
+                        
+                        for (let i = actualStart; i < actualEnd; i += step) {
+                            if (i >= 0 && i < str.length) {
+                                sliced += str[i];
+                            }
+                        }
+                    } else if (step < 0) {
+                        // Handle negative step (reverse iteration)
+                        const actualStart = start < 0 ? Math.max(-1, str.length + start) : Math.min(str.length - 1, start);
+                        const actualEnd = end < 0 ? Math.max(-1, str.length + end) : (end === 0 ? -1 : Math.max(-1, end));
+                        
+                        for (let i = actualStart; i > actualEnd; i += step) {
+                            if (i >= 0 && i < str.length) {
+                                sliced += str[i];
+                            }
+                        }
+                    } else {
+                        // Step 0 is invalid
+                        sliced = "Error: Step cannot be zero";
+                    }
+                    result = sliced;
+                    operation = `s[${start}:${end}:${step}]`;
+                    break;
+                case 'reverse':
+                    result = str.split('').reverse().join('');
+                    operation = `s.split('').reverse().join('')`;
+                    break;
+                case 'reverse-with-end':
+                    // Reverse with end index (e.g., s[:5:-1])
+                    let reverseEnd = '';
+                    for (let i = str.length - 1; i > 5; i--) {
+                        reverseEnd += str[i];
+                    }
+                    result = reverseEnd;
+                    operation = `s[:5:-1]`;
+                    break;
+                case 'reverse-part':
+                    const part = str.slice(1);
+                    result = part.split('').reverse().join('');
+                    operation = `s.slice(1).split('').reverse().join('')`;
+                    break;
+                case 'every-second':
+                    result = str.split('').filter((_, i) => i % 2 === 0).join('');
+                    operation = `s.split('').filter((_, i) => i % 2 === 0).join('')`;
+                    break;
+            }
+            
+            // Display the result
+            resultText.innerHTML = `Result: <code>${result}</code><br>Operation: <code>${operation}</code>`;
+            
+            // Highlight the relevant characters
+            highlightCharacters(str, start, end, step);
+        }
+        
+        // Highlight the characters based on the slicing operation
+        function highlightCharacters(str, start, end, step) {
+            const charBoxes = document.querySelectorAll('.char-box:not(.index)');
+            const len = str.length;
+            
+            // Remove any existing highlights
+            charBoxes.forEach(box => box.classList.remove('highlight'));
+            
+            switch(activePattern) {
+                case 'basic':
+                    const basicStart = start < 0 ? Math.max(0, len + start) : Math.min(len, start);
+                    const basicEnd = end < 0 ? Math.max(0, len + end) : Math.min(len, end);
+                    
+                    for (let i = basicStart; i < basicEnd; i++) {
+                        if (i >= 0 && i < len) {
+                            charBoxes[i].classList.add('highlight');
+                        }
+                    }
+                    break;
+                    
+                case 'omit-start':
+                    const omitStartEnd = end < 0 ? Math.max(0, len + end) : Math.min(len, end);
+                    
+                    for (let i = 0; i < omitStartEnd; i++) {
+                        if (i >= 0 && i < len) {
+                            charBoxes[i].classList.add('highlight');
+                        }
+                    }
+                    break;
+                    
+                case 'omit-end':
+                    const omitEndStart = start < 0 ? Math.max(0, len + start) : Math.min(len, start);
+                    
+                    for (let i = omitEndStart; i < len; i++) {
+                        if (i >= 0 && i < len) {
+                            charBoxes[i].classList.add('highlight');
+                        }
+                    }
+                    break;
+                    
+                case 'negative':
+                    const negStart = start < 0 ? Math.max(0, len + start) : Math.min(len, start);
+                    const negEnd = end < 0 ? Math.max(0, len + end) : Math.min(len, end);
+                    
+                    for (let i = negStart; i < negEnd; i++) {
+                        if (i >= 0 && i < len) {
+                            charBoxes[i].classList.add('highlight');
+                        }
+                    }
+                    break;
+                    
+                case 'step':
+                    if (step > 0) {
+                        const stepStart = start < 0 ? Math.max(0, len + start) : Math.max(0, start);
+                        const stepEnd = end < 0 ? Math.max(0, len + end) : (end === 0 ? 0 : Math.min(len, end));
+                        
+                        for (let i = stepStart; i < stepEnd; i += step) {
+                            if (i >= 0 && i < len) {
+                                charBoxes[i].classList.add('highlight');
+                            }
+                        }
+                    } else if (step < 0) {
+                        // Handle negative step (reverse iteration)
+                        const stepStart = start < 0 ? Math.max(-1, len + start) : Math.min(len - 1, start);
+                        const stepEnd = end < 0 ? Math.max(-1, len + end) : (end === 0 ? -1 : Math.max(-1, end));
+                        
+                        for (let i = stepStart; i > stepEnd; i += step) {
+                            if (i >= 0 && i < len) {
+                                charBoxes[i].classList.add('highlight');
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'reverse':
+                    // Highlight all characters
+                    charBoxes.forEach(box => box.classList.add('highlight'));
+                    break;
+                    
+                case 'reverse-with-end':
+                    // Highlight from end to index 5
+                    for (let i = len - 1; i > 5; i--) {
+                        if (i >= 0 && i < len) {
+                            charBoxes[i].classList.add('highlight');
+                        }
+                    }
+                    break;
+                    
+                case 'reverse-part':
+                    // Highlight from index 1 to end
+                    for (let i = 1; i < len; i++) {
+                        charBoxes[i].classList.add('highlight');
+                    }
+                    break;
+                    
+                case 'every-second':
+                    // Highlight every second character
+                    for (let i = 0; i < len; i += 2) {
+                        charBoxes[i].classList.add('highlight');
+                    }
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

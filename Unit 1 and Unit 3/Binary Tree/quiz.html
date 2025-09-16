@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Quiz</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6fbff;color:#052a35;padding:20px}
+.container{max-width:980px;margin:20px auto;background:linear-gradient(180deg,#ffffff, #f7fbff);border-radius:12px;box-shadow:0 6px 18px rgba(2,24,39,0.06);padding:22px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.huge{font-size:20px;font-weight:700}
+.score{background:#e9f4ff;padding:8px 12px;border-radius:8px;font-weight:600}
+.card{background:#fff;padding:14px;border-radius:10px;margin:12px 0;box-shadow:0 4px 12px rgba(2,24,39,0.04)}
+.btn{background:#0366d6;color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;box-shadow:0 4px 10px rgba(3,102,214,0.12)}
+.inputBlank{border:1px solid #d7e7f8;padding:8px;border-radius:6px;min-width:120px}
+.hint{color:#9aaec4;background:#f3f7fb;padding:6px 8px;border-radius:6px;font-size:13px}
+.wrong{outline:2px solid #ff4d4f;border-radius:6px;animation:blink 1s linear 2}
+@keyframes blink{0%{box-shadow:0 0 0 rgba(255,77,79,0.0)}50%{box-shadow:0 0 10px rgba(255,77,79,0.9)}100%{box-shadow:0 0 0 rgba(255,77,79,0.0)}}
+.answerLine{background:#f7f9fb;padding:10px;border-radius:8px;margin-top:10px;border-left:4px solid #0366d6;font-family:monospace;white-space:pre-wrap}
+code{background:#f3f6fb;padding:6px;border-radius:6px;display:block}
+.smallMuted{font-size:13px;color:#58727f}
+</style></head><body>
+<div class="container">
+ <div class="header"><div class="huge">Quiz — 10 Questions</div><div class="score" id="quizScore">Score: 0/10</div></div>
+ <div id="quizArea" class="card"></div>
+ <div style="text-align:right"><button class="btn" id="evaluateBtn">Evaluate</button></div>
+ <div id="wrongAnswers" class="card" style="display:none"><h3>Wrong Answers</h3><div id="wrongList"></div></div>
+</div>
+<script>
+const questions = [{"q": "Which traversal visits root before children?", "type": "mcq", "opts": ["Inorder", "Preorder", "Postorder"], "ans": "Preorder"}, {"q": "Which traversal yields sorted order for BST?", "type": "mcq", "opts": ["Preorder", "Inorder", "Postorder"], "ans": "Inorder"}, {"q": "Depth of single-node tree is?", "type": "mcq", "opts": ["0", "1", "2"], "ans": "1"}, {"q": "A null node's height is usually?", "type": "mcq", "opts": ["0", "-1", "1"], "ans": "0"}, {"q": "Postorder useful for which operation?", "type": "mcq", "opts": ["Searching", "Deleting/freeing nodes", "Printing root first"], "ans": "Deleting/freeing nodes"}, {"q": "Which is not a tree property?", "type": "mcq", "opts": ["Acyclic", "Connected", "Has cycles"], "ans": "Has cycles"}, {"q": "Preorder of single node returns?", "type": "mcq", "opts": ["node", "none", "two nodes"], "ans": "node"}, {"q": "Inorder of [root,left,right] prints?", "type": "mcq", "opts": ["root,left,right", "left,root,right", "left,right,root"], "ans": "left,root,right"}, {"q": "Which is O(n) for tree of n nodes?", "type": "mcq", "opts": ["Traversal", "Insert (avg BST)", "Search (balanced)"], "ans": "Traversal"}, {"q": "Which traversal visits children before root?", "type": "mcq", "opts": ["Preorder", "Postorder", "Inorder"], "ans": "Postorder"}];
+const quizArea = document.getElementById('quizArea');
+questions.forEach((item, idx) => {
+  const div = document.createElement('div'); div.className='card';
+  let inner = `<div><strong>Q${idx+1}.</strong> ${item.q}</div>`;
+  item.opts.forEach(opt => {
+    inner += `<label style="display:block;margin-top:6px"><input type="radio" name="q${idx}" value="${opt}"> ${opt}</label>`;
+  });
+  div.innerHTML = inner;
+  quizArea.appendChild(div);
+});
+document.getElementById('evaluateBtn').addEventListener('click', () => {
+  let score=0; let wrong=[];
+  questions.forEach((item, idx) => {
+    const selected = document.querySelector('input[name="q'+idx+'"]:checked');
+    if(selected && selected.value===item.ans) score++;
+    else {
+      const card = document.querySelectorAll('.card')[idx+1];
+      card.classList.add('wrong');
+      wrong.push({q: item.q, ans: item.ans});
+      setTimeout(()=>card.classList.remove('wrong'),1600);
+    }
+  });
+  document.getElementById('quizScore').textContent = `Score: ${score}/10`;
+  if(wrong.length){
+    const wrongList = document.getElementById('wrongList'); wrongList.innerHTML='';
+    wrong.forEach(w => { wrongList.innerHTML += `<div class="answerLine"><strong>Q:</strong> ${w.q}<br><strong>A:</strong> ${w.ans}</div>` });
+    document.getElementById('wrongAnswers').style.display='block';
+  } else document.getElementById('wrongAnswers').style.display='none';
+});
+</script></body></html>

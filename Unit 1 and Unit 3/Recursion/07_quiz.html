@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Recursion — Quiz</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>body{font-family:Inter,system-ui;background:#fbfcff;color:#072033;padding:20px}.card{max-width:980px;margin:auto;background:#fff;padding:16px;border-radius:10px;box-shadow:0 8px 24px rgba(2,20,40,0.04)}.q{padding:10px;border-radius:8px;margin:10px 0;background:#fbfdff}.btn{background:#1f6feb;color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer}.inline{display:inline-block;margin-left:8px;padding:6px;border-radius:6px}.hidden-answer{display:none;margin-top:8px;padding:8px;background:#f3f7ff;border-left:4px solid #1f6feb;border-radius:6px}.blink{animation: blinkOnce 1s steps(2) 1}@keyframes blinkOnce{50%{opacity:0}100%{opacity:1}}.score{font-weight:700;margin-bottom:8px}</style></head><body><div class="card"><div class="score" id="scorePanel">Score: 0 / 10</div><h2>Recursion Quiz</h2><form id="quizForm"><div class="q" id="q1"><strong>Q1.</strong> What is the base case in recursion?<br/><label><input type="radio" name="q1" value="A condition to stop recursion"/> A condition to stop recursion</label>
+<label><input type="radio" name="q1" value="A variable used inside the function"/> A variable used inside the function</label>
+<label><input type="radio" name="q1" value="A library function"/> A library function</label>
+<label><input type="radio" name="q1" value="A loop index"/> A loop index</label><div class="hidden-answer" id="ans1"><strong>Correct Answer:</strong> A condition to stop recursion</div></div>
+<div class="q" id="q2"><strong>Q2.</strong> Which of these problems is naturally solved by recursion?<br/><label><input type="radio" name="q2" value="Iterative summation only"/> Iterative summation only</label>
+<label><input type="radio" name="q2" value="Fibonacci sequence"/> Fibonacci sequence</label>
+<label><input type="radio" name="q2" value="Sorting using loops only"/> Sorting using loops only</label>
+<label><input type="radio" name="q2" value="Simple variable assignment"/> Simple variable assignment</label><div class="hidden-answer" id="ans2"><strong>Correct Answer:</strong> Fibonacci sequence</div></div>
+<div class="q" id="q3"><strong>Q3.</strong> What does stack overflow commonly indicate in recursion?<br/><label><input type="radio" name="q3" value="Too many function calls without base case"/> Too many function calls without base case</label>
+<label><input type="radio" name="q3" value="A memory leak in OS"/> A memory leak in OS</label>
+<label><input type="radio" name="q3" value="A missing return statement"/> A missing return statement</label>
+<label><input type="radio" name="q3" value="An infinite loop in main thread"/> An infinite loop in main thread</label><div class="hidden-answer" id="ans3"><strong>Correct Answer:</strong> Too many function calls without base case</div></div>
+<div class="q" id="q4"><strong>Q4.</strong> Which of these is NOT a recursion type?<br/><label><input type="radio" name="q4" value="Tail recursion"/> Tail recursion</label>
+<label><input type="radio" name="q4" value="Head recursion"/> Head recursion</label>
+<label><input type="radio" name="q4" value="Loop recursion"/> Loop recursion</label>
+<label><input type="radio" name="q4" value="Tree recursion"/> Tree recursion</label><div class="hidden-answer" id="ans4"><strong>Correct Answer:</strong> Loop recursion</div></div>
+<div class="q" id="q5"><strong>Q5.</strong> When converting recursion to iteration, which data structure is commonly used?<br/><label><input type="radio" name="q5" value="Queue"/> Queue</label>
+<label><input type="radio" name="q5" value="Stack"/> Stack</label>
+<label><input type="radio" name="q5" value="Heap"/> Heap</label>
+<label><input type="radio" name="q5" value="Graph"/> Graph</label><div class="hidden-answer" id="ans5"><strong>Correct Answer:</strong> Stack</div></div>
+<div class="q" id="q6"><strong>Q6.</strong> What is tail recursion?<br/><label><input type="radio" name="q6" value="Recursion where last action is recursive call"/> Recursion where last action is recursive call</label>
+<label><input type="radio" name="q6" value="Recursion with no base case"/> Recursion with no base case</label>
+<label><input type="radio" name="q6" value="Recursion with global variables"/> Recursion with global variables</label>
+<label><input type="radio" name="q6" value="Recursion returning void only"/> Recursion returning void only</label><div class="hidden-answer" id="ans6"><strong>Correct Answer:</strong> Recursion where last action is recursive call</div></div>
+<div class="q" id="q7"><strong>Q7.</strong> Fibonacci naive recursive complexity is:<br/><label><input type="radio" name="q7" value="O(n)"/> O(n)</label>
+<label><input type="radio" name="q7" value="O(log n)"/> O(log n)</label>
+<label><input type="radio" name="q7" value="O(2^n)"/> O(2^n)</label>
+<label><input type="radio" name="q7" value="O(n^2)"/> O(n^2)</label><div class="hidden-answer" id="ans7"><strong>Correct Answer:</strong> O(2^n)</div></div>
+<div class="q" id="q8"><strong>Q8.</strong> Which technique can optimize overlapping subproblems in recursion?<br/><label><input type="radio" name="q8" value="Memoization"/> Memoization</label>
+<label><input type="radio" name="q8" value="Tail-call elimination"/> Tail-call elimination</label>
+<label><input type="radio" name="q8" value="Inlining"/> Inlining</label>
+<label><input type="radio" name="q8" value="Loop unrolling"/> Loop unrolling</label><div class="hidden-answer" id="ans8"><strong>Correct Answer:</strong> Memoization</div></div>
+<div class="q" id="q9"><strong>Q9.</strong> For tree recursion, complexity often grows:<br/><label><input type="radio" name="q9" value="Linearly"/> Linearly</label>
+<label><input type="radio" name="q9" value="Logarithmically"/> Logarithmically</label>
+<label><input type="radio" name="q9" value="Exponentially"/> Exponentially</label>
+<label><input type="radio" name="q9" value="Constantly"/> Constantly</label><div class="hidden-answer" id="ans9"><strong>Correct Answer:</strong> Exponentially</div></div>
+<div class="q" id="q10"><strong>Q10.</strong> Which is a benefit of recursion?<br/><label><input type="radio" name="q10" value="Always faster than iteration"/> Always faster than iteration</label>
+<label><input type="radio" name="q10" value="Cleaner expression of divide-and-conquer logic"/> Cleaner expression of divide-and-conquer logic</label>
+<label><input type="radio" name="q10" value="Uses less memory always"/> Uses less memory always</label>
+<label><input type="radio" name="q10" value="Eliminates need for variables"/> Eliminates need for variables</label><div class="hidden-answer" id="ans10"><strong>Correct Answer:</strong> Cleaner expression of divide-and-conquer logic</div></div>
+</form><div style="text-align:right;"><button class="btn" id="evaluateBtn">Evaluate</button></div></div><script>
+document.getElementById('evaluateBtn').addEventListener('click', function(ev){ev.preventDefault(); const total=10; let score=0; for(let i=1;i<=total;i++){ const radios=document.getElementsByName('q'+i); let chosen=null; for(const r of radios) if(r.checked) chosen=r.value; const ansEl=document.getElementById('ans'+i); const container=document.getElementById('q'+i); container.querySelectorAll('.inline').forEach(n=>n.remove()); if(chosen===null){ const inline=document.createElement('span'); inline.className='inline blink'; inline.textContent='Wrong — correct: '+ansEl.textContent.replace('Correct Answer:','').trim(); container.appendChild(inline); ansEl.style.display='block'; } else { const correct=ansEl.textContent.replace('Correct Answer:','').trim(); if(chosen===correct){ score+=1; ansEl.style.display='none'; } else { const inline=document.createElement('span'); inline.className='inline blink'; inline.textContent='Wrong — correct: '+correct; container.appendChild(inline); ansEl.style.display='block'; } } } document.getElementById('scorePanel').textContent='Score: '+score+' / 10'; setTimeout(()=>{document.querySelectorAll('.blink').forEach(n=>n.classList.remove('blink'));},1100);});</script></body></html>

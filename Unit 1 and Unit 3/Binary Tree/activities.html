@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><title>Activities - Concept Understanding</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6fbff;color:#052a35;padding:20px}
+.container{max-width:980px;margin:20px auto;background:linear-gradient(180deg,#ffffff, #f7fbff);border-radius:12px;box-shadow:0 6px 18px rgba(2,24,39,0.06);padding:22px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.huge{font-size:20px;font-weight:700}
+.score{background:#e9f4ff;padding:8px 12px;border-radius:8px;font-weight:600}
+.card{background:#fff;padding:14px;border-radius:10px;margin:12px 0;box-shadow:0 4px 12px rgba(2,24,39,0.04)}
+.btn{background:#0366d6;color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;box-shadow:0 4px 10px rgba(3,102,214,0.12)}
+.inputBlank{border:1px solid #d7e7f8;padding:8px;border-radius:6px;min-width:120px}
+.hint{color:#9aaec4;background:#f3f7fb;padding:6px 8px;border-radius:6px;font-size:13px}
+.wrong{outline:2px solid #ff4d4f;border-radius:6px;animation:blink 1s linear 2}
+@keyframes blink{0%{box-shadow:0 0 0 rgba(255,77,79,0.0)}50%{box-shadow:0 0 10px rgba(255,77,79,0.9)}100%{box-shadow:0 0 0 rgba(255,77,79,0.0)}}
+.answerLine{background:#f7f9fb;padding:10px;border-radius:8px;margin-top:10px;border-left:4px solid #0366d6;font-family:monospace;white-space:pre-wrap}
+code{background:#f3f6fb;padding:6px;border-radius:6px;display:block}
+.smallMuted{font-size:13px;color:#58727f}
+
+.activityGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.activityCard{padding:12px}
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="header"><div class="huge">Activities — Interactive Exercises</div><div class="score" id="scoreDisplay">Score: 0/0</div></div>
+ <div class="card">
+  <div class="smallMuted">Goal: Hands-on micro-activities students can do in 10-15 minutes to internalize concepts.</div>
+  <div class="activityGrid" style="margin-top:12px">
+    <div class="card activityCard">
+      <h3>Activity A — Visual Walkthrough</h3>
+      <p>Give a short array input and ask students to draw caller/stack frames for recursion. Example input: [1,2,3]</p>
+      <p class="smallMuted">Deliverable: Draw the call stack and return values.</p>
+    </div>
+    <div class="card activityCard">
+      <h3>Activity B — Role Play</h3>
+      <p>Students pair up: one acts as "root" and others as "nodes"; pass a token to demonstrate preorder/inorder/postorder order.</p>
+    </div>
+    <div class="card activityCard">
+      <h3>Activity C — Pseudocode to Code</h3>
+      <p>Provide short pseudocode and ask students to convert to actual function. Encourage meaningful variable names like <code>currentNode</code>, <code>leftSubtree</code>.</p>
+    </div>
+    <div class="card activityCard">
+      <h3>Activity D — Time/Space Estimation</h3>
+      <p>Give small function and ask for Big-O estimation. Discuss tradeoffs.</p>
+    </div>
+  </div>
+ </div>
+ <div class="card">
+  <h3>Facilitation Tips</h3>
+  <ul>
+    <li>Keep groups small (3–4).</li>
+    <li>Use a timer (5–7 minutes per activity).</li>
+    <li>Reward quick sketches with quick feedback and a small token.</li>
+  </ul>
+ </div>
+</div>
+<script>
+const scoreDisplay = document.getElementById('scoreDisplay');
+scoreDisplay.textContent = 'Score: —';
+</script>
+</body></html>

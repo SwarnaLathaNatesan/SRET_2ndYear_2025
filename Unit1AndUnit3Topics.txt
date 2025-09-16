@@ -1,0 +1,65 @@
+Required Structure of my Session
+Visualizations for concept understanding
+Activities for Concept Understanding
+Cheat Sheet
+Quiz
+
+Small Program Fill Ups
+Small Program Questions
+Leetcode Questions
+
+
+
+
+Topics to be covered
+
+Recursion
+Binary Trees  Intro - insert , traversal - Pre, in, post order
+Sorting using BT 
+Searching using Binary Trees - Basic and medium level
+Backtracking
+
+AVL- trees
+Cartesian trees, Disjoint set union
+Introduction to graph theory
+
+
+Sub Topics to be covered
+
+The Recursive Mindset, Call Stack, Recursive vs. Iterative thinking.
+
+Terminology, Recursive Structure, Implementing a TreeNode class.
+
+Depth-First (Pre, In, Post-order) and Breadth-First (Level-order) Traversals.
+
+Designing recursive functions that return values (height, diameter, validation).
+
+BST Properties, Search, Insert, In-order traversal for sorting.
+
+The Choice -> Recurse -> Backtrack pattern. State-Space Tree.
+
+The DFS algorithm (recursive & iterative), visited set, connected components.
+
+Code recursive DFS.
+
+The BFS algorithm, "level-order" traversal, shortest path in unweighted graphs.
+
+Code BFS.
+
+
+Leetcode to be covered 
+
+
+509. Fibonacci Number (E)
+344. Reverse String (E)
+
+21. Merge Two Sorted Lists (E) [Recursive]
+Implement Tree Traversals from scratch.
+
+94. Binary Tree Inorder Traversal (E)
+145. Binary Tree Postorder Traversal (E)
+104. Maximum Depth of Binary Tree (E)
+226. Invert Binary Tree (E)
+700. Search in a Binary Search Tree (E)
+
+784. Letter Case Permutation (M)

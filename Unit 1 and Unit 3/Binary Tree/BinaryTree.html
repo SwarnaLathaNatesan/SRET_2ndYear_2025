@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .tree-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            color: #fdbb2d;
+        }
+        
+        .tree {
+            display: flex;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .tree-canvas {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fdbb2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a2a6c;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        
+        .node.highlight {
+            background: #b21f1f;
+            color: white;
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        .line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            transform-origin: 0 0;
+            z-index: 1;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h3 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fdbb2d;
+            font-size: 1.5rem;
+        }
+        
+        .traversal-results {
+            margin-top: 15px;
+        }
+        
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        input, button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        input {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        button {
+            background: #fdbb2d;
+            color: #1a2a6c;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #ffa500;
+        }
+        
+        .search-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .found {
+            color: #7fff00;
+        }
+        
+        .not-found {
+            color: #ff4500;
+        }
+        
+        @media (max-width: 900px) {
+            .tree-canvas {
+                width: 600px;
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 650px) {
+            .tree-canvas {
+                width: 400px;
+                height: 300px;
+            }
+            
+            .node {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Binary Tree Visualization</h1>
+            <p class="description">
+                A visual representation of a binary search tree with values [50, 30, 70, 20, 40, 60, 80]
+            </p>
+        </header>
+        
+        <div class="tree-container">
+            <h2>Binary Tree Structure</h2>
+            <div class="tree">
+                <div class="tree-canvas" id="tree-canvas">
+                    <!-- Nodes and lines will be drawn here by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="panel">
+                <h3>Tree Properties</h3>
+                <div class="traversal-results">
+                    <div class="result-item">
+                        <strong>Root Node:</strong> 50
+                    </div>
+                    <div class="result-item">
+                        <strong>Tree Height:</strong> 3
+                    </div>
+                    <div class="result-item">
+                        <strong>Total Nodes:</strong> 7
+                    </div>
+                    <div class="result-item">
+                        <strong>Left Subtree:</strong> 30, 20, 40
+                    </div>
+                    <div class="result-item">
+                        <strong>Right Subtree:</strong> 70, 60, 80
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h3>Tree Operations</h3>
+                <div class="controls">
+                    <input type="number" id="search-value" placeholder="Enter a value to search">
+                    <button id="search-btn">Search Value</button>
+                    <button id="inorder-btn">Show Inorder Traversal</button>
+                    <button id="preorder-btn">Show Preorder Traversal</button>
+                    <button id="postorder-btn">Show Postorder Traversal</button>
+                    
+                    <div class="search-result" id="search-result">
+                        Search results will appear here
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h3>Traversal Results</h3>
+                <div class="traversal-results">
+                    <div class="result-item">
+                        <strong>Inorder Traversal (LNR):</strong> <span id="inorder-result">20, 30, 40, 50, 60, 70, 80</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Preorder Traversal (NLR):</strong> <span id="preorder-result">50, 30, 20, 40, 70, 60, 80</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Postorder Traversal (LRN):</strong> <span id="postorder-result">20, 40, 30, 60, 80, 70, 50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TreeNode class
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        // BinaryTree class
+        class BinaryTree {
+            constructor() {
+                this.root = null;
+            }
+            
+            insert(value) {
+                if (this.root === null) {
+                    this.root = new TreeNode(value);
+                } else {
+                    this._insertRecursive(this.root, value);
+                }
+            }
+            
+            _insertRecursive(node, value) {
+                if (value < node.value) {
+                    if (node.left === null) {
+                        node.left = new TreeNode(value);
+                    } else {
+                        this._insertRecursive(node.left, value);
+                    }
+                } else {
+                    if (node.right === null) {
+                        node.right = new TreeNode(value);
+                    } else {
+                        this._insertRecursive(node.right, value);
+                    }
+                }
+            }
+            
+            search(value) {
+                return this._searchRecursive(this.root, value);
+            }
+            
+            _searchRecursive(node, value) {
+                if (node === null) return false;
+                if (node.value === value) return true;
+                if (value < node.value) return this._searchRecursive(node.left, value);
+                return this._searchRecursive(node.right, value);
+            }
+            
+            inorderTraversal() {
+                const result = [];
+                this._inorderRecursive(this.root, result);
+                return result;
+            }
+            
+            _inorderRecursive(node, result) {
+                if (node !== null) {
+                    this._inorderRecursive(node.left, result);
+                    result.push(node.value);
+                    this._inorderRecursive(node.right, result);
+                }
+            }
+            
+            preorderTraversal() {
+                const result = [];
+                this._preorderRecursive(this.root, result);
+                return result;
+            }
+            
+            _preorderRecursive(node, result) {
+                if (node !== null) {
+                    result.push(node.value);
+                    this._preorderRecursive(node.left, result);
+                    this._preorderRecursive(node.right, result);
+                }
+            }
+            
+            postorderTraversal() {
+                const result = [];
+                this._postorderRecursive(this.root, result);
+                return result;
+            }
+            
+            _postorderRecursive(node, result) {
+                if (node !== null) {
+                    this._postorderRecursive(node.left, result);
+                    this._postorderRecursive(node.right, result);
+                    result.push(node.value);
+                }
+            }
+        }
+
+        // Create the binary tree with sample values
+        const tree = new BinaryTree();
+        const values = [50, 30, 70, 20, 40, 60, 80];
+        values.forEach(value => tree.insert(value));
+
+        // Draw the binary tree using DOM elements
+        function drawTree() {
+            const canvas = document.getElementById('tree-canvas');
+            canvas.innerHTML = '';
+            
+            if (!tree.root) return;
+            
+            // Calculate positions for all nodes
+            const positions = calculateNodePositions(tree.root);
+            
+            // Draw lines first (so they appear behind nodes)
+            for (const [id, pos] of Object.entries(positions)) {
+                const node = findNodeById(tree.root, parseInt(id));
+                if (node.left) {
+                    const leftId = node.left.value;
+                    drawLine(canvas, pos.x, pos.y, positions[leftId].x, positions[leftId].y);
+                }
+                if (node.right) {
+                    const rightId = node.right.value;
+                    drawLine(canvas, pos.x, pos.y, positions[rightId].x, positions[rightId].y);
+                }
+            }
+            
+            // Draw nodes
+            for (const [id, pos] of Object.entries(positions)) {
+                drawNode(canvas, pos.x, pos.y, id);
+            }
+        }
+        
+        // Calculate node positions for a balanced tree visualization
+        function calculateNodePositions(root) {
+            const positions = {};
+            const treeDepth = getDepth(root);
+            const canvasWidth = document.getElementById('tree-canvas').offsetWidth;
+            const horizontalSpacing = canvasWidth / (Math.pow(2, treeDepth) + 1);
+            const verticalSpacing = 80;
+            
+            // Calculate positions using a recursive helper function
+            calculatePositionsRecursive(root, 0, 0, positions, horizontalSpacing, verticalSpacing, canvasWidth/2);
+            
+            return positions;
+        }
+        
+        function calculatePositionsRecursive(node, depth, index, positions, hSpacing, vSpacing, x) {
+            if (!node) return;
+            
+            const y = 30 + depth * vSpacing;
+            positions[node.value] = {x, y};
+            
+            // Calculate horizontal offset for children
+            const offset = hSpacing / Math.pow(2, depth);
+            
+            // Process left and right children
+            if (node.left) {
+                calculatePositionsRecursive(node.left, depth + 1, index * 2, positions, hSpacing, vSpacing, x - offset);
+            }
+            if (node.right) {
+                calculatePositionsRecursive(node.right, depth + 1, index * 2 + 1, positions, hSpacing, vSpacing, x + offset);
+            }
+        }
+        
+        // Get depth of the tree
+        function getDepth(node) {
+            if (!node) return 0;
+            return 1 + Math.max(getDepth(node.left), getDepth(node.right));
+        }
+        
+        // Find node by value
+        function findNodeById(node, value) {
+            if (!node) return null;
+            if (node.value === value) return node;
+            return findNodeById(node.left, value) || findNodeById(node.right, value);
+        }
+        
+        // Draw a node
+        function drawNode(canvas, x, y, value) {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.id = `node-${value}`;
+            node.textContent = value;
+            node.style.left = `${x}px`;
+            node.style.top = `${y}px`;
+            canvas.appendChild(node);
+        }
+        
+        // Draw a line between two nodes
+        function drawLine(canvas, x1, y1, x2, y2) {
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            const line = document.createElement('div');
+            line.className = 'line';
+            line.style.width = `${length}px`;
+            line.style.left = `${x1}px`;
+            line.style.top = `${y1}px`;
+            line.style.transform = `rotate(${angle}deg)`;
+            
+            canvas.appendChild(line);
+        }
+        
+        // Initial drawing
+        window.addEventListener('load', drawTree);
+        window.addEventListener('resize', drawTree);
+        
+        // Search functionality
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const value = parseInt(document.getElementById('search-value').value);
+            if (isNaN(value)) {
+                document.getElementById('search-result').innerHTML = 'Please enter a valid number';
+                return;
+            }
+            
+            const found = tree.search(value);
+            const resultElement = document.getElementById('search-result');
+            
+            // Remove highlights from all nodes
+            document.querySelectorAll('.node').forEach(node => {
+                node.classList.remove('highlight');
+            });
+            
+            if (found) {
+                resultElement.innerHTML = `Value <span class="found">${value}</span> was found in the tree!`;
+                
+                // Highlight the node
+                const nodeElement = document.getElementById(`node-${value}`);
+                if (nodeElement) {
+                    nodeElement.classList.add('highlight');
+                }
+            } else {
+                resultElement.innerHTML = `Value <span class="not-found">${value}</span> was not found in the tree.`;
+            }
+        });
+        
+        // Traversal buttons
+        document.getElementById('inorder-btn').addEventListener('click', () => {
+            alert('Inorder Traversal: ' + tree.inorderTraversal().join(' → '));
+        });
+        
+        document.getElementById('preorder-btn').addEventListener('click', () => {
+            alert('Preorder Traversal: ' + tree.preorderTraversal().join(' → '));
+        });
+        
+        document.getElementById('postorder-btn').addEventListener('click', () => {
+            alert('Postorder Traversal: ' + tree.postorderTraversal().join(' → '));
+        });
+    </script>
+</body>
+</html>

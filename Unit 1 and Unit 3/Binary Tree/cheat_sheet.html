@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Binary Trees Cheat Sheet</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f9fb; color: #033649; padding: 20px; }
+  h1 { text-align: center; color: #022f40; }
+  .card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding: 20px; margin: 20px auto; max-width: 900px; }
+  h2 { color: #045d75; }
+  pre { background: #f1f1f1; padding: 12px; border-radius: 8px; overflow-x: auto; }
+  .diagram { background: #eef7fa; border-radius: 10px; padding: 15px; margin-top: 15px; }
+  .node { display: inline-block; padding: 10px 15px; background: #fff; border: 2px solid #045d75; border-radius: 50%; margin: 5px; font-weight: bold; }
+  .connector { height: 20px; border-left: 2px solid #045d75; margin: auto; }
+  .row { display: flex; justify-content: center; align-items: center; }
+</style>
+</head>
+<body>
+  <h1>Binary Trees Cheat Sheet</h1>
+
+  <div class="card">
+    <h2>🌳 Difference: Height vs Depth</h2>
+    <p><b>Depth of a Node:</b> Distance (#edges) from the root <i>to</i> that node.</p>
+    <p><b>Height of a Node:</b> Distance (#edges) from that node <i>down to the deepest leaf</i>.</p>
+
+    <div class="diagram">
+      <div class="row"><div class="node">A</div></div>
+      <div class="connector"></div>
+      <div class="row"><div class="node">B</div><div style="width:40px;"></div><div class="node">C</div></div>
+      <div class="connector"></div>
+      <div class="row"><div class="node">D</div><div style="width:40px;"></div><div class="node">E</div></div>
+    </div>
+    <p><u>Example:</u></p>
+    <ul>
+      <li>Depth of <b>D</b> = 2 (A→B→D)</li>
+      <li>Height of <b>B</b> = 1 (B→D/E)</li>
+      <li>Height of <b>A</b> (root) = 2 (A→B→D)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🔁 Inorder Traversal</h2>
+    <pre>
+# Core Logic: Traverse left → root → right
+# Helps to get sorted order for BST
+def inorder(root):
+    if root:
+        inorder(root.left)
+        print(root.val, end=" ")
+        inorder(root.right)
+    </pre>
+  </div>
+
+  <div class="card">
+    <h2>🔁 Preorder Traversal</h2>
+    <pre>
+# Core Logic: Visit root → traverse left → traverse right
+# Useful for tree copy / expression tree construction
+def preorder(root):
+    if root:
+        print(root.val, end=" ")
+        preorder(root.left)
+        preorder(root.right)
+    </pre>
+  </div>
+
+  <div class="card">
+    <h2>🔁 Postorder Traversal</h2>
+    <pre>
+# Core Logic: Traverse left → traverse right → visit root
+# Useful for deleting/freeing nodes bottom-up
+def postorder(root):
+    if root:
+        postorder(root.left)
+        postorder(root.right)
+        print(root.val, end=" ")
+    </pre>
+  </div>
+
+</body>
+</html>

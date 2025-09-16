@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recursion - Small Program Fill Ups</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f8fb;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .score {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .question {
+      background: #fff;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 800px;
+    }
+    code {
+      display: block;
+      background: #eef3f7;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+    input[type=text] {
+      width: 60px;
+      padding: 4px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .btn {
+      padding: 8px 15px;
+      margin-top: 10px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #005fa3;
+    }
+    .wrong {
+      color: red;
+      font-weight: bold;
+      animation: blink 0.5s linear 2;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+    }
+    .answer {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e6ffe6;
+      border: 1px solid #b3ffb3;
+      border-radius: 6px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Recursion Practice - Fill in the Blanks</h1>
+  <div class="score">Score: <span id="score">0</span>/5</div>
+
+  <!-- Factorial -->
+  <div class="question" id="q1">
+    <h3>1. Factorial of a Number</h3>
+    <code>
+ def factorial(n):<br>
+ &nbsp;&nbsp;if n == <input type="text" id="q1b1">:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return 1<br>
+ &nbsp;&nbsp;else:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return n * factorial(<input type="text" id="q1b2">)
+    </code>
+    <button class="btn" onclick="checkQ1()">Check Answer</button>
+    <div class="answer" id="a1">Correct Answer:<br>if n == 0:<br> return 1<br> else: return n * factorial(n-1)</div>
+  </div>
+
+  <!-- Fibonacci -->
+  <div class="question" id="q2">
+    <h3>2. Fibonacci Number</h3>
+    <code>
+ def fibonacci(n):<br>
+ &nbsp;&nbsp;if n == <input type="text" id="q2b1">:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return 0<br>
+ &nbsp;&nbsp;elif n == <input type="text" id="q2b2">:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return 1<br>
+ &nbsp;&nbsp;else:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return fibonacci(n-1) + fibonacci(<input type="text" id="q2b3">)
+    </code>
+    <button class="btn" onclick="checkQ2()">Check Answer</button>
+    <div class="answer" id="a2">Correct Answer:<br>if n == 0 → return 0<br>if n == 1 → return 1<br>else return fibonacci(n-1) + fibonacci(n-2)</div>
+  </div>
+
+  <!-- Sum of Digits -->
+  <div class="question" id="q3">
+    <h3>3. Sum of Digits</h3>
+    <code>
+ def sum_digits(n):<br>
+ &nbsp;&nbsp;if n == 0:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return 0<br>
+ &nbsp;&nbsp;else:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return (n <input type="text" id="q3b1"> 10) + sum_digits(n <input type="text" id="q3b2"> 10)
+    </code>
+    <button class="btn" onclick="checkQ3()">Check Answer</button>
+    <div class="answer" id="a3">Correct Answer:<br>return (n % 10) + sum_digits(n // 10)</div>
+  </div>
+
+  <!-- Reverse String -->
+  <div class="question" id="q4">
+    <h3>4. Reverse a String</h3>
+    <code>
+ def reverse_string(s):<br>
+ &nbsp;&nbsp;if len(s) == 0:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return s<br>
+ &nbsp;&nbsp;else:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return reverse_string(s[1:]) + <input type="text" id="q4b1">
+    </code>
+    <button class="btn" onclick="checkQ4()">Check Answer</button>
+    <div class="answer" id="a4">Correct Answer:<br>return reverse_string(s[1:]) + s[0]</div>
+  </div>
+
+  <!-- Binary Search -->
+  <div class="question" id="q5">
+    <h3>5. Binary Search (Recursive)</h3>
+    <code>
+ def binary_search(arr, target, low, high):<br>
+ &nbsp;&nbsp;if low &gt; high:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return -1<br>
+ &nbsp;&nbsp;mid = (low + high) <input type="text" id="q5b1"> 2<br>
+ &nbsp;&nbsp;if arr[mid] == target:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return mid<br>
+ &nbsp;&nbsp;elif arr[mid] &gt; target:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return binary_search(arr, target, low, <input type="text" id="q5b2">)<br>
+ &nbsp;&nbsp;else:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;return binary_search(arr, target, <input type="text" id="q5b3">, high)
+    </code>
+    <button class="btn" onclick="checkQ5()">Check Answer</button>
+    <div class="answer" id="a5">Correct Answer:<br>mid = (low + high)//2<br>left recursion → high = mid-1<br>right recursion → low = mid+1</div>
+  </div>
+
+  <script>
+    let score = 0;
+
+    function updateScore() {
+      document.getElementById("score").innerText = score;
+    }
+
+    function markInput(id, correct) {
+      let box = document.getElementById(id);
+      if (box.value.trim() == correct) {
+        box.className = "correct";
+        return true;
+      } else {
+        box.className = "wrong";
+        return false;
+      }
+    }
+
+    function checkQ1() {
+      let ok1 = markInput("q1b1", "0");
+      let ok2 = markInput("q1b2", "n-1");
+      if (ok1 && ok2) { score++; updateScore(); }
+      document.getElementById("a1").style.display = "block";
+    }
+
+    function checkQ2() {
+      let ok1 = markInput("q2b1", "0");
+      let ok2 = markInput("q2b2", "1");
+      let ok3 = markInput("q2b3", "n-2");
+      if (ok1 && ok2 && ok3) { score++; updateScore(); }
+      document.getElementById("a2").style.display = "block";
+    }
+
+    function checkQ3() {
+      let ok1 = markInput("q3b1", "%");
+      let ok2 = markInput("q3b2", "//");
+      if (ok1 && ok2) { score++; updateScore(); }
+      document.getElementById("a3").style.display = "block";
+    }
+
+    function checkQ4() {
+      let ok1 = markInput("q4b1", "s[0]");
+      if (ok1) { score++; updateScore(); }
+      document.getElementById("a4").style.display = "block";
+    }
+
+    function checkQ5() {
+      let ok1 = markInput("q5b1", "//");
+      let ok2 = markInput("q5b2", "mid-1");
+      let ok3 = markInput("q5b3", "mid+1");
+      if (ok1 && ok2 && ok3) { score++; updateScore(); }
+      document.getElementById("a5").style.display = "block";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Case Permutation Visualizer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .input-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        input {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 250px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .tree-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            min-height: 500px;
+        }
+        
+        .tree {
+            position: relative;
+            min-height: 400px;
+            padding: 20px;
+        }
+        
+        .node {
+            position: absolute;
+            padding: 10px 15px;
+            background: #ecf0f1;
+            border: 2px solid #3498db;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 100px;
+            transition: all 0.5s;
+            z-index: 2;
+            font-size: 14px;
+        }
+        
+        .node.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+        
+        .node.result {
+            background: #2ecc71;
+            border-color: #27ae60;
+            color: white;
+        }
+        
+        .connection {
+            position: absolute;
+            background: #95a5a6;
+            z-index: 1;
+            transform-origin: 0 0;
+            height: 2px;
+        }
+        
+        .explanation {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .explanation-content {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            min-height: 80px;
+            font-style: italic;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .keyword {
+            color: #fd79a8;
+        }
+        
+        .function {
+            color: #00cec9;
+        }
+        
+        .comment {
+            color: #636e72;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section, .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            input, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Letter Case Permutation Visualizer</h1>
+            <p class="description">
+                This visualization demonstrates how backtracking generates all possible letter case permutations.
+                Watch as the algorithm explores each branch of the solution space.
+            </p>
+        </header>
+        
+        <div class="input-section">
+            <input type="text" id="inputString" placeholder="Enter a string (e.g., a1b)" value="a1b">
+            <button id="visualizeBtn">Visualize</button>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3498db;"></div>
+                <span>Active Node</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ecf0f1; border: 2px solid #3498db;"></div>
+                <span>Inactive Node</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2ecc71;"></div>
+                <span>Result Node</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="playBtn">Play</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="resetBtn">Reset</button>
+            <div class="speed-control">
+                <label for="speed">Speed:</label>
+                <input type="range" id="speed" min="1" max="10" value="5">
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <div class="tree-container">
+                <div id="tree" class="tree"></div>
+            </div>
+            
+            <div class="explanation">
+                <h3>Current Execution</h3>
+                <div id="explanation" class="explanation-content">
+                    Enter a string and click Visualize to start...
+                </div>
+            </div>
+        </div>
+        
+        <h2>Results: <span id="resultsCount">0</span> permutations found</h2>
+        <div id="results" class="results"></div>
+        
+        <div class="code">
+            <pre>
+<span class="keyword">function</span> <span class="function">backtrack</span>(i, path) {
+    <span class="comment">// Base case: reached end of string</span>
+    <span class="keyword">if</span> (i == s.length) {
+        result.add(path);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// If current character is a letter</span>
+    <span class="keyword">if</span> (s[i].isAlpha()) {
+        <span class="comment">// Branch to lowercase version</span>
+        backtrack(i+1, path + s[i].toLowerCase());
+        <span class="comment">// Branch to uppercase version</span>
+        backtrack(i+1, path + s[i].toUpperCase());
+    } <span class="keyword">else</span> {
+        <span class="comment">// Not a letter, just add it</span>
+        backtrack(i+1, path + s[i]);
+    }
+}
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputString = document.getElementById('inputString');
+            const visualizeBtn = document.getElementById('visualizeBtn');
+            const playBtn = document.getElementById('playBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const speedControl = document.getElementById('speed');
+            const tree = document.getElementById('tree');
+            const explanation = document.getElementById('explanation');
+            const resultsContainer = document.getElementById('results');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            let animationId = null;
+            let currentStep = 0;
+            let animationSpeed = 5;
+            let isPaused = true;
+            let steps = [];
+            let results = [];
+            let nodePositions = {};
+            let nodeCounter = 0;
+            
+            // Initialize with example
+            setTimeout(() => generateVisualization('a1b'), 1000);
+            
+            visualizeBtn.addEventListener('click', function() {
+                generateVisualization(inputString.value);
+            });
+            
+            playBtn.addEventListener('click', function() {
+                if (isPaused && currentStep < steps.length) {
+                    isPaused = false;
+                    animate();
+                }
+            });
+            
+            pauseBtn.addEventListener('click', function() {
+                isPaused = true;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            });
+            
+            resetBtn.addEventListener('click', function() {
+                resetAnimation();
+            });
+            
+            speedControl.addEventListener('input', function() {
+                animationSpeed = parseInt(this.value);
+            });
+            
+            function generateVisualization(s) {
+                resetAnimation();
+                
+                // Generate results using the algorithm
+                results = [];
+                steps = [];
+                nodePositions = {};
+                nodeCounter = 0;
+                
+                // Create a unique ID for each node based on its path and position
+                function getNodeId(i, path) {
+                    return `node-${i}-${path.replace(/\s+/g, '-')}`;
+                }
+                
+                function backtrack(i, path, parentId) {
+                    const nodeId = getNodeId(i, path);
+                    const stepInfo = i === 0 ? 
+                        `Starting backtracking with empty string` : 
+                        `Processing index ${i} with path "${path}"`;
+                    
+                    steps.push({
+                        index: i,
+                        path: path,
+                        action: 'enter',
+                        nodeId: nodeId,
+                        parentId: parentId,
+                        stepInfo: stepInfo
+                    });
+                    
+                    if (i === s.length) {
+                        results.push(path);
+                        steps.push({
+                            index: i,
+                            path: path,
+                            action: 'result',
+                            nodeId: nodeId,
+                            stepInfo: `Found result: "${path}"`
+                        });
+                        steps.push({
+                            index: i,
+                            path: path,
+                            action: 'exit',
+                            nodeId: nodeId,
+                            stepInfo: `Returning from base case`
+                        });
+                        return;
+                    }
+                    
+                    if (/[a-zA-Z]/.test(s[i])) {
+                        backtrack(i + 1, path + s[i].toLowerCase(), nodeId);
+                        steps.push({
+                            index: i,
+                            path: path,
+                            action: 'process',
+                            nodeId: nodeId,
+                            stepInfo: `After lowercase branch, processing uppercase for ${s[i]}`
+                        });
+                        backtrack(i + 1, path + s[i].toUpperCase(), nodeId);
+                    } else {
+                        backtrack(i + 1, path + s[i], nodeId);
+                    }
+                    
+                    steps.push({
+                        index: i,
+                        path: path,
+                        action: 'exit',
+                        nodeId: nodeId,
+                        stepInfo: `Returning from processing index ${i}`
+                    });
+                }
+                
+                backtrack(0, '', null);
+                renderTree(s);
+                updateResults();
+                
+                // Start animation
+                if (steps.length > 0) {
+                    isPaused = false;
+                    animate();
+                }
+            }
+            
+            function renderTree(s) {
+                tree.innerHTML = '';
+                
+                // Calculate tree dimensions
+                const treeWidth = tree.offsetWidth;
+                const levelHeight = 120;
+                
+                // Group nodes by level
+                const nodesByLevel = {};
+                steps.forEach(step => {
+                    if (step.action === 'enter' || step.action === 'result') {
+                        if (!nodesByLevel[step.index]) {
+                            nodesByLevel[step.index] = [];
+                        }
+                        // Avoid duplicates
+                        if (!nodesByLevel[step.index].some(n => n.nodeId === step.nodeId)) {
+                            nodesByLevel[step.index].push(step);
+                        }
+                    }
+                });
+                
+                // Create nodes for each step
+                steps.forEach(step => {
+                    if (step.action === 'enter' || step.action === 'result') {
+                        const node = document.createElement('div');
+                        node.id = step.nodeId;
+                        node.className = 'node';
+                        node.textContent = `i=${step.index}\n"${step.path}"`;
+                        
+                        // Calculate position
+                        const level = step.index;
+                        const nodesInLevel = nodesByLevel[level] || [];
+                        const nodeIndex = nodesInLevel.findIndex(n => n.nodeId === step.nodeId);
+                        const totalNodesInLevel = nodesInLevel.length;
+                        
+                        const x = (treeWidth / (totalNodesInLevel + 1)) * (nodeIndex + 1);
+                        const y = 50 + level * levelHeight;
+                        
+                        node.style.left = `${x}px`;
+                        node.style.top = `${y}px`;
+                        
+                        tree.appendChild(node);
+                        nodePositions[step.nodeId] = {x, y};
+                    }
+                });
+                
+                // Draw connections after all nodes are placed
+                steps.forEach(step => {
+                    if (step.action === 'enter' && step.parentId) {
+                        const parentPos = nodePositions[step.parentId];
+                        const childPos = nodePositions[step.nodeId];
+                        
+                        if (parentPos && childPos) {
+                            drawConnection(parentPos.x, parentPos.y, childPos.x, childPos.y);
+                        }
+                    }
+                });
+            }
+            
+            function drawConnection(fromX, fromY, toX, toY) {
+                const connection = document.createElement('div');
+                connection.className = 'connection';
+                
+                // Calculate the angle and distance between points
+                const dx = toX - fromX;
+                const dy = toY - fromY;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                // Position the connection
+                connection.style.width = `${length}px`;
+                connection.style.left = `${fromX}px`;
+                connection.style.top = `${fromY}px`;
+                connection.style.transform = `rotate(${angle}deg)`;
+                
+                tree.appendChild(connection);
+            }
+            
+            function animate() {
+                if (currentStep >= steps.length) {
+                    isPaused = true;
+                    return;
+                }
+                
+                if (!isPaused) {
+                    const step = steps[currentStep];
+                    visualizeStep(step);
+                    currentStep++;
+                    
+                    const delay = 1100 - (animationSpeed * 100);
+                    setTimeout(() => {
+                        animationId = requestAnimationFrame(animate);
+                    }, delay);
+                }
+            }
+            
+            function visualizeStep(step) {
+                // Clear previous active nodes
+                document.querySelectorAll('.node.active').forEach(node => {
+                    node.classList.remove('active');
+                });
+                
+                const node = document.getElementById(step.nodeId);
+                if (node) {
+                    node.classList.add('active');
+                    
+                    if (step.action === 'result') {
+                        node.classList.add('result');
+                    }
+                    
+                    // Scroll to keep the node in view
+                    const treeContainer = tree.parentElement;
+                    const nodeRect = node.getBoundingClientRect();
+                    const containerRect = treeContainer.getBoundingClientRect();
+                    
+                    if (nodeRect.left < containerRect.left || 
+                        nodeRect.right > containerRect.right ||
+                        nodeRect.top < containerRect.top || 
+                        nodeRect.bottom > containerRect.bottom) {
+                        node.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center',
+                            inline: 'center'
+                        });
+                    }
+                }
+                
+                // Update explanation
+                explanation.textContent = step.stepInfo;
+            }
+            
+            function updateResults() {
+                resultsContainer.innerHTML = '';
+                resultsCount.textContent = results.length;
+                
+                results.forEach(result => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.textContent = result;
+                    resultsContainer.appendChild(card);
+                });
+            }
+            
+            function resetAnimation() {
+                isPaused = true;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                currentStep = 0;
+                results = [];
+                steps = [];
+                updateResults();
+                explanation.textContent = 'Enter a string and click Visualize to start...';
+                
+                // Clear all nodes and connections
+                tree.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

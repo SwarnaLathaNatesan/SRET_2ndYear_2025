@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursive Art Gallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .art-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .art-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .art-image {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .art-content {
+            padding: 20px;
+        }
+        
+        .art-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #12c2e9;
+        }
+        
+        .art-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #c471ed;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(to right, #12c2e9, #c471ed);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        #fractal-canvas {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Recursive Art Gallery</h1>
+            <p class="subtitle">Explore the fascinating world of recursive art, where patterns repeat themselves in infinite complexity and beauty.</p>
+        </header>
+        
+        <div class="gallery">
+            <div class="art-card">
+                <div class="art-image" id="droste-container"></div>
+                <div class="art-content">
+                    <h3 class="art-title">Droste Effect</h3>
+                    <p class="art-description">A picture appears inside itself, creating a recursive loop. Named after Dutch cocoa brand Droste, which used this effect in its packaging.</p>
+                </div>
+            </div>
+            
+            <div class="art-card">
+                <div class="art-image" id="mandelbrot-container"></div>
+                <div class="art-content">
+                    <h3 class="art-title">Mandelbrot Set</h3>
+                    <p class="art-description">The most famous fractal, defined by the simple equation zₙ₊₁ = zₙ² + c. Its boundary reveals progressively finer recursive details at every magnification.</p>
+                </div>
+            </div>
+            
+            <div class="art-card">
+                <div class="art-image" id="sierpinski-container"></div>
+                <div class="art-content">
+                    <h3 class="art-title">Sierpinski Triangle</h3>
+                    <p class="art-description">A fractal formed by recursively subdividing a triangle into smaller congruent triangles. It's a classic example of self-similarity.</p>
+                </div>
+            </div>
+            
+            <div class="art-card">
+                <div class="art-image" id="escher-container"></div>
+                <div class="art-content">
+                    <h3 class="art-title">M.C. Escher's Art</h3>
+                    <p class="art-description">Escher's works often featured recursive patterns and impossible structures, playing with perspective and infinity.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Interactive Fractal Generator</h2>
+            <div class="controls">
+                <button id="draw-mandelbrot">Mandelbrot Set</button>
+                <button id="draw-julia">Julia Set</button>
+                <button id="draw-koch">Koch Snowflake</button>
+                <button id="draw-tree">Fractal Tree</button>
+            </div>
+            <div id="fractal-canvas"></div>
+        </div>
+        
+        <footer>
+            <p>Created with p5.js | Recursive Art Gallery © 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // p5.js sketches for the art examples
+        new p5(p => {
+            p.setup = () => {
+                const container = p.select('#droste-container');
+                const canvas = p.createCanvas(300, 200);
+                canvas.parent(container);
+                p.noLoop();
+                
+                // Draw a simple Droste effect representation
+                p.background(25, 25, 35);
+                
+                // Draw outer rectangle
+                p.stroke(70, 130, 180);
+                p.strokeWeight(2);
+                p.noFill();
+                p.rect(20, 20, 260, 160);
+                
+                // Draw middle rectangle
+                p.rect(40, 40, 220, 120);
+                
+                // Draw inner rectangle
+                p.rect(60, 60, 180, 80);
+                
+                // Draw smallest rectangle
+                p.rect(80, 80, 140, 40);
+                
+                // Add text
+                p.noStroke();
+                p.fill(200, 200, 220);
+                p.textSize(14);
+                p.text("Droste Effect", 100, 130);
+                p.textSize(10);
+                p.text("Droste Effect", 120, 150);
+            }
+        }, 'droste-container');
+        
+        new p5(p => {
+            p.setup = () => {
+                const container = p.select('#mandelbrot-container');
+                const canvas = p.createCanvas(300, 200);
+                canvas.parent(container);
+                p.noLoop();
+                
+                // Draw a simple Mandelbrot representation
+                p.background(25, 25, 35);
+                
+                // Draw the main cardioid
+                p.noStroke();
+                p.fill(30, 80, 150, 200);
+                p.ellipse(150, 100, 120, 120);
+                
+                // Draw some circles to represent bulbs
+                p.fill(50, 120, 180, 200);
+                p.ellipse(190, 80, 40, 40);
+                p.ellipse(120, 120, 30, 30);
+                p.ellipse(180, 140, 35, 35);
+                
+                // Add some detail
+                p.fill(80, 160, 220, 200);
+                p.ellipse(195, 80, 15, 15);
+                p.ellipse(125, 120, 12, 12);
+                p.ellipse(185, 140, 14, 14);
+                
+                // Add text
+                p.fill(200, 200, 220);
+                p.textSize(14);
+                p.text("Mandelbrot Set", 110, 50);
+            }
+        }, 'mandelbrot-container');
+        
+        new p5(p => {
+            p.setup = () => {
+                const container = p.select('#sierpinski-container');
+                const canvas = p.createCanvas(300, 200);
+                canvas.parent(container);
+                p.noLoop();
+                
+                // Draw a simple Sierpinski triangle representation
+                p.background(25, 25, 35);
+                
+                // Draw outer triangle
+                p.stroke(180, 70, 80);
+                p.strokeWeight(2);
+                p.noFill();
+                p.triangle(150, 30, 50, 170, 250, 170);
+                
+                // Draw middle triangles
+                p.triangle(150, 30, 100, 120, 200, 120);
+                p.triangle(100, 120, 50, 170, 150, 170);
+                p.triangle(200, 120, 150, 170, 250, 170);
+                
+                // Draw inner triangles
+                p.triangle(150, 75, 125, 120, 175, 120);
+                
+                // Add text
+                p.noStroke();
+                p.fill(200, 200, 220);
+                p.textSize(14);
+                p.text("Sierpinski Triangle", 100, 190);
+            }
+        }, 'sierpinski-container');
+        
+        new p5(p => {
+            p.setup = () => {
+                const container = p.select('#escher-container');
+                const canvas = p.createCanvas(300, 200);
+                canvas.parent(container);
+                p.noLoop();
+                
+                // Draw a simple representation inspired by Escher
+                p.background(25, 25, 35);
+                
+                // Draw recursive birds/fish pattern
+                p.noStroke();
+                
+                // Draw larger birds
+                p.fill(70, 180, 130);
+                for (let i = 0; i < 4; i++) {
+                    const x = 75 + i * 50;
+                    drawBird(p, x, 100, 30);
+                }
+                
+                // Draw medium birds
+                p.fill(90, 200, 150);
+                for (let i = 0; i < 6; i++) {
+                    const x = 50 + i * 40;
+                    drawBird(p, x, 140, 20);
+                }
+                
+                // Draw small birds
+                p.fill(110, 220, 170);
+                for (let i = 0; i < 8; i++) {
+                    const x = 30 + i * 35;
+                    drawBird(p, x, 180, 15);
+                }
+                
+                // Add text
+                p.fill(200, 200, 220);
+                p.textSize(14);
+                p.text("Escher-inspired", 110, 50);
+            }
+            
+            function drawBird(p, x, y, size) {
+                p.triangle(x - size/2, y, x + size/2, y, x, y - size);
+            }
+        }, 'escher-container');
+        
+        // Interactive fractal generator
+        new p5(p => {
+            let currentFractal = 'mandelbrot';
+            
+            p.setup = () => {
+                const canvas = p.createCanvas(800, 400);
+                canvas.parent('fractal-canvas');
+                p.pixelDensity(1);
+                drawMandelbrot();
+            }
+            
+            p.draw = () => {
+                // Animation happens here if needed
+            }
+            
+            function drawMandelbrot() {
+                p.loadPixels();
+                const w = p.width;
+                const h = p.height;
+                const maxIterations = 100;
+                
+                for (let x = 0; x < w; x++) {
+                    for (let y = 0; y < h; y++) {
+                        let a = p.map(x, 0, w, -2.5, 1.5);
+                        let b = p.map(y, 0, h, -2, 2);
+                        
+                        let ca = a;
+                        let cb = b;
+                        
+                        let n = 0;
+                        
+                        for (n = 0; n < maxIterations; n++) {
+                            let aa = a * a - b * b;
+                            let bb = 2 * a * b;
+                            
+                            a = aa + ca;
+                            b = bb + cb;
+                            
+                            if (a * a + b * b > 16) {
+                                break;
+                            }
+                        }
+                        
+                        let bright = p.map(n, 0, maxIterations, 0, 255);
+                        
+                        if (n === maxIterations) {
+                            bright = 0;
+                        }
+                        
+                        const pix = (x + y * w) * 4;
+                        p.pixels[pix + 0] = bright;
+                        p.pixels[pix + 1] = p.map(bright, 0, 255, 50, 200);
+                        p.pixels[pix + 2] = p.map(bright, 0, 255, 100, 255);
+                        p.pixels[pix + 3] = 255;
+                    }
+                }
+                p.updatePixels();
+            }
+            
+            function drawJulia() {
+                p.loadPixels();
+                const w = p.width;
+                const h = p.height;
+                const maxIterations = 100;
+                
+                // Julia set constant (change this for different shapes)
+                const ca = -0.7;
+                const cb = 0.27;
+                
+                for (let x = 0; x < w; x++) {
+                    for (let y = 0; y < h; y++) {
+                        let a = p.map(x, 0, w, -2, 2);
+                        let b = p.map(y, 0, h, -2, 2);
+                        
+                        let n = 0;
+                        
+                        for (n = 0; n < maxIterations; n++) {
+                            let aa = a * a - b * b;
+                            let bb = 2 * a * b;
+                            
+                            a = aa + ca;
+                            b = bb + cb;
+                            
+                            if (a * a + b * b > 16) {
+                                break;
+                            }
+                        }
+                        
+                        let bright = p.map(n, 0, maxIterations, 0, 255);
+                        
+                        if (n === maxIterations) {
+                            bright = 0;
+                        }
+                        
+                        const pix = (x + y * w) * 4;
+                        p.pixels[pix + 0] = p.map(bright, 0, 255, 100, 255);
+                        p.pixels[pix + 1] = bright;
+                        p.pixels[pix + 2] = p.map(bright, 0, 255, 50, 200);
+                        p.pixels[pix + 3] = 255;
+                    }
+                }
+                p.updatePixels();
+            }
+            
+            function drawKoch() {
+                p.background(25, 25, 35);
+                p.stroke(70, 180, 130);
+                p.strokeWeight(2);
+                p.noFill();
+                
+                p.translate(100, 300);
+                drawKochSnowflake(p, 0, 0, 600, 0, 3);
+            }
+            
+            function drawKochSnowflake(p, x1, y1, x2, y2, depth) {
+                if (depth === 0) {
+                    p.line(x1, y1, x2, y2);
+                    return;
+                }
+                
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                
+                const x3 = x1 + dx / 3;
+                const y3 = y1 + dy / 3;
+                
+                const x4 = x2 - dx / 3;
+                const y4 = y2 - dy / 3;
+                
+                const angle = p.atan2(dy, dx);
+                const len = p.sqrt(dx * dx + dy * dy) / 3;
+                
+                const x5 = x3 + p.cos(angle - p.PI / 3) * len;
+                const y5 = y3 + p.sin(angle - p.PI / 3) * len;
+                
+                drawKochSnowflake(p, x1, y1, x3, y3, depth - 1);
+                drawKochSnowflake(p, x3, y3, x5, y5, depth - 1);
+                drawKochSnowflake(p, x5, y5, x4, y4, depth - 1);
+                drawKochSnowflake(p, x4, y4, x2, y2, depth - 1);
+            }
+            
+            function drawTree() {
+                p.background(25, 25, 35);
+                p.stroke(180, 130, 70);
+                p.strokeWeight(2);
+                p.noFill();
+                
+                p.translate(400, 400);
+                drawFractalTree(p, 0, 0, 120, -p.PI/2, 10);
+            }
+            
+            function drawFractalTree(p, x, y, len, angle, depth) {
+                if (depth === 0) return;
+                
+                const x2 = x + p.cos(angle) * len;
+                const y2 = y + p.sin(angle) * len;
+                
+                p.strokeWeight(depth);
+                p.line(x, y, x2, y2);
+                
+                drawFractalTree(p, x2, y2, len * 0.75, angle - p.PI/4, depth - 1);
+                drawFractalTree(p, x2, y2, len * 0.75, angle + p.PI/4, depth - 1);
+            }
+            
+            // Add event listeners for buttons
+            document.getElementById('draw-mandelbrot').addEventListener('click', () => {
+                drawMandelbrot();
+            });
+            
+            document.getElementById('draw-julia').addEventListener('click', () => {
+                drawJulia();
+            });
+            
+            document.getElementById('draw-koch').addEventListener('click', () => {
+                drawKoch();
+            });
+            
+            document.getElementById('draw-tree').addEventListener('click', () => {
+                drawTree();
+            });
+        }, 'fractal-canvas');
+    </script>
+</body>
+</html>

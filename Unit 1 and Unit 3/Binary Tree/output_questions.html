@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>What is the Output?</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/><style>
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6fbff;color:#052a35;padding:20px}
+.container{max-width:980px;margin:20px auto;background:linear-gradient(180deg,#ffffff, #f7fbff);border-radius:12px;box-shadow:0 6px 18px rgba(2,24,39,0.06);padding:22px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.huge{font-size:20px;font-weight:700}
+.score{background:#e9f4ff;padding:8px 12px;border-radius:8px;font-weight:600}
+.card{background:#fff;padding:14px;border-radius:10px;margin:12px 0;box-shadow:0 4px 12px rgba(2,24,39,0.04)}
+.btn{background:#0366d6;color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;box-shadow:0 4px 10px rgba(3,102,214,0.12)}
+.inputBlank{border:1px solid #d7e7f8;padding:8px;border-radius:6px;min-width:120px}
+.hint{color:#9aaec4;background:#f3f7fb;padding:6px 8px;border-radius:6px;font-size:13px}
+.wrong{outline:2px solid #ff4d4f;border-radius:6px;animation:blink 1s linear 2}
+@keyframes blink{0%{box-shadow:0 0 0 rgba(255,77,79,0.0)}50%{box-shadow:0 0 10px rgba(255,77,79,0.9)}100%{box-shadow:0 0 0 rgba(255,77,79,0.0)}}
+.answerLine{background:#f7f9fb;padding:10px;border-radius:8px;margin-top:10px;border-left:4px solid #0366d6;font-family:monospace;white-space:pre-wrap}
+code{background:#f3f6fb;padding:6px;border-radius:6px;display:block}
+.smallMuted{font-size:13px;color:#58727f}
+</style></head><body>
+<div class="container">
+ <div class="header"><div class="huge">What is the Output?</div><div class="score" id="scoreTop">Score: 0/3</div></div>
+ <div class="card"><h3>Easy</h3><pre># Python
+arr = [1,2,3]
+print(arr[::-1])
+# What's the output?</pre>
+ <input class="inputBlank" id="ans1" placeholder="Type output here..."><span class="hint">[3, 2, 1]</span></div>
+
+ <div class="card"><h3>Medium</h3><pre># Python
+x=[1,2]
+print(x*2)
+# Output?</pre>
+ <input class="inputBlank" id="ans2" placeholder="Type output here..."><span class="hint">[1, 2, 1, 2]</span></div>
+
+ <div class="card"><h3>Hard</h3><pre># Python
+def foo(n):
+    return 1 if n==0 else n*foo(n-1)
+print(foo(4))
+# Output?</pre>
+ <input class="inputBlank" id="ans3" placeholder="Type output here..."><span class="hint">24</span></div>
+
+ <div style="text-align:right"><button class="btn" id="evalBtn">Evaluate</button></div>
+ <div id="finalAnswers" class="card" style="display:none"><h3>Answers</h3>
+ <div class="answerLine">Easy: [3, 2, 1]</div>
+ <div class="answerLine">Medium: [1, 2, 1, 2]</div>
+ <div class="answerLine">Hard: 24</div>
+ </div>
+</div>
+<script>
+document.getElementById('evalBtn').addEventListener('click', ()=>{
+  let correct=0;
+  if(document.getElementById('ans1').value.trim()==='[3, 2, 1]') correct++;
+  else document.getElementById('ans1').classList.add('wrong');
+  if(document.getElementById('ans2').value.trim()==='[1, 2, 1, 2]') correct++;
+  else document.getElementById('ans2').classList.add('wrong');
+  if(document.getElementById('ans3').value.trim()==='24') correct++;
+  else document.getElementById('ans3').classList.add('wrong');
+  document.getElementById('scoreTop').textContent = `Score: ${correct}/3`;
+  document.getElementById('finalAnswers').style.display='block';
+  setTimeout(()=>{document.querySelectorAll('.wrong').forEach(e=>e.classList.remove('wrong'))},1600);
+});
+</script>
+</body></html>

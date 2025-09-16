@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Recursion — LeetCode Fill Ups</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>body{font-family:Inter,system-ui;background:#fcfdfd;color:#042a2d;padding:18px}.card{max-width:980px;margin:auto;background:#fff;padding:16px;border-radius:8px;box-shadow:0 10px 30px rgba(2,30,30,0.04)}.blank{border:none;border-bottom:2px dashed #9bb7ff;padding:4px 6px;font-family:monospace}<style>
+.btn {
+  background: #1366d6;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-block;   /* ensure it shows */
+  margin-top: 10px;        /* breathing room */
+}
+.btn:hover {
+  background: #0f4ea8;     /* hover effect */
+}
+
+.perm{display:none;margin-top:12px;padding:10px;background:#f0f7ff;border-left:4px solid #1366d6;border-radius:6px}.blink{animation: blinkOnce 1s steps(2) 1}@keyframes blinkOnce{50%{opacity:0}100%{opacity:1}}</style></head><body><div class="card"><h2>LeetCode Solution Fill Ups</h2><h3>1) Fibonacci (509)</h3><pre>def fib(n):
+    cache = {}
+    def helper(k):
+        if k in cache: return cache[k]
+        if k <= <input class="blank" id="lb1" size=6 placeholder="full line hint: 'if k <= 1: return k'"/>:
+            return k
+        cache[k] = helper(k-1) + helper(k-2)
+        return cache[k]
+    return helper(n)</pre><h3>2) Reverse String (344)</h3><pre>def reverse_str(s):
+    if len(s) <= <input class="blank" id="lb2" size=6 placeholder="full line hint: 'if len(s) <= 1: return s'"/>:
+        return s
+    return s[-1] + reverse_str(<input class="blank" id="lb3" size=20 placeholder="full line hint: 's[:-1]'"/>)</pre><h3>3) Merge (21)</h3><pre>def merge(a,b):
+    if not a: return b
+    if not b: return a
+    if a[0] <= b[0]:
+        return [a[0]] + merge(<input class="blank" id="lb4" size=30 placeholder="full line hint: 'a[1:], b'"/>)
+    else:
+        return [b[0]] + merge(a, <input class="blank" id="lb5" size=30 placeholder="full line hint: 'b[1:]'"/>)</pre><div style="text-align:right;margin-top:8px;"><button class="btn" id="checkFill">Check</button></div><div class="perm" id="permAnswers"><h4>Permanent Answers</h4><pre>lb1: 1
+lb2: 1
+lb3: s[:-1]
+lb4: a[1:], b
+lb5: b[1:]
+</pre></div></div><script>document.getElementById('checkFill').addEventListener('click', function(){ const expected={'lb1':'1','lb2':'1','lb3':'s[:-1]','lb4':'a[1:], b','lb5':'b[1:]'}; for(const id in expected){ const el=document.getElementById(id); const user=el.value.trim(); const parent=el.parentElement; const prev=parent.querySelector('.inlineMsg'); if(prev) prev.remove(); if(user!==expected[id]){ const span=document.createElement('span'); span.className='inlineMsg blink'; span.style.color='#b00020'; span.style.marginLeft='8px'; span.textContent='Wrong — correct: '+expected[id]; parent.appendChild(span); setTimeout(()=> span.classList.remove('blink'),1100); } } document.getElementById('permAnswers').style.display='block'; });</script></body></html>

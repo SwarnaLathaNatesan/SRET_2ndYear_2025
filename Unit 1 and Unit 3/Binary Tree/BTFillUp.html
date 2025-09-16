@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Small Program Fill Ups</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6fbff;color:#052a35;padding:20px}
+.container{max-width:980px;margin:20px auto;background:linear-gradient(180deg,#ffffff, #f7fbff);border-radius:12px;box-shadow:0 6px 18px rgba(2,24,39,0.06);padding:22px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.huge{font-size:20px;font-weight:700}
+.score{background:#e9f4ff;padding:8px 12px;border-radius:8px;font-weight:600}
+.card{background:#fff;padding:14px;border-radius:10px;margin:12px 0;box-shadow:0 4px 12px rgba(2,24,39,0.04)}
+.btn{background:#0366d6;color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;box-shadow:0 4px 10px rgba(3,102,214,0.12)}
+.inputBlank{border:1px solid #d7e7f8;padding:4px 6px;border-radius:6px;min-width:80px;font-family:monospace}
+.hint{color:#9aaec4;background:#f3f7fb;padding:2px 4px;border-radius:6px;font-size:12px}
+.answerLine{background:#f7f9fb;padding:10px;border-radius:8px;margin-top:10px;border-left:4px solid #0366d6;font-family:monospace;white-space:pre-wrap}
+code{background:#f3f6fb;padding:6px;border-radius:6px;display:block;white-space:pre}
+.smallMuted{font-size:13px;color:#58727f}
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="header"><div class="huge">Small Program — Fill the blanks</div><div class="score" id="scoreTop">Score: 0/3</div></div>
+
+ <!-- Q1 -->
+ <div class="card">
+  <h3>1) Fibonacci (Python)</h3>
+  <code>def fibonacci(n):
+    if <input class="inputBlank" data-answer="n &lt;= 1">:
+        return <input class="inputBlank" data-answer="n">
+    else:
+        return fibonacci(<input class="inputBlank" data-answer="n-1">) + fibonacci(<input class="inputBlank" data-answer="n-2">)
+
+print(fibonacci(5))   # expected 5
+print(fibonacci(0))   # expected 0
+</code>
+ </div>
+
+ <!-- Q2 -->
+ <div class="card">
+  <h3>2) Reverse String (Python)</h3>
+  <code>def reverse_string(s):
+    return <input class="inputBlank" data-answer="s[::-1]">
+
+print(reverse_string("hello"))  # expected "olleh"</code>
+ </div>
+
+ <!-- Q3 -->
+ <div class="card">
+  <h3>3) Merge Two Sorted Lists (Python) — helper</h3>
+  <code>def merge_sorted_lists(a,b):
+    i,j=0,0
+    res=[]
+    while i &lt; len(a) and j &lt; len(b):
+        if <input class="inputBlank" data-answer="a[i] &lt;= b[j]">:
+            res.append(a[i]); i+=1
+        else:
+            res.append(b[j]); j+=1
+    res.extend(a[i:])
+    res.extend(b[j:])
+    return res
+
+print(merge_sorted_lists([1,3,5],[2,4,6]))  # expected [1,2,3,4,5,6]</code>
+ </div>
+
+ <div style="text-align:right"><button class="btn" id="checkBtn">Check Answers</button></div>
+
+ <div id="answersBlock" class="card" style="display:none">
+   <h3>Answers</h3>
+   <div class="answerLine">1) if n &lt;= 1 : return n ; return fibonacci(n-1) + fibonacci(n-2)</div>
+   <div class="answerLine">2) return s[::-1]</div>
+   <div class="answerLine">3) if a[i] &lt;= b[j]: ...</div>
+ </div>
+</div>
+
+<script>
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  let inputs=document.querySelectorAll('.inputBlank');
+  let correct=0;
+  inputs.forEach(inp=>{
+    let val=inp.value.trim();
+    if(val==inp.dataset.answer){
+      inp.style.background='#eaffea';
+      correct++;
+    }else{
+      inp.style.background='#ffeaea';
+    }
+  });
+  document.getElementById('scoreTop').textContent='Score: '+correct+'/'+inputs.length;
+  document.getElementById('answersBlock').style.display='block';
+});
+</script>
+</body>
+</html>

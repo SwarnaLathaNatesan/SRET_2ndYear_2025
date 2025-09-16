@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Sum Problem Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a4c 0%, #0d1b2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(16, 30, 56, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(76, 201, 240, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3b1cc;
+            margin-bottom: 20px;
+        }
+        
+        .target-display {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .visualization-area {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .array-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(16, 30, 56, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #4cc9f0;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .array-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .number-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .index-label {
+            font-size: 1rem;
+            color: #a3b1cc;
+            margin-bottom: 10px;
+        }
+        
+        .number-ball {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            cursor: pointer;
+        }
+        
+        .number-ball::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 25%;
+            height: 25%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            filter: blur(1px);
+        }
+        
+        .number-ball::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 15%;
+            height: 15%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            filter: blur(0.5px);
+        }
+        
+        .number-ball.highlight {
+            box-shadow: 0 0 25px 8px rgba(255, 215, 0, 0.7);
+            transform: scale(1.15);
+            background: linear-gradient(135deg, #ffd166 0%, #ffb700 100%);
+        }
+        
+        .number-ball.success {
+            background: linear-gradient(135deg, #06d6a0 0%, #04a777 100%);
+        }
+        
+        .number-ball.in-dictionary {
+            background: linear-gradient(135deg, #7209b7 0%, #560bad 100%);
+        }
+        
+        .number-ball.fail {
+            background: linear-gradient(135deg, #ef476f 0%, #e03e60 100%);
+        }
+        
+        .dictionary-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(16, 30, 56, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dictionary-entries {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .dictionary-entry {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(38, 51, 82, 0.6);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(114, 9, 183, 0.4);
+        }
+        
+        .status-section {
+            background: rgba(16, 30, 56, 0.8);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-message {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            min-height: 40px;
+        }
+        
+        .complement-info {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ffd166;
+            min-height: 30px;
+        }
+        
+        .instructions {
+            font-size: 1.1rem;
+            color: #a3b1cc;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        
+        .legend {
+            background: rgba(16, 30, 56, 0.8);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .legend-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #4cc9f0;
+            text-align: center;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(76, 201, 240, 0.7);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(20px);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .visualization-area {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .target-display {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Two Sum Problem Visualization</h1>
+            <p class="subtitle">Visualizing the algorithm that finds two numbers that add up to a target</p>
+            <div class="target-display">Target: <span id="target-value">10</span></div>
+        </header>
+        
+        <div class="visualization-area">
+            <div class="array-section">
+                <h2 class="section-title">Number Array</h2>
+                <div class="array-container" id="array-container">
+                    <!-- Number balls will be generated here -->
+                </div>
+            </div>
+            
+            <div class="dictionary-section">
+                <h2 class="section-title">Dictionary (Number → Index)</h2>
+                <div class="dictionary-entries" id="dictionary-entries">
+                    <!-- Dictionary entries will be added here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-section">
+            <div class="status-message" id="status-message">Two Sum Problem: Find two numbers that add up to 10</div>
+            <div class="complement-info" id="complement-info"></div>
+            <div class="instructions" id="instructions">Watch the algorithm check for complements...</div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" id="restart-btn">Restart Animation</button>
+            <button class="btn btn-primary" id="next-step-btn">Next Step</button>
+        </div>
+        
+        <div class="legend">
+            <h2 class="legend-title">Legend</h2>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #ffd166 0%, #ffb700 100%);"></div>
+                    <span>Current element being processed</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #7209b7 0%, #560bad 100%);"></div>
+                    <span>Number stored in dictionary</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #06d6a0 0%, #04a777 100%);"></div>
+                    <span>Solution pair found</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #ef476f 0%, #e03e60 100%);"></div>
+                    <span>Need complement number</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const numbers = [7, 12, 4, 9, 3, 15];
+        const target = 10;
+        
+        // State variables
+        let currentIndex = 0;
+        let foundPair = null;
+        let complement = null;
+        let animationTimer = 0;
+        let state = "start";
+        let dictionary = {};
+        let autoPlay = true;
+        
+        // DOM elements
+        const arrayContainer = document.getElementById('array-container');
+        const dictionaryEntries = document.getElementById('dictionary-entries');
+        const statusMessage = document.getElementById('status-message');
+        const complementInfo = document.getElementById('complement-info');
+        const instructions = document.getElementById('instructions');
+        const restartBtn = document.getElementById('restart-btn');
+        const nextStepBtn = document.getElementById('next-step-btn');
+        const particlesContainer = document.getElementById('particles');
+        
+        // Initialize number balls
+        function initNumberBalls() {
+            arrayContainer.innerHTML = '';
+            numbers.forEach((num, i) => {
+                const numberItem = document.createElement('div');
+                numberItem.className = 'number-item';
+                
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index-label';
+                indexLabel.textContent = `Index [${i}]`;
+                
+                const ball = document.createElement('div');
+                ball.className = 'number-ball';
+                ball.textContent = num;
+                ball.dataset.index = i;
+                ball.dataset.number = num;
+                
+                numberItem.appendChild(indexLabel);
+                numberItem.appendChild(ball);
+                arrayContainer.appendChild(numberItem);
+            });
+        }
+        
+        // Create particles for background
+        function createParticles() {
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                particle.style.animationDuration = `${10 + Math.random() * 20}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Update the status message
+        function updateStatusMessage(message, compInfo = '', instruct = '') {
+            statusMessage.textContent = message;
+            complementInfo.textContent = compInfo;
+            instructions.textContent = instruct;
+        }
+        
+        // Move number ball to dictionary
+        function moveToDictionary(index) {
+            const ball = document.querySelector(`.number-ball[data-index="${index}"]`);
+            ball.classList.add('in-dictionary');
+            
+            // In a real implementation, we would animate the movement
+            // For simplicity, we're just changing the style
+        }
+        
+        // Highlight a number ball
+        function highlightBall(index, isHighlighted) {
+            const ball = document.querySelector(`.number-ball[data-index="${index}"]`);
+            if (isHighlighted) {
+                ball.classList.add('highlight');
+            } else {
+                ball.classList.remove('highlight');
+            }
+        }
+        
+        // Mark balls as solution
+        function markAsSolution(index1, index2) {
+            const ball1 = document.querySelector(`.number-ball[data-index="${index1}"]`);
+            const ball2 = document.querySelector(`.number-ball[data-index="${index2}"]`);
+            ball1.classList.add('success');
+            ball2.classList.add('success');
+        }
+        
+        // Add entry to dictionary visual
+        function addDictionaryEntry(number, index) {
+            const entry = document.createElement('div');
+            entry.className = 'dictionary-entry';
+            entry.textContent = `${number} → ${index}`;
+            dictionaryEntries.appendChild(entry);
+        }
+        
+        // Reset the animation
+        function resetAnimation() {
+            currentIndex = 0;
+            foundPair = null;
+            complement = null;
+            animationTimer = 0;
+            state = "start";
+            dictionary = {};
+            dictionaryEntries.innerHTML = '';
+            
+            initNumberBalls();
+            updateStatusMessage(
+                "Two Sum Problem: Find two numbers that add up to " + target,
+                "",
+                "Watch the algorithm check for complements..."
+            );
+            
+            autoPlay = true;
+        }
+        
+        // Perform next algorithm step
+        function nextStep() {
+            if (state === "start") {
+                state = "processing";
+                animationTimer = 0;
+            } else if (state === "processing") {
+                if (currentIndex < numbers.length) {
+                    const currentNum = numbers[currentIndex];
+                    complement = target - currentNum;
+                    
+                    highlightBall(currentIndex, true);
+                    
+                    if (dictionary[complement] !== undefined) {
+                        // Found a pair
+                        foundPair = [dictionary[complement], currentIndex];
+                        state = "found";
+                        updateStatusMessage(
+                            `Found pair: ${numbers[foundPair[0]]} + ${numbers[foundPair[1]]} = ${target}`,
+                            "",
+                            "Press RESTART to try again"
+                        );
+                        markAsSolution(foundPair[0], foundPair[1]);
+                    } else {
+                        // Add to dictionary
+                        dictionary[currentNum] = currentIndex;
+                        addDictionaryEntry(currentNum, currentIndex);
+                        moveToDictionary(currentIndex);
+                        updateStatusMessage(
+                            `Added ${currentNum} to dictionary. Need complement: ${complement}`,
+                            `Complement for ${currentNum} is ${complement}`,
+                            "Click NEXT STEP to continue"
+                        );
+                        currentIndex++;
+                    }
+                } else {
+                    state = "not_found";
+                    updateStatusMessage(
+                        "No solution found!",
+                        "",
+                        "Press RESTART to try again"
+                    );
+                }
+            } else if (state === "found") {
+                highlightBall(foundPair[0], true);
+                highlightBall(foundPair[1], true);
+                state = "done";
+            }
+            
+            autoPlay = false;
+        }
+        
+        // Main animation loop
+        function animate() {
+            if (autoPlay) {
+                animationTimer++;
+                
+                if (state === "start") {
+                    if (animationTimer > 60) {
+                        state = "processing";
+                        animationTimer = 0;
+                    }
+                } else if (state === "processing") {
+                    if (currentIndex < numbers.length) {
+                        if (animationTimer % 60 === 0) {
+                            const currentNum = numbers[currentIndex];
+                            complement = target - currentNum;
+                            
+                            highlightBall(currentIndex, true);
+                            
+                            if (dictionary[complement] !== undefined) {
+                                // Found a pair
+                                foundPair = [dictionary[complement], currentIndex];
+                                state = "found";
+                                updateStatusMessage(
+                                    `Found pair: ${numbers[foundPair[0]]} + ${numbers[foundPair[1]]} = ${target}`,
+                                    "",
+                                    "Press RESTART to try again"
+                                );
+                                markAsSolution(foundPair[0], foundPair[1]);
+                            } else {
+                                // Add to dictionary
+                                dictionary[currentNum] = currentIndex;
+                                addDictionaryEntry(currentNum, currentIndex);
+                                moveToDictionary(currentIndex);
+                                updateStatusMessage(
+                                    `Added ${currentNum} to dictionary. Need complement: ${complement}`,
+                                    `Complement for ${currentNum} is ${complement}`,
+                                    "Watch the algorithm check for complements..."
+                                );
+                                currentIndex++;
+                            }
+                        }
+                    } else {
+                        state = "not_found";
+                        updateStatusMessage(
+                            "No solution found!",
+                            "",
+                            "Press RESTART to try again"
+                        );
+                    }
+                } else if (state === "found") {
+                    if (animationTimer % 30 === 0) {
+                        highlightBall(foundPair[0], true);
+                        highlightBall(foundPair[1], true);
+                    }
+                    
+                    if (animationTimer > 180) {
+                        state = "done";
+                    }
+                } else if (state === "not_found") {
+                    if (animationTimer > 120) {
+                        state = "done";
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Initialize the visualization
+        function init() {
+            initNumberBalls();
+            createParticles();
+            
+            restartBtn.addEventListener('click', resetAnimation);
+            nextStepBtn.addEventListener('click', nextStep);
+            
+            // Start animation
+            animate();
+        }
+        
+        // Start when page is loaded
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

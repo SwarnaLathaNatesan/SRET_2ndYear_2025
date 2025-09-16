@@ -19,8 +19,3 @@ Learn with fun using python-linear algebra, statistics, discrete probability, ca
 Data Science Python Libraries and
 problem-solving using them (6 Hours) Data handling with Pandas and MongoDB, Scientific computing with Scipy, Probability and statistics with Numpy,
 Data visualization with seaborn, matplotlib.
-Specific Learning Objectives To solve problems based on tree data structure using recursion.
-To solve problems based on number system.
-To learn the fundamentals of AVL tree, Graphs and their traversal mechanism.
-To develop problem-solving skills with Data Science mathematics
-To learn Python Libraries for Data Science and simple problem solving

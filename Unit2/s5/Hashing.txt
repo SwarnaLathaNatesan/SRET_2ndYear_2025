@@ -1,0 +1,7 @@
+Why hashing
+ 1.Generate Hashcode 
+ 2. place them based on hashcode in container
+
+Closed Addressing
+Open Addressing - Linear Probe
+Open Addressing - Quadratic Probe

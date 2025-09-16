@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Recursion — Output</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>body{font-family:Inter,system-ui;background:#fbfcff;color:#052a2d;padding:18px}.card{max-width:980px;margin:auto;background:#fff;padding:14px;border-radius:10px;box-shadow:0 10px 30px rgba(4,30,30,0.04)}pre{background:#f7fbff;padding:10px;border-radius:8px}select{padding:6px;border-radius:6px}.btn{background:#1177cc;color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer}.inline{margin-left:8px;padding:6px;border-radius:6px}.blink{animation: blinkOnce 1s steps(2) 1}@keyframes blinkOnce{50%{opacity:0}100%{opacity:1}}.permanent{display:none;margin-top:12px;padding:10px;background:#f0f7ff;border-left:4px solid #1177cc;border-radius:6px}.score{font-weight:700;margin-bottom:8px}</style></head><body><div class="card"><div class="score" id="scoreTop">Score: 0 / 4</div><h2>What is the Output?</h2><form id="outForm"><div><strong>Easy 1:</strong><pre>def rec(n):
+    if n==0:
+        return 0
+    return n + rec(n-1)
+print(rec(3))</pre><select name="o1"><option value="">--select--</option><option>6</option><option>3</option><option>0</option><option>Undefined</option></select><span class="inline" id="inline1"></span><div class="permanent" id="perm1"><strong>Answer:</strong> 6</div></div><div><strong>Easy 2:</strong><pre>def f(n):
+    if n<=1: return 1
+    return n * f(n-1)
+print(f(3))</pre><select name="o2"><option value="">--select--</option><option>6</option><option>9</option><option>3</option><option>1</option></select><span class="inline" id="inline2"></span><div class="permanent" id="perm2"><strong>Answer:</strong> 6</div></div><div><strong>Medium:</strong><pre>def mystery(n):
+    if n==0: return 1
+    return mystery(n-1) + n
+print(mystery(3))</pre><select name="o3"><option value="">--select--</option><option>7</option><option>6</option><option>3</option><option>1</option></select><span class="inline" id="inline3"></span><div class="permanent" id="perm3"><strong>Answer:</strong> 7</div></div><div><strong>Hard:</strong><pre>def tricky(n):
+    if n==0: return 0
+    if n%2==0: return tricky(n-1)
+    return 1 + tricky(n-1)
+print(tricky(5))</pre><select name="o4"><option value="">--select--</option><option>3</option><option>5</option><option>2</option><option>4</option></select><span class="inline" id="inline4"></span><div class="permanent" id="perm4"><strong>Answer:</strong> 3</div></div><div style="text-align:right;margin-top:8px;"><button class="btn" id="evalBtn">Evaluate</button></div></form><div class="permanent" id="bottomPerm" style="display:block"><h4>All correct answers</h4><pre>Easy1: 6
+Easy2: 6
+Medium: 7
+Hard: 3</pre></div></div><script>document.getElementById('evalBtn').addEventListener('click', function(ev){ev.preventDefault(); const mapping={'o1':'6','o2':'6','o3':'7','o4':'3'}; let score=0; for(const key in mapping){ const sel=document.querySelector('select[name="'+key+'"]'); const chosen=sel.value; const inline=document.getElementById('inline'+key.slice(1)); const perm=document.getElementById('perm'+key.slice(1)); inline.textContent=''; if(chosen===mapping[key]){ score+=1; perm.style.display='none'; } else { inline.className='inline blink'; inline.textContent='Wrong — correct: '+mapping[key]; perm.style.display='block'; setTimeout(()=> inline.classList.remove('blink'),1100); } } document.getElementById('scoreTop').textContent='Score: '+score+' / 4';});</script></body></html>
