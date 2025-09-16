@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursion Call Stack Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #ffd700;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .code-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(26, 42, 108, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .visualization-section {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(26, 42, 108, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #ffd700;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffd700;
+        }
+        
+        .code-container {
+            background: #0a1026;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            color: #fff;
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .code-line {
+            padding: 3px 5px;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        
+        .highlight {
+            background: rgba(253, 187, 45, 0.2);
+            border-left: 3px solid #fdbb2d;
+        }
+        
+        .function-name {
+            color: #ff6b6b;
+        }
+        
+        .keyword {
+            color: #fdbb2d;
+        }
+        
+        .comment {
+            color: #6c757d;
+        }
+        
+        .value {
+            color: #4ecdc4;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #ffd700;
+            color: #1a2a6c;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .visualization-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .stack-container {
+            background: #0a1026;
+            border-radius: 10px;
+            padding: 20px;
+            height: 500px; /* Fixed height to perfectly fit 5 elements */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .stack-frame {
+            background: linear-gradient(135deg, #4a5a9c, #2a3a7c);
+            width: 280px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid #5a6aac;
+            transition: all 0.5s ease;
+            flex-shrink: 0;
+        }
+        
+        .stack-frame.active {
+            background: linear-gradient(135deg, #fdbb2d, #f9a825);
+            border-color: #ffd700;
+            color: #1a2a6c;
+            font-weight: bold;
+        }
+        
+        .stack-frame.returned {
+            background: linear-gradient(135deg, #4ecdc4, #2a9d8f);
+            border-color: #4ecdc4;
+        }
+        
+        .function-call {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .return-value {
+            font-size: 16px;
+            font-style: italic;
+        }
+        
+        .explanation-box {
+            background: rgba(10, 16, 38, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 120px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .explanation-text {
+            font-size: 18px;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .floral-decoration {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .floral-1 {
+            top: 20px;
+            left: 5%;
+            transform: rotate(25deg);
+        }
+        
+        .floral-2 {
+            bottom: 40px;
+            right: 5%;
+            transform: rotate(-15deg);
+        }
+        
+        .floral-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50L100 0H0L50 50Z' fill='%23ffd700' fill-opacity='0.2'/%3E%3C/svg%3E");
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .stack-container {
+                height: 450px;
+            }
+            
+            .stack-frame {
+                width: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floral-pattern"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Recursion Call Stack Visualization</h1>
+            <p class="subtitle">See how function calls, returns, and the call stack work during recursion with this interactive visualization of the factorial function.</p>
+            
+            <svg class="floral-decoration floral-1" viewBox="0 0 100 100">
+                <path d="M50,0 C60,30 80,40 100,50 C80,60 60,70 50,100 C40,70 20,60 0,50 C20,40 40,30 50,0Z" fill="#ffd700"/>
+            </svg>
+            
+            <svg class="floral-decoration floral-2" viewBox="0 0 100 100">
+                <path d="M50,0 C60,30 80,40 100,50 C80,60 60,70 50,100 C40,70 20,60 0,50 C20,40 40,30 50,0Z" fill="#ffd700"/>
+            </svg>
+        </header>
+        
+        <div class="main-content">
+            <div class="code-section">
+                <h2 class="section-title">Factorial Function Code</h2>
+                <div class="code-container">
+                    <pre><code><span class="code-line"><span class="keyword">function</span> <span class="function-name">factorial</span>(n) {</span>
+<span class="code-line">  <span class="comment">// Base case: factorial of 0 or 1 is 1</span></span>
+<span class="code-line">  <span class="keyword">if</span> (n <= 1) {</span>
+<span class="code-line">    <span class="keyword">return</span> <span class="value">1</span>;</span>
+<span class="code-line">  }</span>
+<span class="code-line">  </span>
+<span class="code-line">  <span class="comment">// Recursive case: n! = n * (n-1)!</span></span>
+<span class="code-line">  <span class="keyword">return</span> n * <span class="function-name">factorial</span>(n - 1);</span>
+<span class="code-line">}</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="comment">// Calculate factorial(5)</span></span>
+<span class="code-line"><span class="keyword">const</span> result = <span class="function-name">factorial</span>(<span class="value">5</span>);</span>
+<span class="code-line">console.log(<span class="value">`5! = ${result}`</span>);</span></code></pre>
+                </div>
+                
+                <div class="controls">
+                    <button id="prevBtn">
+                        <i class="fas fa-arrow-left"></i> Previous Step
+                    </button>
+                    <button id="nextBtn">
+                        Next Step <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="visualization-section">
+                <h2 class="section-title">Call Stack Visualization</h2>
+                
+                <div class="visualization-container">
+                    <div class="stack-container" id="stackContainer">
+                        <div class="stack" id="stack"></div>
+                    </div>
+                    
+                    <div class="explanation-box">
+                        <p class="explanation-text" id="explanation">
+                            Click "Next Step" to start the visualization. We'll trace through the execution of factorial(5).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Visualization steps
+        const steps = [
+            {
+                codeLine: 9,
+                explanation: "The program calls factorial(5). A new stack frame for factorial(5) is created.",
+                stack: [{ function: "factorial(5)", status: "called", returnValue: null }]
+            },
+            {
+                codeLine: 2,
+                explanation: "Inside factorial(5): Check if n (5) is less than or equal to 1. It's not, so we skip the base case.",
+                stack: [{ function: "factorial(5)", status: "executing", returnValue: null }]
+            },
+            {
+                codeLine: 7,
+                explanation: "We need to compute 5 * factorial(4). First, we must call factorial(4) and wait for its result.",
+                stack: [{ function: "factorial(5)", status: "paused", returnValue: null }]
+            },
+            {
+                codeLine: 0,
+                explanation: "Calling factorial(4). A new stack frame is created for factorial(4).",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "called", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 2,
+                explanation: "Inside factorial(4): Check if n (4) is less than or equal to 1. It's not, so we skip the base case.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "executing", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "We need to compute 4 * factorial(3). First, we must call factorial(3) and wait for its result.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 0,
+                explanation: "Calling factorial(3). A new stack frame is created for factorial(3).",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "called", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 2,
+                explanation: "Inside factorial(3): Check if n (3) is less than or equal to 1. It's not, so we skip the base case.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "executing", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "We need to compute 3 * factorial(2). First, we must call factorial(2) and wait for its result.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 0,
+                explanation: "Calling factorial(2). A new stack frame is created for factorial(2).",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "called", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 2,
+                explanation: "Inside factorial(2): Check if n (2) is less than or equal to 1. It's not, so we skip the base case.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "executing", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "We need to compute 2 * factorial(1). First, we must call factorial(1) and wait for its result.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "paused", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 0,
+                explanation: "Calling factorial(1). A new stack frame is created for factorial(1).",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "paused", returnValue: null },
+                    { function: "factorial(1)", status: "called", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 2,
+                explanation: "Inside factorial(1): Check if n (1) is less than or equal to 1. It is, so we enter the base case.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "paused", returnValue: null },
+                    { function: "factorial(1)", status: "executing", returnValue: null }
+                ]
+            },
+            {
+                codeLine: 3,
+                explanation: "Base case reached! Return 1. factorial(1) completes and is popped off the stack.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "executing", returnValue: null },
+                    { function: "factorial(1)", status: "returned", returnValue: 1 }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "Back in factorial(2): We got the result of factorial(1) which is 1. Now compute 2 * 1 = 2.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "paused", returnValue: null },
+                    { function: "factorial(2)", status: "returned", returnValue: 2 }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "Back in factorial(3): We got the result of factorial(2) which is 2. Now compute 3 * 2 = 6.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "paused", returnValue: null },
+                    { function: "factorial(3)", status: "returned", returnValue: 6 }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "Back in factorial(4): We got the result of factorial(3) which is 6. Now compute 4 * 6 = 24.",
+                stack: [
+                    { function: "factorial(5)", status: "paused", returnValue: null },
+                    { function: "factorial(4)", status: "returned", returnValue: 24 }
+                ]
+            },
+            {
+                codeLine: 7,
+                explanation: "Back in factorial(5): We got the result of factorial(4) which is 24. Now compute 5 * 24 = 120.",
+                stack: [
+                    { function: "factorial(5)", status: "returned", returnValue: 120 }
+                ]
+            },
+            {
+                codeLine: 10,
+                explanation: "The call to factorial(5) has completed and returned 120. The stack is now empty.",
+                stack: []
+            },
+            {
+                codeLine: 11,
+                explanation: "The result is printed: 5! = 120",
+                stack: []
+            }
+        ];
+
+        // Initialize variables
+        let currentStep = 0;
+        const codeLines = document.querySelectorAll('.code-line');
+        const explanationText = document.getElementById('explanation');
+        const stackElement = document.getElementById('stack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Initialize the visualization
+        updateVisualization();
+
+        // Event listeners for buttons
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateVisualization();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateVisualization();
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            currentStep = 0;
+            updateVisualization();
+        });
+
+        // Update the visualization based on current step
+        function updateVisualization() {
+            const step = steps[currentStep];
+            
+            // Update code highlighting
+            codeLines.forEach((line, index) => {
+                line.classList.remove('highlight');
+                if (index === step.codeLine) {
+                    line.classList.add('highlight');
+                }
+            });
+            
+            // Update explanation
+            explanationText.textContent = step.explanation;
+            
+            // Update stack visualization
+            stackElement.innerHTML = '';
+            
+            // Create frames in reverse order to show first call at bottom
+            // and subsequent calls stacked on top
+            const reversedStack = [...step.stack].reverse();
+            reversedStack.forEach(frame => {
+                const frameElement = document.createElement('div');
+                frameElement.classList.add('stack-frame');
+                
+                if (frame.status === 'called') {
+                    frameElement.classList.add('active');
+                } else if (frame.status === 'returned') {
+                    frameElement.classList.add('returned');
+                }
+                
+                frameElement.innerHTML = `
+                    <div class="function-call">${frame.function}</div>
+                    ${frame.returnValue !== null ? 
+                        `<div class="return-value">Returns: ${frame.returnValue}</div>` : 
+                        `<div class="return-value">Processing...</div>`
+                    }
+                `;
+                
+                stackElement.appendChild(frameElement);
+            });
+            
+            // Update button states
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.disabled = currentStep === steps.length - 1;
+        }
+    </script>
+</body>
+</html>

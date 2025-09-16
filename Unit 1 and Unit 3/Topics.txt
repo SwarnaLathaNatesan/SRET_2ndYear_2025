@@ -6,6 +6,7 @@ Recursion
 
 
 Activities
- Treasure in room
+ Call Fact(n)
+
 
 
